@@ -1,0 +1,23 @@
+# IntelliJ IDEA
+.idea/
+
+# Maven
+target/
+mvnw
+mvnw.cmd
+.mvn/
+*.log
+*maven-wrapper.jar
+
+# General
+.DS_Store
+*.class
+*.iml
+*.ipr
+*.iws
+*.bak
+*.tmp
+*.swp
+*~
+.env
+*.db
