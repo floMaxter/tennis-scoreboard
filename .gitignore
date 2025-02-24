@@ -21,3 +21,6 @@ mvnw.cmd
 *~
 .env
 *.db
+
+# Temp
+/src/main/java/com/projects/tennisscoreboard/HibernateRunner.java
