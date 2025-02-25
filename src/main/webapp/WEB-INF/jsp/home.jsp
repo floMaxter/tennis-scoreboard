@@ -6,8 +6,8 @@
     </head>
     <body>
         <h1>Tennis score board</h1>
-        <a href="${pageContext.request.contextPath}/new_match">New</a> <span> - start new match</span>
+        <a href="<c:url value="/new-match"/>">New</a> <span> - start new match</span>
         <br>
-        <a href="${pageContext.request.contextPath}/matches">Matches</a> <span> - list of finished matches</span>
+        <a href="<c:url value="/matches"/>">Matches</a> <span> - list of finished matches</span>
     </body>
 </html>
