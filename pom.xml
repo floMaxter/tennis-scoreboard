@@ -16,6 +16,8 @@
         <maven.compiler.source>21</maven.compiler.source>
         <jakarta.servlet-api.version>6.1.0</jakarta.servlet-api.version>
         <lombok.version>1.18.36</lombok.version>
+        <jsp.jstl.version>3.0.2</jsp.jstl.version>
+        <jsp.jstl.glassfish.version>3.0.1</jsp.jstl.glassfish.version>
         <hibernate-core.version>6.6.8.Final</hibernate-core.version>
         <h2.version>2.3.232</h2.version>
         <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
@@ -34,6 +36,16 @@
             <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>jakarta.servlet.jsp.jstl</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+            <version>${jsp.jstl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+            <version>${jsp.jstl.glassfish.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.hibernate.orm</groupId>
@@ -45,7 +57,6 @@
             <artifactId>h2</artifactId>
             <version>${h2.version}</version>
         </dependency>
-
     </dependencies>
 
     <build>
