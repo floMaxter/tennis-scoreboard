@@ -5,7 +5,7 @@ import jakarta.persistence.EntityManager;
 
 public class MatchRepository extends BaseRepository<Long, Match> {
 
-    public MatchRepository(EntityManager entityManager) {
-        super(Match.class, entityManager);
+    public MatchRepository() {
+        super(Match.class);
     }
 }
