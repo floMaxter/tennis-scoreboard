@@ -3,8 +3,10 @@ package com.projects.tennisscoreboard.service;
 import com.projects.tennisscoreboard.Utils.HibernateUtil;
 import com.projects.tennisscoreboard.dto.MatchCreateDto;
 import com.projects.tennisscoreboard.dto.OngoingMatchDto;
+import com.projects.tennisscoreboard.dto.OngoingMatchReadDto;
 import com.projects.tennisscoreboard.entity.Player;
 import com.projects.tennisscoreboard.mapper.MatchCreateMapper;
+import com.projects.tennisscoreboard.mapper.MatchReadMapper;
 import com.projects.tennisscoreboard.repository.PlayerRepository;
 import com.projects.tennisscoreboard.repository.factory.RepositoryFactory;
 import jakarta.persistence.NoResultException;
@@ -20,6 +22,7 @@ public class OngoingMatchesService {
 
     private final PlayerRepository playerRepository;
     private final MatchCreateMapper matchCreateMapper;
+    private final MatchReadMapper matchReadMapper;
     private final Map<UUID, OngoingMatchDto> ongoingMatches;
     private static final OngoingMatchesService INSTANCE = new OngoingMatchesService();
 
@@ -27,17 +30,18 @@ public class OngoingMatchesService {
         ongoingMatches = new HashMap<>();
         playerRepository = RepositoryFactory.getPlayerRepository();
         matchCreateMapper = new MatchCreateMapper(playerRepository);
+        matchReadMapper = new MatchReadMapper(playerRepository);
     }
 
     public UUID create(MatchCreateDto matchCreateDto) {
-        //TODO: validate
+        // TODO: validate
 
-        Transaction transaction = HibernateUtil.getTransaction();
+        var transaction = HibernateUtil.getTransaction();
         try {
             createPlayersIfNotExist(matchCreateDto);
 
             var ongoingMatchDto = matchCreateMapper.mapFrom(matchCreateDto);
-            UUID ongoingMatchId = UUID.randomUUID();
+            var ongoingMatchId = UUID.randomUUID();
             ongoingMatches.put(ongoingMatchId, ongoingMatchDto);
 
             transaction.commit();
@@ -61,6 +65,22 @@ public class OngoingMatchesService {
             playerRepository.save(Player.builder()
                     .name(matchCreateDto.secondPlayerName())
                     .build());
+        }
+    }
+
+    public OngoingMatchReadDto findByUUID(String uuid) {
+        // TODO: validate
+
+        var transaction = HibernateUtil.getTransaction();
+        try {
+            var ongoingMatchDto = ongoingMatches.get(UUID.fromString(uuid));
+            var ongoingMatchReadDto = matchReadMapper.mapFrom(ongoingMatchDto);
+            transaction.commit();
+
+            return ongoingMatchReadDto;
+        } catch (HibernateException | NoResultException e) {
+            HibernateUtil.transactionRollback(transaction);
+            throw new RuntimeException();
         }
     }
 
