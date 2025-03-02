@@ -4,11 +4,11 @@ import com.projects.tennisscoreboard.dto.OngoingMatchDto;
 import com.projects.tennisscoreboard.dto.OngoingMatchReadDto;
 import com.projects.tennisscoreboard.repository.PlayerRepository;
 
-public class MatchReadMapper implements Mapper<OngoingMatchDto, OngoingMatchReadDto> {
+public class OngoingMatchToReadMapper implements Mapper<OngoingMatchDto, OngoingMatchReadDto> {
 
     private final PlayerRepository playerRepository;
 
-    public MatchReadMapper(PlayerRepository playerRepository) {
+    public OngoingMatchToReadMapper(PlayerRepository playerRepository) {
         this.playerRepository = playerRepository;
     }
 
@@ -22,7 +22,7 @@ public class MatchReadMapper implements Mapper<OngoingMatchDto, OngoingMatchRead
         return OngoingMatchReadDto.builder()
                 .firstPlayer(firstPlayer)
                 .secondPlayer(secondPlayer)
-                .gameScoreDto(object.gameScoreDto())
+                .matchScoreDto(object.matchScoreDto())
                 .build();
     }
 }

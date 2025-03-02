@@ -1,5 +1,16 @@
 package com.projects.tennisscoreboard.dto;
 
-public record SetScore(int firstPlayerSets,
-                       int secondPlayerSets) {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class SetScore {
+
+    private int firstPlayerSets;
+    private int secondPlayerSets;
 }

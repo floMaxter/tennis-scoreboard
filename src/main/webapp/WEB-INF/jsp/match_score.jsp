@@ -15,24 +15,24 @@
             </tr>
             <tr>
                 <td>${requestScope.ongoingMatch.firstPlayer.name}</td>
-                <td>${requestScope.ongoingMatch.gameScoreDto.setScore.firstPlayerSets}</td>
-                <td>${requestScope.ongoingMatch.gameScoreDto.gameScore.firstPlayerGames}</td>
-                <td>${requestScope.ongoingMatch.gameScoreDto.pointScore.firstPlayerPoints}</td>
+                <td>${requestScope.ongoingMatch.matchScoreDto.setsScore.firstPlayerSets}</td>
+                <td>${requestScope.ongoingMatch.matchScoreDto.gamesScore.firstPlayerGames}</td>
+                <td>${requestScope.ongoingMatch.matchScoreDto.pointsScore.firstPlayerPoints}</td>
                 <td>
                     <form action="<c:url value="/match-score?uuid=${param.uuid}"/>" method="post">
-                        <input type="hidden" name="pointWinner" value="${requestScope.ongoingMatch.firstPlayer.id}">
+                        <input type="hidden" name="pointWinnerId" value="${requestScope.ongoingMatch.firstPlayer.id}">
                         <button type="submit">${requestScope.ongoingMatch.firstPlayer.name} wins a point</button>
                     </form>
                 </td>
             </tr>
             <tr>
                 <td>${requestScope.ongoingMatch.secondPlayer.name}</td>
-                <td>${requestScope.ongoingMatch.gameScoreDto.setScore.secondPlayerSets}</td>
-                <td>${requestScope.ongoingMatch.gameScoreDto.gameScore.secondPlayerGames}</td>
-                <td>${requestScope.ongoingMatch.gameScoreDto.pointScore.secondPlayerPoints}</td>
+                <td>${requestScope.ongoingMatch.matchScoreDto.setsScore.secondPlayerSets}</td>
+                <td>${requestScope.ongoingMatch.matchScoreDto.gamesScore.secondPlayerGames}</td>
+                <td>${requestScope.ongoingMatch.matchScoreDto.pointsScore.secondPlayerPoints}</td>
                 <td>
                     <form action="<c:url value="/match-score?uuid=${param.uuid}"/>" method="post">
-                        <input type="hidden" name="pointWinner" value="${requestScope.ongoingMatch.secondPlayer.id}">
+                        <input type="hidden" name="pointWinnerId" value="${requestScope.ongoingMatch.secondPlayer.id}">
                         <button type="submit">${requestScope.ongoingMatch.secondPlayer.name} wins a point</button>
                     </form>
                 </td>

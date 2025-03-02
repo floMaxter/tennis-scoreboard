@@ -1,6 +1,7 @@
 package com.projects.tennisscoreboard.controller;
 
 import com.projects.tennisscoreboard.Utils.JspHelper;
+import com.projects.tennisscoreboard.service.MatchScoreCalculationService;
 import com.projects.tennisscoreboard.service.OngoingMatchesService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,6 +15,7 @@ import java.io.IOException;
 public class MatchScoreController extends HttpServlet {
 
     private final OngoingMatchesService ongoingMatchesService = OngoingMatchesService.getInstance();
+    private final MatchScoreCalculationService matchScoreCalculationService = MatchScoreCalculationService.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -25,8 +27,11 @@ public class MatchScoreController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        var pointWinner = req.getParameter("pointWinner");
-        System.out.println(pointWinner);
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        var matchId = req.getParameter("uuid");
+        var pointWinnerId = req.getParameter("pointWinnerId");
+        matchScoreCalculationService.calculateScore(matchId, pointWinnerId);
+
+        resp.sendRedirect(String.format(req.getContextPath() + "/match-score?uuid=%s", matchId));
     }
 }

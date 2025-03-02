@@ -5,13 +5,12 @@ import com.projects.tennisscoreboard.dto.MatchCreateDto;
 import com.projects.tennisscoreboard.dto.OngoingMatchDto;
 import com.projects.tennisscoreboard.dto.OngoingMatchReadDto;
 import com.projects.tennisscoreboard.entity.Player;
-import com.projects.tennisscoreboard.mapper.MatchCreateMapper;
-import com.projects.tennisscoreboard.mapper.MatchReadMapper;
+import com.projects.tennisscoreboard.mapper.MatchCreateToOngoingMapper;
+import com.projects.tennisscoreboard.mapper.OngoingMatchToReadMapper;
 import com.projects.tennisscoreboard.repository.PlayerRepository;
 import com.projects.tennisscoreboard.repository.factory.RepositoryFactory;
 import jakarta.persistence.NoResultException;
 import org.hibernate.HibernateException;
-import org.hibernate.Transaction;
 
 
 import java.util.HashMap;
@@ -21,16 +20,32 @@ import java.util.UUID;
 public class OngoingMatchesService {
 
     private final PlayerRepository playerRepository;
-    private final MatchCreateMapper matchCreateMapper;
-    private final MatchReadMapper matchReadMapper;
+    private final MatchCreateToOngoingMapper matchCreateToOngoingMapper;
+    private final OngoingMatchToReadMapper ongoingMatchToReadMapper;
     private final Map<UUID, OngoingMatchDto> ongoingMatches;
     private static final OngoingMatchesService INSTANCE = new OngoingMatchesService();
 
     private OngoingMatchesService() {
         ongoingMatches = new HashMap<>();
         playerRepository = RepositoryFactory.getPlayerRepository();
-        matchCreateMapper = new MatchCreateMapper(playerRepository);
-        matchReadMapper = new MatchReadMapper(playerRepository);
+        matchCreateToOngoingMapper = new MatchCreateToOngoingMapper(playerRepository);
+        ongoingMatchToReadMapper = new OngoingMatchToReadMapper(playerRepository);
+    }
+
+    public OngoingMatchReadDto findByUUID(String matchId) {
+        // TODO: validate
+
+        var transaction = HibernateUtil.getTransaction();
+        try {
+            var ongoingMatchDto = ongoingMatches.get(UUID.fromString(matchId));
+            var ongoingMatchReadDto = ongoingMatchToReadMapper.mapFrom(ongoingMatchDto);
+            transaction.commit();
+
+            return ongoingMatchReadDto;
+        } catch (HibernateException | NoResultException e) {
+            HibernateUtil.transactionRollback(transaction);
+            throw new RuntimeException();
+        }
     }
 
     public UUID create(MatchCreateDto matchCreateDto) {
@@ -40,13 +55,13 @@ public class OngoingMatchesService {
         try {
             createPlayersIfNotExist(matchCreateDto);
 
-            var ongoingMatchDto = matchCreateMapper.mapFrom(matchCreateDto);
-            var ongoingMatchId = UUID.randomUUID();
-            ongoingMatches.put(ongoingMatchId, ongoingMatchDto);
+            var ongoingMatchDto = matchCreateToOngoingMapper.mapFrom(matchCreateDto);
+            var uuid = UUID.randomUUID();
+            ongoingMatches.put(uuid, ongoingMatchDto);
 
             transaction.commit();
 
-            return ongoingMatchId;
+            return uuid;
         } catch (HibernateException | NoResultException e) {
             HibernateUtil.transactionRollback(transaction);
             throw new RuntimeException();
@@ -68,19 +83,11 @@ public class OngoingMatchesService {
         }
     }
 
-    public OngoingMatchReadDto findByUUID(String uuid) {
+    public void updateOngoingMatch(String matchId, OngoingMatchDto ongoingMatchDto) {
         // TODO: validate
-
-        var transaction = HibernateUtil.getTransaction();
-        try {
-            var ongoingMatchDto = ongoingMatches.get(UUID.fromString(uuid));
-            var ongoingMatchReadDto = matchReadMapper.mapFrom(ongoingMatchDto);
-            transaction.commit();
-
-            return ongoingMatchReadDto;
-        } catch (HibernateException | NoResultException e) {
-            HibernateUtil.transactionRollback(transaction);
-            throw new RuntimeException();
+        var uuid = UUID.fromString(matchId);
+        if (ongoingMatches.containsKey(uuid)) {
+            this.ongoingMatches.put(uuid,ongoingMatchDto);
         }
     }
 

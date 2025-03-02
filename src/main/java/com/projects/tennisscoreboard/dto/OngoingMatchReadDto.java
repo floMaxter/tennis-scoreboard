@@ -6,5 +6,5 @@ import lombok.Builder;
 @Builder
 public record OngoingMatchReadDto(Player firstPlayer,
                                   Player secondPlayer,
-                                  GameScoreDto gameScoreDto) {
+                                  MatchScoreDto matchScoreDto) {
 }
