@@ -1,9 +1,9 @@
 package com.projects.tennisscoreboard.service;
 
+import com.projects.tennisscoreboard.dto.MatchScoreDto;
 import com.projects.tennisscoreboard.dto.OngoingMatchDto;
+import com.projects.tennisscoreboard.dto.ScoreDto;
 import com.projects.tennisscoreboard.mapper.OngoingMatchReadToOngoingMapper;
-
-import java.util.UUID;
 
 public class MatchScoreCalculationService {
 
@@ -16,48 +16,105 @@ public class MatchScoreCalculationService {
         ongoingMatchReadToOngoingMapper = OngoingMatchReadToOngoingMapper.getInstance();
     }
 
-    public void calculateScore(String matchId, String winnerIdStr) {
+    public void calculateScore(String matchId, String pointWinnerIdStr) {
         //TODO: validate
 
         var ongoingMatchDto = ongoingMatchReadToOngoingMapper.mapFrom(ongoingMatchesService.findByUUID(matchId));
-        var pointWinnerId = Long.valueOf(winnerIdStr);
-        updateScore(ongoingMatchDto, pointWinnerId);
+        var pointWinnerId = Long.valueOf(pointWinnerIdStr);
+        increaseScore(ongoingMatchDto, pointWinnerId);
         ongoingMatchesService.updateOngoingMatch(matchId, ongoingMatchDto);
     }
 
-    private void updateScore(OngoingMatchDto ongoingMatchDto, Long pointWinnerId) {
+    private void increaseScore(OngoingMatchDto ongoingMatchDto, Long pointWinnerId) {
         var matchScoreDto = ongoingMatchDto.matchScoreDto();
-        var pointsScore = matchScoreDto.pointsScore();
-        var gamesScore = matchScoreDto.gamesScore();
-        var setsScore = matchScoreDto.setsScore();
-
-        if (ongoingMatchDto.firstPlayerId().equals(pointWinnerId)) {
-            pointsScore.setFirstPlayerPoints(pointsScore.getFirstPlayerPoints() + 1);
-            if (pointsScore.getFirstPlayerPoints() > 1) {
-                pointsScore.setFirstPlayerPoints(0);
-                gamesScore.setFirstPlayerGames(gamesScore.getFirstPlayerGames() + 1);
-            }
-            if (gamesScore.getFirstPlayerGames() > 1) {
-                gamesScore.setFirstPlayerGames(0);
-                setsScore.setFirstPlayerSets(setsScore.getFirstPlayerSets() + 1);
-            }
-            if (setsScore.getFirstPlayerSets() > 1) {
-                setsScore.setFirstPlayerSets(0);
-            }
+        if (isRegularScore(matchScoreDto)) {
+            increaseRegularScore(ongoingMatchDto, pointWinnerId);
         } else {
-            pointsScore.setSecondPlayerPoints(pointsScore.getSecondPlayerPoints() + 1);
-            if (pointsScore.getSecondPlayerPoints() > 1) {
-                pointsScore.setSecondPlayerPoints(0);
-                gamesScore.setSecondPlayerGames(gamesScore.getSecondPlayerGames() + 1);
-            }
-            if (gamesScore.getSecondPlayerGames() > 1) {
-                gamesScore.setSecondPlayerGames(0);
-                setsScore.setSecondPlayerSets(setsScore.getSecondPlayerSets() + 1);
-            }
-            if (setsScore.getSecondPlayerSets() > 1) {
-                setsScore.setSecondPlayerSets(0);
-            }
+            increaseAdvantageScore(ongoingMatchDto, pointWinnerId);
         }
+    }
+
+    private boolean isRegularScore(MatchScoreDto matchScoreDto) {
+        var firstPointsScore = matchScoreDto.firstPlayerScore().getPointsScore();
+        var secondPointsScore = matchScoreDto.secondPlayerScore().getPointsScore();
+        return firstPointsScore < 40 || secondPointsScore < 40;
+    }
+
+    private void increaseRegularScore(OngoingMatchDto ongoingMatchDto, Long pointWinnerId) {
+        var matchScoreDto = ongoingMatchDto.matchScoreDto();
+        var firstScore = matchScoreDto.firstPlayerScore();
+        var secondScore = matchScoreDto.secondPlayerScore();
+        if (ongoingMatchDto.firstPlayerId().equals(pointWinnerId)) {
+            increasePointScore(firstScore, secondScore);
+        } else {
+            increasePointScore(secondScore, firstScore);
+        }
+    }
+
+    private void increaseAdvantageScore(OngoingMatchDto ongoingMatchDto, Long pointWinnerId) {
+        var matchScoreDto = ongoingMatchDto.matchScoreDto();
+        var firstScore = matchScoreDto.firstPlayerScore();
+        var secondScore = matchScoreDto.secondPlayerScore();
+        if (ongoingMatchDto.firstPlayerId().equals(pointWinnerId)) {
+            increaseAdvantagePoint(firstScore, secondScore);
+        } else {
+            increaseAdvantagePoint(secondScore, firstScore);
+        }
+    }
+
+    private void increasePointScore(ScoreDto winnerScore, ScoreDto loserScore) {
+        var pointsScore = winnerScore.getPointsScore();
+        if (pointsScore == 0) {
+            winnerScore.setPointsScore(15);
+        } else if (pointsScore == 15) {
+            winnerScore.setPointsScore(30);
+        } else if (pointsScore == 30) {
+            winnerScore.setPointsScore(40);
+        } else {
+            increaseGamesScore(winnerScore, loserScore);
+        }
+    }
+
+    private void increaseAdvantagePoint(ScoreDto winnerScore, ScoreDto loserScore) {
+        if (isCrucialAdvantagePoint(winnerScore, loserScore)) {
+            increaseGamesScore(winnerScore, loserScore);
+        } else {
+            winnerScore.setPointsScore(winnerScore.getPointsScore() + 1);
+        }
+    }
+
+    private boolean isCrucialAdvantagePoint(ScoreDto winnerScore, ScoreDto loserScore) {
+        return winnerScore.getPointsScore() - loserScore.getPointsScore() == 1;
+    }
+
+    private void increaseGamesScore(ScoreDto winnerScore, ScoreDto loserScore) {
+        winnerScore.setPointsScore(0);
+        loserScore.setPointsScore(0);
+        winnerScore.setGamesScore(winnerScore.getGamesScore() + 1);
+
+        if (winnerScore.getGamesScore() > 6) {
+            increaseSetsScore(winnerScore, loserScore);
+        }
+    }
+
+    private void increaseSetsScore(ScoreDto winnerScore, ScoreDto loserScore) {
+        winnerScore.setGamesScore(0);
+        loserScore.setGamesScore(0);
+        winnerScore.setSetsScore(winnerScore.getSetsScore() + 1);
+
+        if (winnerScore.getSetsScore() == 2) {
+            setWinningValues(winnerScore, loserScore);
+        }
+    }
+
+    private void setWinningValues(ScoreDto winnerScore, ScoreDto loserScore) {
+        winnerScore.setPointsScore(9);
+        winnerScore.setGamesScore(9);
+        winnerScore.setSetsScore(9);
+
+        loserScore.setPointsScore(0);
+        loserScore.setGamesScore(0);
+        loserScore.setSetsScore(0);
     }
 
     public static MatchScoreCalculationService getInstance() {

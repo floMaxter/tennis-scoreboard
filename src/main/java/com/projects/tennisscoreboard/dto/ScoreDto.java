@@ -9,8 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GameScore {
+public class ScoreDto {
 
-    private int firstPlayerGames;
-    private int secondPlayerGames;
+    private int pointsScore;
+    private int gamesScore;
+    private int setsScore;
 }

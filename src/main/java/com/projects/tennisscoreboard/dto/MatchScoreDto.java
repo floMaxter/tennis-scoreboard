@@ -3,7 +3,6 @@ package com.projects.tennisscoreboard.dto;
 import lombok.Builder;
 
 @Builder
-public record MatchScoreDto(PointScore pointsScore,
-                            GameScore gamesScore,
-                            SetScore setsScore) {
+public record MatchScoreDto(ScoreDto firstPlayerScore,
+                            ScoreDto secondPlayerScore) {
 }

@@ -15,9 +15,9 @@
             </tr>
             <tr>
                 <td>${requestScope.ongoingMatch.firstPlayer.name}</td>
-                <td>${requestScope.ongoingMatch.matchScoreDto.setsScore.firstPlayerSets}</td>
-                <td>${requestScope.ongoingMatch.matchScoreDto.gamesScore.firstPlayerGames}</td>
-                <td>${requestScope.ongoingMatch.matchScoreDto.pointsScore.firstPlayerPoints}</td>
+                <td>${requestScope.ongoingMatch.matchScoreDto.firstPlayerScore.setsScore}</td>
+                <td>${requestScope.ongoingMatch.matchScoreDto.firstPlayerScore.gamesScore}</td>
+                <td>${requestScope.ongoingMatch.matchScoreDto.firstPlayerScore.pointsScore}</td>
                 <td>
                     <form action="<c:url value="/match-score?uuid=${param.uuid}"/>" method="post">
                         <input type="hidden" name="pointWinnerId" value="${requestScope.ongoingMatch.firstPlayer.id}">
@@ -27,9 +27,9 @@
             </tr>
             <tr>
                 <td>${requestScope.ongoingMatch.secondPlayer.name}</td>
-                <td>${requestScope.ongoingMatch.matchScoreDto.setsScore.secondPlayerSets}</td>
-                <td>${requestScope.ongoingMatch.matchScoreDto.gamesScore.secondPlayerGames}</td>
-                <td>${requestScope.ongoingMatch.matchScoreDto.pointsScore.secondPlayerPoints}</td>
+                <td>${requestScope.ongoingMatch.matchScoreDto.secondPlayerScore.setsScore}</td>
+                <td>${requestScope.ongoingMatch.matchScoreDto.secondPlayerScore.gamesScore}</td>
+                <td>${requestScope.ongoingMatch.matchScoreDto.secondPlayerScore.pointsScore}</td>
                 <td>
                     <form action="<c:url value="/match-score?uuid=${param.uuid}"/>" method="post">
                         <input type="hidden" name="pointWinnerId" value="${requestScope.ongoingMatch.secondPlayer.id}">

@@ -1,11 +1,9 @@
 package com.projects.tennisscoreboard.mapper;
 
-import com.projects.tennisscoreboard.dto.GameScore;
 import com.projects.tennisscoreboard.dto.MatchCreateDto;
 import com.projects.tennisscoreboard.dto.MatchScoreDto;
 import com.projects.tennisscoreboard.dto.OngoingMatchDto;
-import com.projects.tennisscoreboard.dto.PointScore;
-import com.projects.tennisscoreboard.dto.SetScore;
+import com.projects.tennisscoreboard.dto.ScoreDto;
 import com.projects.tennisscoreboard.entity.Player;
 import com.projects.tennisscoreboard.repository.PlayerRepository;
 
@@ -27,11 +25,10 @@ public class MatchCreateToOngoingMapper implements Mapper<MatchCreateDto, Ongoin
         return OngoingMatchDto.builder()
                 .firstPlayerId(firstPlayer.getFirst().getId())
                 .secondPlayerId(secondPlayer.getFirst().getId())
-                .matchScoreDto(new MatchScoreDto(
-                        new PointScore(),
-                        new GameScore(),
-                        new SetScore()
-                ))
+                .matchScoreDto(MatchScoreDto.builder()
+                        .firstPlayerScore(new ScoreDto())
+                        .secondPlayerScore(new ScoreDto())
+                        .build())
                 .build();
     }
 }
