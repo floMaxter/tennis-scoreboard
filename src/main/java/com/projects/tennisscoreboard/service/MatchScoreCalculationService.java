@@ -27,17 +27,25 @@ public class MatchScoreCalculationService {
 
     private void increaseScore(OngoingMatchDto ongoingMatchDto, Long pointWinnerId) {
         var matchScoreDto = ongoingMatchDto.matchScoreDto();
-        if (isRegularScore(matchScoreDto)) {
-            increaseRegularScore(ongoingMatchDto, pointWinnerId);
-        } else {
+        if (isAdvantageScore(matchScoreDto)) {
             increaseAdvantageScore(ongoingMatchDto, pointWinnerId);
+        } else if (isTieBreak(matchScoreDto)) {
+            increaseTieBreakScore(ongoingMatchDto, pointWinnerId);
+        } else {
+            increaseRegularScore(ongoingMatchDto, pointWinnerId);
         }
     }
 
-    private boolean isRegularScore(MatchScoreDto matchScoreDto) {
+    private boolean isAdvantageScore(MatchScoreDto matchScoreDto) {
         var firstPointsScore = matchScoreDto.firstPlayerScore().getPointsScore();
         var secondPointsScore = matchScoreDto.secondPlayerScore().getPointsScore();
-        return firstPointsScore < 40 || secondPointsScore < 40;
+        return firstPointsScore >= 40 && secondPointsScore >= 40;
+    }
+
+    private boolean isTieBreak(MatchScoreDto matchScoreDto) {
+        var firstGamesScore = matchScoreDto.firstPlayerScore().getGamesScore();
+        var secondGamesScore = matchScoreDto.secondPlayerScore().getGamesScore();
+        return firstGamesScore == 6 && secondGamesScore == 6;
     }
 
     private void increaseRegularScore(OngoingMatchDto ongoingMatchDto, Long pointWinnerId) {
@@ -45,9 +53,9 @@ public class MatchScoreCalculationService {
         var firstScore = matchScoreDto.firstPlayerScore();
         var secondScore = matchScoreDto.secondPlayerScore();
         if (ongoingMatchDto.firstPlayerId().equals(pointWinnerId)) {
-            increasePointScore(firstScore, secondScore);
+            increaseRegularPointScore(firstScore, secondScore);
         } else {
-            increasePointScore(secondScore, firstScore);
+            increaseRegularPointScore(secondScore, firstScore);
         }
     }
 
@@ -56,13 +64,24 @@ public class MatchScoreCalculationService {
         var firstScore = matchScoreDto.firstPlayerScore();
         var secondScore = matchScoreDto.secondPlayerScore();
         if (ongoingMatchDto.firstPlayerId().equals(pointWinnerId)) {
-            increaseAdvantagePoint(firstScore, secondScore);
+            increaseAdvantagePointScore(firstScore, secondScore);
         } else {
-            increaseAdvantagePoint(secondScore, firstScore);
+            increaseAdvantagePointScore(secondScore, firstScore);
         }
     }
 
-    private void increasePointScore(ScoreDto winnerScore, ScoreDto loserScore) {
+    private void increaseTieBreakScore(OngoingMatchDto ongoingMatchDto, Long pointWinnerId) {
+        var matchScoreDto = ongoingMatchDto.matchScoreDto();
+        var firstScore = matchScoreDto.firstPlayerScore();
+        var secondScore = matchScoreDto.secondPlayerScore();
+        if (ongoingMatchDto.firstPlayerId().equals(pointWinnerId)) {
+            increaseTiBreakPointScore(firstScore, secondScore);
+        } else {
+            increaseTiBreakPointScore(secondScore, firstScore);
+        }
+    }
+
+    private void increaseRegularPointScore(ScoreDto winnerScore, ScoreDto loserScore) {
         var pointsScore = winnerScore.getPointsScore();
         if (pointsScore == 0) {
             winnerScore.setPointsScore(15);
@@ -71,15 +90,15 @@ public class MatchScoreCalculationService {
         } else if (pointsScore == 30) {
             winnerScore.setPointsScore(40);
         } else {
-            increaseGamesScore(winnerScore, loserScore);
+            increaseGameScore(winnerScore, loserScore);
         }
     }
 
-    private void increaseAdvantagePoint(ScoreDto winnerScore, ScoreDto loserScore) {
+    private void increaseAdvantagePointScore(ScoreDto winnerScore, ScoreDto loserScore) {
         if (isCrucialAdvantagePoint(winnerScore, loserScore)) {
-            increaseGamesScore(winnerScore, loserScore);
+            increaseGameScore(winnerScore, loserScore);
         } else {
-            winnerScore.setPointsScore(winnerScore.getPointsScore() + 1);
+            incrementPointScore(winnerScore);
         }
     }
 
@@ -87,20 +106,32 @@ public class MatchScoreCalculationService {
         return winnerScore.getPointsScore() - loserScore.getPointsScore() == 1;
     }
 
-    private void increaseGamesScore(ScoreDto winnerScore, ScoreDto loserScore) {
-        winnerScore.setPointsScore(0);
-        loserScore.setPointsScore(0);
-        winnerScore.setGamesScore(winnerScore.getGamesScore() + 1);
-
-        if (winnerScore.getGamesScore() > 6) {
-            increaseSetsScore(winnerScore, loserScore);
+    private void increaseTiBreakPointScore(ScoreDto winnerScore, ScoreDto loserScore) {
+        if (isCrucialTieBreakPoint(winnerScore, loserScore)) {
+            increaseSetScore(winnerScore, loserScore);
+        } else {
+            incrementPointScore(winnerScore);
         }
     }
 
-    private void increaseSetsScore(ScoreDto winnerScore, ScoreDto loserScore) {
-        winnerScore.setGamesScore(0);
-        loserScore.setGamesScore(0);
-        winnerScore.setSetsScore(winnerScore.getSetsScore() + 1);
+    private boolean isCrucialTieBreakPoint(ScoreDto winnerScore, ScoreDto loserScore) {
+        return (winnerScore.getPointsScore() - loserScore.getPointsScore() == 1)
+                && winnerScore.getPointsScore() >= 6;
+    }
+
+    private void increaseGameScore(ScoreDto winnerScore, ScoreDto loserScore) {
+        resetPoints(winnerScore, loserScore);
+        incrementGameScore(winnerScore);
+
+        if (winnerScore.getGamesScore() > 6) {
+            increaseSetScore(winnerScore, loserScore);
+        }
+    }
+
+    private void increaseSetScore(ScoreDto winnerScore, ScoreDto loserScore) {
+        resetPoints(winnerScore, loserScore);
+        resetGames(winnerScore, loserScore);
+        incrementSetScore(winnerScore);
 
         if (winnerScore.getSetsScore() == 2) {
             setWinningValues(winnerScore, loserScore);
@@ -111,10 +142,35 @@ public class MatchScoreCalculationService {
         winnerScore.setPointsScore(9);
         winnerScore.setGamesScore(9);
         winnerScore.setSetsScore(9);
+        resetScore(loserScore);
+    }
 
+    private void incrementPointScore(ScoreDto scoreDto) {
+        scoreDto.setPointsScore(scoreDto.getPointsScore() + 1);
+    }
+
+    private void incrementGameScore(ScoreDto scoreDto) {
+        scoreDto.setGamesScore(scoreDto.getGamesScore() + 1);
+    }
+
+    private void incrementSetScore(ScoreDto scoreDto) {
+        scoreDto.setSetsScore(scoreDto.getSetsScore() + 1);
+    }
+
+    private void resetPoints(ScoreDto winnerScore, ScoreDto loserScore) {
+        winnerScore.setPointsScore(0);
         loserScore.setPointsScore(0);
+    }
+
+    private void resetGames(ScoreDto winnerScore, ScoreDto loserScore) {
+        winnerScore.setGamesScore(0);
         loserScore.setGamesScore(0);
-        loserScore.setSetsScore(0);
+    }
+
+    private void resetScore(ScoreDto scoreDto) {
+        scoreDto.setPointsScore(0);
+        scoreDto.setGamesScore(0);
+        scoreDto.setSetsScore(0);
     }
 
     public static MatchScoreCalculationService getInstance() {
