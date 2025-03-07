@@ -1,9 +1,18 @@
 package com.projects.tennisscoreboard.dto;
 
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
 @Builder
-public record OngoingMatchDto(Long firstPlayerId,
-                              Long secondPlayerId,
-                              MatchScoreDto matchScoreDto) {
+public class OngoingMatchDto {
+
+    private final Long firstPlayerId;
+    private final Long secondPlayerId;
+
+    @Setter
+    private  MatchScoreDto matchScoreDto;
+    @Setter
+    private MatchState matchState;
 }

@@ -1,11 +1,28 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<c:set var="firstPlayerId" value="${requestScope.ongoingMatch.firstPlayer.id}"/>
+<c:set var="firstPlayerName" value="${requestScope.ongoingMatch.firstPlayer.name}"/>
+<c:set var="firstPlayerSetsScore" value="${requestScope.ongoingMatch.matchScoreDto.firstPlayerScore.setsScore}"/>
+<c:set var="firstPlayerGamesScore" value="${requestScope.ongoingMatch.matchScoreDto.firstPlayerScore.gamesScore}"/>
+<c:set var="firstPlayerPointsScore" value="${requestScope.ongoingMatch.matchScoreDto.firstPlayerScore.pointsScore}"/>
+
+<c:set var="secondPlayerId" value="${requestScope.ongoingMatch.secondPlayer.id}"/>
+<c:set var="secondPlayerName" value="${requestScope.ongoingMatch.secondPlayer.name}"/>
+<c:set var="secondPlayerSetsScore" value="${requestScope.ongoingMatch.matchScoreDto.secondPlayerScore.setsScore}"/>
+<c:set var="secondPlayerGamesScore" value="${requestScope.ongoingMatch.matchScoreDto.secondPlayerScore.gamesScore}"/>
+<c:set var="secondPlayerPointsScore" value="${requestScope.ongoingMatch.matchScoreDto.secondPlayerScore.pointsScore}"/>
+
+<c:set var="advantagePlayerId" value="${requestScope.ongoingMatch.matchScoreDto.advantagePlayerId}"/>
+
 <html>
     <head>
         <title>Match Score</title>
     </head>
     <body>
         <h1>Match Score</h1>
+        <h2>Match State: ${requestScope.ongoingMatch.matchState}</h2>
+        <h2>AdvantagePlayerId: ${advantagePlayerId}</h2>
         <table>
             <tr>
                 <td>Player</td>
@@ -14,26 +31,26 @@
                 <td>Points</td>
             </tr>
             <tr>
-                <td>${requestScope.ongoingMatch.firstPlayer.name}</td>
-                <td>${requestScope.ongoingMatch.matchScoreDto.firstPlayerScore.setsScore}</td>
-                <td>${requestScope.ongoingMatch.matchScoreDto.firstPlayerScore.gamesScore}</td>
-                <td>${requestScope.ongoingMatch.matchScoreDto.firstPlayerScore.pointsScore}</td>
+                <td>${firstPlayerName}</td>
+                <td>${firstPlayerSetsScore}</td>
+                <td>${firstPlayerGamesScore}</td>
+                <td>${firstPlayerPointsScore}</td>
                 <td>
                     <form action="<c:url value="/match-score?uuid=${param.uuid}"/>" method="post">
-                        <input type="hidden" name="pointWinnerId" value="${requestScope.ongoingMatch.firstPlayer.id}">
-                        <button type="submit">${requestScope.ongoingMatch.firstPlayer.name} wins a point</button>
+                        <input type="hidden" name="pointWinnerId" value="${firstPlayerId}">
+                        <button type="submit">${firstPlayerName} wins a point</button>
                     </form>
                 </td>
             </tr>
             <tr>
-                <td>${requestScope.ongoingMatch.secondPlayer.name}</td>
-                <td>${requestScope.ongoingMatch.matchScoreDto.secondPlayerScore.setsScore}</td>
-                <td>${requestScope.ongoingMatch.matchScoreDto.secondPlayerScore.gamesScore}</td>
-                <td>${requestScope.ongoingMatch.matchScoreDto.secondPlayerScore.pointsScore}</td>
+                <td>${secondPlayerName}</td>
+                <td>${secondPlayerSetsScore}</td>
+                <td>${secondPlayerGamesScore}</td>
+                <td>${secondPlayerPointsScore}</td>
                 <td>
                     <form action="<c:url value="/match-score?uuid=${param.uuid}"/>" method="post">
-                        <input type="hidden" name="pointWinnerId" value="${requestScope.ongoingMatch.secondPlayer.id}">
-                        <button type="submit">${requestScope.ongoingMatch.secondPlayer.name} wins a point</button>
+                        <input type="hidden" name="pointWinnerId" value="${secondPlayerId}">
+                        <button type="submit">${secondPlayerName} wins a point</button>
                     </form>
                 </td>
             </tr>

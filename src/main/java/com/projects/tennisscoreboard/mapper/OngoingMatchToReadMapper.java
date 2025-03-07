@@ -14,15 +14,16 @@ public class OngoingMatchToReadMapper implements Mapper<OngoingMatchDto, Ongoing
 
     @Override
     public OngoingMatchReadDto mapFrom(OngoingMatchDto object) {
-        var firstPlayer = playerRepository.findById(object.firstPlayerId())
+        var firstPlayer = playerRepository.findById(object.getFirstPlayerId())
                 .orElseThrow(IllegalArgumentException::new);
-        var secondPlayer = playerRepository.findById(object.secondPlayerId())
+        var secondPlayer = playerRepository.findById(object.getSecondPlayerId())
                 .orElseThrow(IllegalArgumentException::new);
 
         return OngoingMatchReadDto.builder()
                 .firstPlayer(firstPlayer)
                 .secondPlayer(secondPlayer)
-                .matchScoreDto(object.matchScoreDto())
+                .matchScoreDto(object.getMatchScoreDto())
+                .matchState(object.getMatchState())
                 .build();
     }
 }
