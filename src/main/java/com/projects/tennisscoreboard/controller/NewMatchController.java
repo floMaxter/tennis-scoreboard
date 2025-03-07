@@ -1,7 +1,7 @@
 package com.projects.tennisscoreboard.controller;
 
 import com.projects.tennisscoreboard.Utils.JspHelper;
-import com.projects.tennisscoreboard.dto.MatchCreateDto;
+import com.projects.tennisscoreboard.mapper.MatchCreateMapper;
 import com.projects.tennisscoreboard.service.OngoingMatchesService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,6 +15,7 @@ import java.io.IOException;
 public class NewMatchController extends HttpServlet {
 
     private final OngoingMatchesService ongoingMatchesService = OngoingMatchesService.getInstance();
+    private final MatchCreateMapper matchCreateMapper = MatchCreateMapper.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -24,10 +25,8 @@ public class NewMatchController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        var matchId = ongoingMatchesService.create(new MatchCreateDto(
-                req.getParameter("firstPlayerName"),
-                req.getParameter("secondPlayerName"))
-        );
+        var matchCreateDto = matchCreateMapper.mapFrom(req);
+        var matchId = ongoingMatchesService.create(matchCreateDto);
 
         resp.sendRedirect(String.format(req.getContextPath() + "/match-score?uuid=%s", matchId));
     }

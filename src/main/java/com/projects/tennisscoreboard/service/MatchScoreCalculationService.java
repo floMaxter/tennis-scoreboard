@@ -5,6 +5,7 @@ import com.projects.tennisscoreboard.dto.MatchScoreDto;
 import com.projects.tennisscoreboard.dto.MatchState;
 import com.projects.tennisscoreboard.dto.OngoingMatchDto;
 import com.projects.tennisscoreboard.dto.OngoingMatchReadDto;
+import com.projects.tennisscoreboard.dto.OngoingMatchUpdateDto;
 import com.projects.tennisscoreboard.dto.ScoreDto;
 
 public class MatchScoreCalculationService {
@@ -16,11 +17,13 @@ public class MatchScoreCalculationService {
         ongoingMatchesService = OngoingMatchesService.getInstance();
     }
 
-    public void calculateScore(String matchId, String pointWinnerIdStr) {
+    public void calculateScore(OngoingMatchUpdateDto ongoingMatchUpdateDto) {
         //TODO: validate
 
+        var matchId = ongoingMatchUpdateDto.matchId();
+        var pointWinnerId = Long.valueOf(ongoingMatchUpdateDto.pointWinnerIdStr());
+
         var ongoingMatchReadDto = ongoingMatchesService.findByUUID(matchId);
-        var pointWinnerId = Long.valueOf(pointWinnerIdStr);
         var matchProgressDto = buildMatchProgressDto(ongoingMatchReadDto, pointWinnerId);
 
         increaseScore(matchProgressDto);
