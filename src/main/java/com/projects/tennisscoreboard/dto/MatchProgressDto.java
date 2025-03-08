@@ -5,15 +5,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
+@Setter
 @Builder
 public class MatchProgressDto {
 
     private final Long pointWinnerId;
-    private final ScoreDto winnerScore;
-    private final ScoreDto loserScore;
-
-    @Setter
+    private ScoreDto winnerScore;
+    private ScoreDto loserScore;
     private MatchState matchState;
-    @Setter
     private Long advantagePlayerId;
 }

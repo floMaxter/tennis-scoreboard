@@ -38,24 +38,19 @@ public class MatchScoreCalculationService {
         var secondPlayerScore = matchScoreDto.getSecondPlayerScore();
         var advantagePlayerId = matchScoreDto.getAdvantagePlayerId();
         var matchState = ongoingMatchDto.getMatchState();
-        MatchProgressDto matchProgressDto;
+
+        MatchProgressDto matchProgressDto = MatchProgressDto.builder()
+                .pointWinnerId(pointWinnerId)
+                .matchState(matchState)
+                .advantagePlayerId(advantagePlayerId)
+                .build();
 
         if (ongoingMatchDto.getFirstPlayer().getId().equals(pointWinnerId)) {
-            matchProgressDto = MatchProgressDto.builder()
-                    .pointWinnerId(pointWinnerId)
-                    .winnerScore(firstPlayerScore)
-                    .loserScore(secondPlayerScore)
-                    .matchState(matchState)
-                    .advantagePlayerId(advantagePlayerId)
-                    .build();
+            matchProgressDto.setWinnerScore(firstPlayerScore);
+            matchProgressDto.setLoserScore(secondPlayerScore);
         } else {
-            matchProgressDto = MatchProgressDto.builder()
-                    .pointWinnerId(pointWinnerId)
-                    .winnerScore(secondPlayerScore)
-                    .loserScore(firstPlayerScore)
-                    .matchState(matchState)
-                    .advantagePlayerId(advantagePlayerId)
-                    .build();
+            matchProgressDto.setWinnerScore(secondPlayerScore);
+            matchProgressDto.setLoserScore(firstPlayerScore);
         }
         return matchProgressDto;
     }
@@ -95,77 +90,44 @@ public class MatchScoreCalculationService {
             case REGULAR -> increaseRegularPointScore(matchProgressDto);
             case DEUCE -> increaseAdvantagePointScore(matchProgressDto);
             case TIEBREAK -> increaseTieBreakPointScore(matchProgressDto);
-            case FINISHED -> setWinningValues(matchProgressDto);
+            default -> throw new RuntimeException("Illegal match state");
         }
     }
 
-    // A-state
     private void increaseRegularPointScore(MatchProgressDto matchProgressDto) {
+        if (isRegularPoint(matchProgressDto.getWinnerScore())) {
+            increaseRegularPoint(matchProgressDto);
+        } else {
+            increaseGameScore(matchProgressDto);
+        }
+        updateMatchState(matchProgressDto);
+    }
+
+    private boolean isRegularPoint(ScoreDto score) {
+        return score.getPointsScore() < 40 && score.getPointsScore() >= 0;
+    }
+
+    private void increaseRegularPoint(MatchProgressDto matchProgressDto) {
         var winnerScore = matchProgressDto.getWinnerScore();
         var winnerPointsScore = winnerScore.getPointsScore();
 
         if (winnerPointsScore == 0) {
-            // A->A
             winnerScore.setPointsScore(15);
         } else if (winnerPointsScore == 15) {
-            // A->A
             winnerScore.setPointsScore(30);
         } else if (winnerPointsScore == 30) {
             winnerScore.setPointsScore(40);
-            // A->A | A->B
-            if (isDeuceScore(matchProgressDto)) {
-                matchProgressDto.setMatchState(MatchState.DEUCE);
-            }
-        } else {
-            increaseGameScore(matchProgressDto);
-            // A->A | A->C | A->D
-
-            // A->C
-            if (isTieBreak(matchProgressDto)) {
-                matchProgressDto.setMatchState(MatchState.TIEBREAK);
-            }
-            // A->D
-            if (isWinningMatch(winnerScore, 2)) {
-                matchProgressDto.setMatchState(MatchState.FINISHED);
-            }
         }
     }
 
-    private boolean isDeuceScore(MatchProgressDto matchProgressDto) {
-        var firstPointsScore = matchProgressDto.getWinnerScore().getPointsScore();
-        var secondPointsScore = matchProgressDto.getLoserScore().getPointsScore();
-        return firstPointsScore == 40 && secondPointsScore == 40;
-    }
-
-    private boolean isTieBreak(MatchProgressDto matchProgressDto) {
-        var firstGamesScore = matchProgressDto.getWinnerScore().getGamesScore();
-        var secondGamesScore = matchProgressDto.getLoserScore().getGamesScore();
-        return firstGamesScore == 6 && secondGamesScore == 6;
-    }
-
-    // B-state
     private void increaseAdvantagePointScore(MatchProgressDto matchProgressDto) {
         if (isAdvantagePlayerScoring(matchProgressDto)) {
-            // B->A | B->C
-            matchProgressDto.setAdvantagePlayerId(null);
             increaseGameScore(matchProgressDto);
-
-            // B->C
-            if (isTieBreak(matchProgressDto)) {
-                matchProgressDto.setMatchState(MatchState.TIEBREAK);
-            }
-            // B->A
-            else {
-                matchProgressDto.setMatchState(MatchState.REGULAR);
-            }
+            matchProgressDto.setAdvantagePlayerId(null);
         } else {
-            // B->B
-            if (matchProgressDto.getAdvantagePlayerId() == null) {
-                matchProgressDto.setAdvantagePlayerId(matchProgressDto.getPointWinnerId());
-            } else {
-                matchProgressDto.setAdvantagePlayerId(null);
-            }
+            increaseAdvantagePoint(matchProgressDto);
         }
+        updateMatchState(matchProgressDto);
     }
 
     private boolean isAdvantagePlayerScoring(MatchProgressDto matchProgressDto) {
@@ -173,24 +135,21 @@ public class MatchScoreCalculationService {
                matchProgressDto.getAdvantagePlayerId().equals(matchProgressDto.getPointWinnerId());
     }
 
-    // C-state
+    private void increaseAdvantagePoint(MatchProgressDto matchProgressDto) {
+        if (matchProgressDto.getAdvantagePlayerId() == null) {
+            matchProgressDto.setAdvantagePlayerId(matchProgressDto.getPointWinnerId());
+        } else {
+            matchProgressDto.setAdvantagePlayerId(null);
+        }
+    }
+
     private void increaseTieBreakPointScore(MatchProgressDto matchProgressDto) {
         if (isCrucialTieBreakPoint(matchProgressDto)) {
             increaseSetScore(matchProgressDto);
-            // C->A | C->D
-
-            // C->D
-            if (isWinningMatch(matchProgressDto.getWinnerScore(), 2)) {
-                matchProgressDto.setMatchState(MatchState.FINISHED);
-            }
-            // C->A
-            else {
-                matchProgressDto.setMatchState(MatchState.REGULAR);
-            }
         } else {
-            // C->C
             incrementPointScore(matchProgressDto.getWinnerScore());
         }
+        updateMatchState(matchProgressDto);
     }
 
     private boolean isCrucialTieBreakPoint(MatchProgressDto matchProgressDto) {
@@ -213,22 +172,38 @@ public class MatchScoreCalculationService {
         resetPoints(matchProgressDto);
         resetGames(matchProgressDto);
         incrementSetScore(matchProgressDto.getWinnerScore());
+    }
 
-        if (isWinningMatch(matchProgressDto.getWinnerScore(), 2)) {
-            setWinningValues(matchProgressDto);
+    private void updateMatchState(MatchProgressDto matchProgressDto) {
+        if (isMatchFinished(matchProgressDto.getWinnerScore(), 2)) {
+            matchProgressDto.setMatchState(MatchState.FINISHED);
+        } else if (isTieBreakScore(matchProgressDto)) {
+            matchProgressDto.setMatchState(MatchState.TIEBREAK);
+        } else if (isDeuceScore(matchProgressDto)) {
+            matchProgressDto.setMatchState(MatchState.DEUCE);
+        } else {
+            matchProgressDto.setMatchState(MatchState.REGULAR);
         }
     }
 
-    private boolean isWinningMatch(ScoreDto scoreDto, int requiredSetsToWin) {
-        return scoreDto.getSetsScore() == requiredSetsToWin;
+    private boolean isDeuceScore(MatchProgressDto matchProgressDto) {
+        var firstPointsScore = matchProgressDto.getWinnerScore().getPointsScore();
+        var secondPointsScore = matchProgressDto.getLoserScore().getPointsScore();
+
+        return firstPointsScore == 40
+               && secondPointsScore == 40;
     }
 
-    // D-state
-    private void setWinningValues(MatchProgressDto matchProgressDto) {
-        matchProgressDto.getWinnerScore().setPointsScore(9);
-        matchProgressDto.getWinnerScore().setGamesScore(9);
-        matchProgressDto.getWinnerScore().setSetsScore(9);
-        resetScore(matchProgressDto.getLoserScore());
+    private boolean isTieBreakScore(MatchProgressDto matchProgressDto) {
+        var firstGamesScore = matchProgressDto.getWinnerScore().getGamesScore();
+        var secondGamesScore = matchProgressDto.getLoserScore().getGamesScore();
+
+        return firstGamesScore == 6
+               && secondGamesScore == 6;
+    }
+
+    private boolean isMatchFinished(ScoreDto scoreDto, int requiredSetsToWin) {
+        return scoreDto.getSetsScore() == requiredSetsToWin;
     }
 
     private void incrementPointScore(ScoreDto scoreDto) {
