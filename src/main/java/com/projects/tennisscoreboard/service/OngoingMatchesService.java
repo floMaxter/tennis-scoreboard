@@ -72,14 +72,10 @@ public class OngoingMatchesService {
         var maybeFirstPlayer = playerRepository.findByName(matchCreateDto.firstPlayerName());
         var maybeSecondPlayer = playerRepository.findByName(matchCreateDto.secondPlayerName());
         if (maybeFirstPlayer.isEmpty()) {
-            playerRepository.save(Player.builder()
-                    .name(matchCreateDto.firstPlayerName())
-                    .build());
+            playerRepository.save(new Player(matchCreateDto.firstPlayerName()));
         }
         if (maybeSecondPlayer.isEmpty()) {
-            playerRepository.save(Player.builder()
-                    .name(matchCreateDto.secondPlayerName())
-                    .build());
+            playerRepository.save(new Player(matchCreateDto.secondPlayerName()));
         }
     }
 
