@@ -12,6 +12,7 @@ public class ScoreUtil {
     public static final int GAMES_TO_TIEBREAK = 6;
     public static final int TIEBREAK_MIN_POINT_DIFFERENCE = 2;
     public static final int TIEBREAK_MIN_POINTS_TO_WIN = 7;
+    public static final int DEUCE_MIN_ADVANTAGE_DIFFERENCE = 2;
     public static final int SET_MIN_GAMES_TO_WIN = 7;
     public static final int SETS_TO_WIN = 2;
 }

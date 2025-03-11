@@ -37,13 +37,11 @@ public class MatchScoreCalculationService {
         var matchScoreDto = ongoingMatchDto.getMatchScoreDto();
         var firstPlayerScore = matchScoreDto.getFirstPlayerScore();
         var secondPlayerScore = matchScoreDto.getSecondPlayerScore();
-        var advantagePlayerId = matchScoreDto.getAdvantagePlayerId();
         var matchState = ongoingMatchDto.getMatchState();
 
         MatchProgressDto matchProgressDto = MatchProgressDto.builder()
                 .pointWinnerId(pointWinnerId)
                 .matchState(matchState)
-                .advantagePlayerId(advantagePlayerId)
                 .build();
 
         if (ongoingMatchDto.getFirstPlayer().getId().equals(pointWinnerId)) {
@@ -62,7 +60,6 @@ public class MatchScoreCalculationService {
         var secondPlayerId = baseOngoingMatchDto.getSecondPlayer().getId();
         var winnerScore = matchProgressDto.getWinnerScore();
         var loserScore = matchProgressDto.getLoserScore();
-        var advantagePlayerId = matchProgressDto.getAdvantagePlayerId();
 
         var updatedOngoingMatchDto = OngoingMatchDto.builder()
                 .firstPlayerId(firstPlayerId)
@@ -74,13 +71,11 @@ public class MatchScoreCalculationService {
             updatedOngoingMatchDto.setMatchScoreDto(MatchScoreDto.builder()
                     .firstPlayerScore(winnerScore)
                     .secondPlayerScore(loserScore)
-                    .advantagePlayerId(advantagePlayerId)
                     .build());
         } else {
             updatedOngoingMatchDto.setMatchScoreDto(MatchScoreDto.builder()
                     .firstPlayerScore(loserScore)
                     .secondPlayerScore(winnerScore)
-                    .advantagePlayerId(advantagePlayerId)
                     .build());
         }
         return updatedOngoingMatchDto;
@@ -116,26 +111,21 @@ public class MatchScoreCalculationService {
     }
 
     private void increaseAdvantagePointScore(MatchProgressDto matchProgressDto) {
-        if (isAdvantagePlayerScoring(matchProgressDto)) {
+        incrementAdvantagePointScore(matchProgressDto.getWinnerScore());
+        if (isDeuceFinished(matchProgressDto)) {
             increaseGameScore(matchProgressDto);
-            matchProgressDto.setAdvantagePlayerId(null);
-        } else {
-            increaseAdvantagePoint(matchProgressDto);
         }
         updateMatchState(matchProgressDto);
     }
 
-    private boolean isAdvantagePlayerScoring(MatchProgressDto matchProgressDto) {
-        return matchProgressDto.getAdvantagePlayerId() != null &&
-               matchProgressDto.getAdvantagePlayerId().equals(matchProgressDto.getPointWinnerId());
+    private boolean isDeuceFinished(MatchProgressDto matchProgressDto) {
+        var winnerAdvantagePointScore = matchProgressDto.getWinnerScore().getAdvantagePointScore();
+        var loserAdvantagePointScore = matchProgressDto.getLoserScore().getAdvantagePointScore();
+        return hasSufficientAdvantagePointDifference(winnerAdvantagePointScore, loserAdvantagePointScore);
     }
 
-    private void increaseAdvantagePoint(MatchProgressDto matchProgressDto) {
-        if (matchProgressDto.getAdvantagePlayerId() == null) {
-            matchProgressDto.setAdvantagePlayerId(matchProgressDto.getPointWinnerId());
-        } else {
-            matchProgressDto.setAdvantagePlayerId(null);
-        }
+    private boolean hasSufficientAdvantagePointDifference(int winnerAdvantagePointScore, int loserAdvantagePointScore) {
+        return winnerAdvantagePointScore - loserAdvantagePointScore == ScoreUtil.DEUCE_MIN_ADVANTAGE_DIFFERENCE;
     }
 
     private void increaseTieBreakPointScore(MatchProgressDto matchProgressDto) {
@@ -150,19 +140,20 @@ public class MatchScoreCalculationService {
         var winnerPointScore = matchProgressDto.getWinnerScore().getPointsScore();
         var loserPointScore = matchProgressDto.getLoserScore().getPointsScore();
         return hasMinimumWinningPoints(winnerPointScore)
-               && hasSufficientPointDifference(winnerPointScore, loserPointScore);
-    }
-
-    private boolean hasSufficientPointDifference(int winnerPointScore, int loserPointScore) {
-        return winnerPointScore - loserPointScore >= ScoreUtil.TIEBREAK_MIN_POINT_DIFFERENCE;
+               && hasSufficientRegularPointDifference(winnerPointScore, loserPointScore);
     }
 
     private boolean hasMinimumWinningPoints(int winnerPointScore) {
         return winnerPointScore >= ScoreUtil.TIEBREAK_MIN_POINTS_TO_WIN;
     }
 
+    private boolean hasSufficientRegularPointDifference(int winnerPointScore, int loserPointScore) {
+        return winnerPointScore - loserPointScore >= ScoreUtil.TIEBREAK_MIN_POINT_DIFFERENCE;
+    }
+
     private void increaseGameScore(MatchProgressDto matchProgressDto) {
         resetPoints(matchProgressDto);
+        resetAdvantagePoints(matchProgressDto);
         incrementGameScore(matchProgressDto.getWinnerScore());
 
         if (matchProgressDto.getWinnerScore().getGamesScore() >= ScoreUtil.SET_MIN_GAMES_TO_WIN) {
@@ -220,9 +211,18 @@ public class MatchScoreCalculationService {
         scoreDto.setSetsScore(scoreDto.getSetsScore() + 1);
     }
 
+    private void incrementAdvantagePointScore(ScoreDto scoreDto) {
+        scoreDto.setAdvantagePointScore(scoreDto.getAdvantagePointScore() + 1);
+    }
+
     private void resetPoints(MatchProgressDto matchProgressDto) {
         matchProgressDto.getWinnerScore().setPointsScore(0);
         matchProgressDto.getLoserScore().setPointsScore(0);
+    }
+
+    private void resetAdvantagePoints(MatchProgressDto matchProgressDto) {
+        matchProgressDto.getWinnerScore().setAdvantagePointScore(0);
+        matchProgressDto.getLoserScore().setAdvantagePointScore(0);
     }
 
     private void resetGames(MatchProgressDto matchProgressDto) {

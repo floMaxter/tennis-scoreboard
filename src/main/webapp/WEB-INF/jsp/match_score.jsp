@@ -6,14 +6,14 @@
 <c:set var="firstPlayerSetsScore" value="${requestScope.ongoingMatch.matchScoreDto.firstPlayerScore.setsScore}"/>
 <c:set var="firstPlayerGamesScore" value="${requestScope.ongoingMatch.matchScoreDto.firstPlayerScore.gamesScore}"/>
 <c:set var="firstPlayerPointsScore" value="${requestScope.ongoingMatch.matchScoreDto.firstPlayerScore.pointsScore}"/>
+<c:set var="firstPlayerAdvantagePointsScore" value="${requestScope.ongoingMatch.matchScoreDto.firstPlayerScore.advantagePointScore}"/>
 
 <c:set var="secondPlayerId" value="${requestScope.ongoingMatch.secondPlayer.id}"/>
 <c:set var="secondPlayerName" value="${requestScope.ongoingMatch.secondPlayer.name}"/>
 <c:set var="secondPlayerSetsScore" value="${requestScope.ongoingMatch.matchScoreDto.secondPlayerScore.setsScore}"/>
 <c:set var="secondPlayerGamesScore" value="${requestScope.ongoingMatch.matchScoreDto.secondPlayerScore.gamesScore}"/>
 <c:set var="secondPlayerPointsScore" value="${requestScope.ongoingMatch.matchScoreDto.secondPlayerScore.pointsScore}"/>
-
-<c:set var="advantagePlayerId" value="${requestScope.ongoingMatch.matchScoreDto.advantagePlayerId}"/>
+<c:set var="secondPlayerAdvantagePointsScore" value="${requestScope.ongoingMatch.matchScoreDto.secondPlayerScore.advantagePointScore}"/>
 
 <html>
     <head>
@@ -22,7 +22,8 @@
     <body>
         <h1>Match Score</h1>
         <h2>Match State: ${requestScope.ongoingMatch.matchState}</h2>
-        <h2>AdvantagePlayerId: ${advantagePlayerId}</h2>
+        <h2>First player advantage point score: ${firstPlayerAdvantagePointsScore}</h2>
+        <h2>Second player advantage point score: ${secondPlayerAdvantagePointsScore}</h2>
         <table>
             <tr>
                 <td>Player</td>

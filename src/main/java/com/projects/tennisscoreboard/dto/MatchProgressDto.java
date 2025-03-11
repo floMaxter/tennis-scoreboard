@@ -13,5 +13,4 @@ public class MatchProgressDto {
     private ScoreDto winnerScore;
     private ScoreDto loserScore;
     private MatchState matchState;
-    private Long advantagePlayerId;
 }
