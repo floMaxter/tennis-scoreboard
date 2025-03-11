@@ -96,17 +96,8 @@ public class MatchScoreCalculationService {
     }
 
     private void increaseRegularPointScore(MatchProgressDto matchProgressDto) {
-        if (isRegularPoint(matchProgressDto.getWinnerScore())) {
-            increaseRegularPoint(matchProgressDto);
-        } else {
-            increaseGameScore(matchProgressDto);
-        }
+        increaseRegularPoint(matchProgressDto);
         updateMatchState(matchProgressDto);
-    }
-
-    private boolean isRegularPoint(ScoreDto score) {
-        return score.getPointsScore() >= ScoreUtil.ZERO_POINT
-               && score.getPointsScore() < ScoreUtil.THIRD_POINT;
     }
 
     private void increaseRegularPoint(MatchProgressDto matchProgressDto) {
@@ -119,6 +110,8 @@ public class MatchScoreCalculationService {
             winnerScore.setPointsScore(ScoreUtil.SECOND_POINT);
         } else if (winnerPointsScore == ScoreUtil.SECOND_POINT) {
             winnerScore.setPointsScore(ScoreUtil.THIRD_POINT);
+        } else {
+            increaseGameScore(matchProgressDto);
         }
     }
 
