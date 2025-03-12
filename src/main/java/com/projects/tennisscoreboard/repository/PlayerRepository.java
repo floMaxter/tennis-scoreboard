@@ -7,7 +7,9 @@ import java.util.Optional;
 
 public class PlayerRepository extends BaseRepository<Long, Player> {
 
-    public PlayerRepository() {
+    private static final PlayerRepository INSTANCE = new PlayerRepository();
+
+    private PlayerRepository() {
         super(Player.class);
     }
 
@@ -17,5 +19,9 @@ public class PlayerRepository extends BaseRepository<Long, Player> {
                     .setParameter("name", name)
                     .uniqueResultOptional();
         }
+    }
+
+    public static PlayerRepository getInstance() {
+        return INSTANCE;
     }
 }

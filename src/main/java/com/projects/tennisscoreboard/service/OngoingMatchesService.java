@@ -9,7 +9,6 @@ import com.projects.tennisscoreboard.dto.ScoreDto;
 import com.projects.tennisscoreboard.entity.Player;
 import com.projects.tennisscoreboard.mapper.OngoingMatchToReadMapper;
 import com.projects.tennisscoreboard.repository.PlayerRepository;
-import com.projects.tennisscoreboard.repository.factory.RepositoryFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +23,7 @@ public class OngoingMatchesService {
 
     private OngoingMatchesService() {
         ongoingMatches = new HashMap<>();
-        playerRepository = RepositoryFactory.getPlayerRepository();
+        playerRepository = PlayerRepository.getInstance();
         ongoingMatchToReadMapper = new OngoingMatchToReadMapper(playerRepository);
     }
 
