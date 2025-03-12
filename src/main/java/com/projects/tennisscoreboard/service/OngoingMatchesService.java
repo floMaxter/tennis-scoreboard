@@ -11,6 +11,7 @@ import com.projects.tennisscoreboard.repository.PlayerRepository;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 public class OngoingMatchesService {
@@ -27,7 +28,12 @@ public class OngoingMatchesService {
     public OngoingMatchReadDto findById(String matchId) {
         // TODO: validate
 
-        var ongoingMatchDto = ongoingMatches.get(UUID.fromString(matchId));
+        var matchUuid = UUID.fromString(matchId);
+        var ongoingMatchDto = ongoingMatches.get(matchUuid);
+        if (ongoingMatchDto == null) {
+            throw new NoSuchElementException("Match with ID " + matchId + " not fount");
+        }
+
         return buildOngoingMatchReadDto(ongoingMatchDto);
     }
 
@@ -80,9 +86,9 @@ public class OngoingMatchesService {
 
     public void updateOngoingMatch(String matchId, OngoingMatchDto ongoingMatchDto) {
         // TODO: validate
-        var uuid = UUID.fromString(matchId);
-        if (ongoingMatches.containsKey(uuid)) {
-            this.ongoingMatches.put(uuid, ongoingMatchDto);
+        var matchUuid = UUID.fromString(matchId);
+        if (ongoingMatches.containsKey(matchUuid)) {
+            this.ongoingMatches.put(matchUuid, ongoingMatchDto);
         }
     }
 
