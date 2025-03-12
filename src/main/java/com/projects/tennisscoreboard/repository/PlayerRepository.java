@@ -12,9 +12,10 @@ public class PlayerRepository extends BaseRepository<Long, Player> {
     }
 
     public List<Player> findByName(String name) {
-        return sessionFactory.getCurrentSession()
-                .createQuery("select p from Player p where p.name = :name", Player.class)
-                .setParameter("name", name)
-                .getResultList();
+        try (var session = sessionFactory.openSession()) {
+            return session.createQuery("select p from Player p where p.name = :name", Player.class)
+                    .setParameter("name", name)
+                    .getResultList();
+        }
     }
 }

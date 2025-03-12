@@ -1,6 +1,5 @@
 package com.projects.tennisscoreboard.service;
 
-import com.projects.tennisscoreboard.Utils.HibernateUtil;
 import com.projects.tennisscoreboard.dto.MatchCreateDto;
 import com.projects.tennisscoreboard.dto.OngoingMatchDto;
 import com.projects.tennisscoreboard.dto.OngoingMatchReadDto;
@@ -9,9 +8,6 @@ import com.projects.tennisscoreboard.mapper.MatchCreateToOngoingMapper;
 import com.projects.tennisscoreboard.mapper.OngoingMatchToReadMapper;
 import com.projects.tennisscoreboard.repository.PlayerRepository;
 import com.projects.tennisscoreboard.repository.factory.RepositoryFactory;
-import jakarta.persistence.NoResultException;
-import org.hibernate.HibernateException;
-
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,37 +31,19 @@ public class OngoingMatchesService {
     public OngoingMatchReadDto findByUUID(String matchId) {
         // TODO: validate
 
-        var transaction = HibernateUtil.getTransaction();
-        try {
-            var ongoingMatchDto = ongoingMatches.get(UUID.fromString(matchId));
-            var ongoingMatchReadDto = ongoingMatchToReadMapper.mapFrom(ongoingMatchDto);
-            transaction.commit();
-
-            return ongoingMatchReadDto;
-        } catch (HibernateException | NoResultException e) {
-            HibernateUtil.transactionRollback(transaction);
-            throw new RuntimeException();
-        }
+        var ongoingMatchDto = ongoingMatches.get(UUID.fromString(matchId));
+        return ongoingMatchToReadMapper.mapFrom(ongoingMatchDto);
     }
 
     public UUID create(MatchCreateDto matchCreateDto) {
         // TODO: validate
 
-        var transaction = HibernateUtil.getTransaction();
-        try {
-            createPlayersIfNotExist(matchCreateDto);
+        createPlayersIfNotExist(matchCreateDto);
 
-            var ongoingMatchDto = matchCreateToOngoingMapper.mapFrom(matchCreateDto);
-            var uuid = UUID.randomUUID();
-            ongoingMatches.put(uuid, ongoingMatchDto);
-
-            transaction.commit();
-
-            return uuid;
-        } catch (HibernateException | NoResultException e) {
-            HibernateUtil.transactionRollback(transaction);
-            throw new RuntimeException();
-        }
+        var ongoingMatchDto = matchCreateToOngoingMapper.mapFrom(matchCreateDto);
+        var uuid = UUID.randomUUID();
+        ongoingMatches.put(uuid, ongoingMatchDto);
+        return uuid;
     }
 
     private void createPlayersIfNotExist(MatchCreateDto matchCreateDto) {
@@ -83,7 +61,7 @@ public class OngoingMatchesService {
         // TODO: validate
         var uuid = UUID.fromString(matchId);
         if (ongoingMatches.containsKey(uuid)) {
-            this.ongoingMatches.put(uuid,ongoingMatchDto);
+            this.ongoingMatches.put(uuid, ongoingMatchDto);
         }
     }
 
