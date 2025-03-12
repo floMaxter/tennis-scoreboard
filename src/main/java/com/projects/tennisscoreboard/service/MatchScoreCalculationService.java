@@ -24,7 +24,7 @@ public class MatchScoreCalculationService {
         var matchId = ongoingMatchUpdateDto.matchId();
         var pointWinnerId = Long.valueOf(ongoingMatchUpdateDto.pointWinnerIdStr());
 
-        var ongoingMatchReadDto = ongoingMatchesService.findByUUID(matchId);
+        var ongoingMatchReadDto = ongoingMatchesService.findById(matchId);
         var matchProgressDto = buildMatchProgressDto(ongoingMatchReadDto, pointWinnerId);
 
         increaseScore(matchProgressDto);

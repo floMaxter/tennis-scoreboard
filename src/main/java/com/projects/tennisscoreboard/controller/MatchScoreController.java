@@ -1,7 +1,6 @@
 package com.projects.tennisscoreboard.controller;
 
 import com.projects.tennisscoreboard.Utils.JspHelper;
-import com.projects.tennisscoreboard.dto.OngoingMatchUpdateDto;
 import com.projects.tennisscoreboard.mapper.OngoingMatchUpdateMapper;
 import com.projects.tennisscoreboard.service.MatchScoreCalculationService;
 import com.projects.tennisscoreboard.service.OngoingMatchesService;
@@ -22,7 +21,7 @@ public class MatchScoreController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        var ongoingMatchReadDto = ongoingMatchesService.findByUUID(req.getParameter("uuid"));
+        var ongoingMatchReadDto = ongoingMatchesService.findById(req.getParameter("uuid"));
 
         req.setAttribute("ongoingMatch", ongoingMatchReadDto);
         req.getRequestDispatcher(JspHelper.getPath("/match_score"))

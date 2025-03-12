@@ -7,7 +7,6 @@ import com.projects.tennisscoreboard.dto.OngoingMatchDto;
 import com.projects.tennisscoreboard.dto.OngoingMatchReadDto;
 import com.projects.tennisscoreboard.dto.ScoreDto;
 import com.projects.tennisscoreboard.entity.Player;
-import com.projects.tennisscoreboard.mapper.OngoingMatchToReadMapper;
 import com.projects.tennisscoreboard.repository.PlayerRepository;
 
 import java.util.HashMap;
@@ -17,33 +16,45 @@ import java.util.UUID;
 public class OngoingMatchesService {
 
     private final PlayerRepository playerRepository;
-    private final OngoingMatchToReadMapper ongoingMatchToReadMapper;
     private final Map<UUID, OngoingMatchDto> ongoingMatches;
     private static final OngoingMatchesService INSTANCE = new OngoingMatchesService();
 
     private OngoingMatchesService() {
         ongoingMatches = new HashMap<>();
         playerRepository = PlayerRepository.getInstance();
-        ongoingMatchToReadMapper = new OngoingMatchToReadMapper(playerRepository);
     }
 
-    public OngoingMatchReadDto findByUUID(String matchId) {
+    public OngoingMatchReadDto findById(String matchId) {
         // TODO: validate
 
         var ongoingMatchDto = ongoingMatches.get(UUID.fromString(matchId));
-        return ongoingMatchToReadMapper.mapFrom(ongoingMatchDto);
+        return buildOngoingMatchReadDto(ongoingMatchDto);
+    }
+
+    private OngoingMatchReadDto buildOngoingMatchReadDto(OngoingMatchDto ongoingMatchDto) {
+        var firstPlayer = playerRepository.findById(ongoingMatchDto.getFirstPlayerId())
+                .orElseThrow(IllegalArgumentException::new);
+        var secondPlayer = playerRepository.findById(ongoingMatchDto.getSecondPlayerId())
+                .orElseThrow(IllegalArgumentException::new);
+
+        return OngoingMatchReadDto.builder()
+                .firstPlayer(firstPlayer)
+                .secondPlayer(secondPlayer)
+                .matchScoreDto(ongoingMatchDto.getMatchScoreDto())
+                .matchState(ongoingMatchDto.getMatchState())
+                .build();
     }
 
     public UUID create(MatchCreateDto matchCreateDto) {
         // TODO: validate
 
-        var ongoingMatchDto = buildOngoingMatch(matchCreateDto);
+        var ongoingMatchDto = buildOngoingMatchDto(matchCreateDto);
         var matchId = UUID.randomUUID();
         ongoingMatches.put(matchId, ongoingMatchDto);
         return matchId;
     }
 
-    private OngoingMatchDto buildOngoingMatch(MatchCreateDto matchCreateDto) {
+    private OngoingMatchDto buildOngoingMatchDto(MatchCreateDto matchCreateDto) {
         var firstPlayer = getOrCreatePlayer(matchCreateDto.firstPlayerName());
         var secondPlayer = getOrCreatePlayer(matchCreateDto.secondPlayerName());
 
