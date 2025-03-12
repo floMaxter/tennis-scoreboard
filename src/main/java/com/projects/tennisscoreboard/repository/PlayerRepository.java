@@ -2,7 +2,7 @@ package com.projects.tennisscoreboard.repository;
 
 import com.projects.tennisscoreboard.entity.Player;
 
-import java.util.List;
+import java.util.Optional;
 
 
 public class PlayerRepository extends BaseRepository<Long, Player> {
@@ -11,11 +11,11 @@ public class PlayerRepository extends BaseRepository<Long, Player> {
         super(Player.class);
     }
 
-    public List<Player> findByName(String name) {
+    public Optional<Player> findByName(String name) {
         try (var session = sessionFactory.openSession()) {
             return session.createQuery("select p from Player p where p.name = :name", Player.class)
                     .setParameter("name", name)
-                    .getResultList();
+                    .uniqueResultOptional();
         }
     }
 }
