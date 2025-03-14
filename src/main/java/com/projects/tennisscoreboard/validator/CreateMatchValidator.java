@@ -3,6 +3,7 @@ package com.projects.tennisscoreboard.validator;
 import com.projects.tennisscoreboard.Utils.PropertiesUtil;
 import com.projects.tennisscoreboard.dto.MatchCreateDto;
 
+import java.text.MessageFormat;
 import java.util.regex.Pattern;
 
 public class CreateMatchValidator implements Validator<MatchCreateDto> {
@@ -34,6 +35,9 @@ public class CreateMatchValidator implements Validator<MatchCreateDto> {
         if (isBlankName(name)) {
             validationResult.add(ValidationError.of(PropertiesUtil.get("validation.player_name.not_empty")));
         } else {
+            if (!isNameLengthValid(name)) {
+                processInvalidNameLength(validationResult);
+            }
             if (!isNameFormatValid(name)) {
                 validationResult.add(ValidationError.of(PropertiesUtil.get("validation.player_name.invalid_format")));
             }
@@ -42,10 +46,20 @@ public class CreateMatchValidator implements Validator<MatchCreateDto> {
         return validationResult;
     }
 
-    private boolean isNameFormatValid(String name) {
+    private void processInvalidNameLength(ValidationResult validationResult) {
+        var invalidLengthMessageTemplate = PropertiesUtil.get("validation.player_name.invalid_length");
         int maxLengthOfName = Integer.parseInt(PropertiesUtil.get("validation.player_name.max_length"));
-        return name.length() < maxLengthOfName &&
-               Pattern.matches("^[A-Za-zА-Яа-яЁё]+(?:\\s[A-Za-zА-Яа-яЁё]+)*$", name);
+        var invalidLengthMessage = MessageFormat.format(invalidLengthMessageTemplate, maxLengthOfName);
+        validationResult.add(ValidationError.of(invalidLengthMessage));
+    }
+
+    private boolean isNameLengthValid(String name) {
+        int maxLengthOfName = Integer.parseInt(PropertiesUtil.get("validation.player_name.max_length"));
+        return name.length() < maxLengthOfName;
+    }
+
+    private boolean isNameFormatValid(String name) {
+        return Pattern.matches("^[A-Za-zА-Яа-яЁё]+(?:\\s[A-Za-zА-Яа-яЁё]+)*$", name);
     }
 
     private boolean isBlankName(String name) {
