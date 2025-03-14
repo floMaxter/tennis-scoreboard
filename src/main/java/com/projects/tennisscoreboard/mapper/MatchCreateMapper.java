@@ -14,8 +14,8 @@ public class MatchCreateMapper implements Mapper<HttpServletRequest, MatchCreate
 
     @Override
     public MatchCreateDto mapFrom(HttpServletRequest object) {
-        return new MatchCreateDto(normalizeName(
-                object.getParameter("firstPlayerName")),
+        return new MatchCreateDto(
+                normalizeName(object.getParameter("firstPlayerName")),
                 normalizeName(object.getParameter("secondPlayerName"))
         );
     }
