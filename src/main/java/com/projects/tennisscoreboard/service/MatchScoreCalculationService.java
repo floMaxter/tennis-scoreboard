@@ -19,8 +19,6 @@ public class MatchScoreCalculationService {
     }
 
     public void calculateScore(OngoingMatchUpdateDto ongoingMatchUpdateDto) {
-        //TODO: validate
-
         var matchId = ongoingMatchUpdateDto.matchId();
         var pointWinnerId = Long.valueOf(ongoingMatchUpdateDto.pointWinnerIdStr());
 

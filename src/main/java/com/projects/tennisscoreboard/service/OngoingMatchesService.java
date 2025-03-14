@@ -9,7 +9,7 @@ import com.projects.tennisscoreboard.dto.OngoingMatchReadDto;
 import com.projects.tennisscoreboard.dto.ScoreDto;
 import com.projects.tennisscoreboard.entity.Player;
 import com.projects.tennisscoreboard.repository.PlayerRepository;
-import com.projects.tennisscoreboard.validator.CreateMatchValidator;
+import com.projects.tennisscoreboard.validator.impl.CreateMatchValidator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,8 +30,6 @@ public class OngoingMatchesService {
     }
 
     public OngoingMatchReadDto findById(String matchId) {
-        // TODO: validate
-
         var matchUuid = UUID.fromString(matchId);
         var ongoingMatchDto = ongoingMatches.get(matchUuid);
         if (ongoingMatchDto == null) {
@@ -90,7 +88,6 @@ public class OngoingMatchesService {
     }
 
     public void updateOngoingMatch(String matchId, OngoingMatchDto ongoingMatchDto) {
-        // TODO: validate
         var matchUuid = UUID.fromString(matchId);
         if (ongoingMatches.containsKey(matchUuid)) {
             this.ongoingMatches.put(matchUuid, ongoingMatchDto);

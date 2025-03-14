@@ -30,11 +30,10 @@ public class MatchScoreController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        //TODO: validation
-
         var ongoingMatchUpdateDto = ongoingMatchUpdateMapper.mapFrom(req);
-        matchScoreCalculationService.calculateScore(ongoingMatchUpdateDto);
 
-        resp.sendRedirect(String.format(req.getContextPath() + "/match-score?uuid=%s", ongoingMatchUpdateDto.matchId()));
+        matchScoreCalculationService.calculateScore(ongoingMatchUpdateDto);
+        resp.sendRedirect(String.format(req.getContextPath() + "/match-score?uuid=%s",
+                ongoingMatchUpdateDto.matchId()));
     }
 }
