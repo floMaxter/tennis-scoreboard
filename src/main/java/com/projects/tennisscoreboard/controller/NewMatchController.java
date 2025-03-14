@@ -1,6 +1,7 @@
 package com.projects.tennisscoreboard.controller;
 
 import com.projects.tennisscoreboard.Utils.JspHelper;
+import com.projects.tennisscoreboard.exception.ValidationException;
 import com.projects.tennisscoreboard.mapper.MatchCreateMapper;
 import com.projects.tennisscoreboard.service.OngoingMatchesService;
 import jakarta.servlet.ServletException;
@@ -24,10 +25,15 @@ public class NewMatchController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         var matchCreateDto = matchCreateMapper.mapFrom(req);
-        var matchId = ongoingMatchesService.create(matchCreateDto);
-
-        resp.sendRedirect(String.format(req.getContextPath() + "/match-score?uuid=%s", matchId));
+        try {
+            var matchId = ongoingMatchesService.create(matchCreateDto);
+            resp.sendRedirect(String.format(req.getContextPath() + "/match-score?uuid=%s", matchId));
+        } catch (ValidationException e) {
+            req.setAttribute("errors", e.getErrors());
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            doGet(req, resp);
+        }
     }
 }

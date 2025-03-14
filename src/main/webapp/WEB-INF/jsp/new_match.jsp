@@ -17,5 +17,12 @@
             </label><br>
             <button type="submit">Start</button>
         </form>
+        <c:if test="${not empty requestScope.errors}">
+            <div>
+                <c:forEach var="error" items="${requestScope.errors}">
+                    <span>${error.message}</span><br/>
+                </c:forEach>
+            </div>
+        </c:if>
     </body>
 </html>
