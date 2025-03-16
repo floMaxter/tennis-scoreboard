@@ -6,29 +6,19 @@ import com.projects.tennisscoreboard.dto.MatchScoreDto;
 import com.projects.tennisscoreboard.dto.MatchState;
 import com.projects.tennisscoreboard.dto.OngoingMatchDto;
 import com.projects.tennisscoreboard.dto.OngoingMatchReadDto;
-import com.projects.tennisscoreboard.dto.OngoingMatchUpdateDto;
 import com.projects.tennisscoreboard.dto.ScoreDto;
 
 public class MatchScoreCalculationService {
 
-    private final OngoingMatchesService ongoingMatchesService;
     private static final MatchScoreCalculationService INSTANCE = new MatchScoreCalculationService();
 
     private MatchScoreCalculationService() {
-        ongoingMatchesService = OngoingMatchesService.getInstance();
     }
 
-    public void calculateScore(OngoingMatchUpdateDto ongoingMatchUpdateDto) {
-        var matchId = ongoingMatchUpdateDto.matchId();
-        var pointWinnerId = Long.valueOf(ongoingMatchUpdateDto.pointWinnerIdStr());
-
-        var ongoingMatchReadDto = ongoingMatchesService.findById(matchId);
+    public OngoingMatchDto calculateScore(OngoingMatchReadDto ongoingMatchReadDto, Long pointWinnerId) {
         var matchProgressDto = buildMatchProgressDto(ongoingMatchReadDto, pointWinnerId);
-
         increaseScore(matchProgressDto);
-        var ongoingMatchDto = buildOngoingMatchDto(matchProgressDto, ongoingMatchReadDto);
-
-        ongoingMatchesService.updateOngoingMatch(matchId, ongoingMatchDto);
+        return buildOngoingMatchDto(matchProgressDto, ongoingMatchReadDto);
     }
 
     private MatchProgressDto buildMatchProgressDto(OngoingMatchReadDto ongoingMatchDto, Long pointWinnerId) {
@@ -86,14 +76,10 @@ public class MatchScoreCalculationService {
             case TIEBREAK -> increaseTieBreakPointScore(matchProgressDto);
             default -> throw new RuntimeException("Illegal match state");
         }
-    }
-
-    private void increaseRegularPointScore(MatchProgressDto matchProgressDto) {
-        increaseRegularPoint(matchProgressDto);
         updateMatchState(matchProgressDto);
     }
 
-    private void increaseRegularPoint(MatchProgressDto matchProgressDto) {
+    private void increaseRegularPointScore(MatchProgressDto matchProgressDto) {
         var winnerScore = matchProgressDto.getWinnerScore();
         var winnerPointsScore = winnerScore.getPointsScore();
 
@@ -113,7 +99,6 @@ public class MatchScoreCalculationService {
         if (isDeuceFinished(matchProgressDto)) {
             increaseGameScore(matchProgressDto);
         }
-        updateMatchState(matchProgressDto);
     }
 
     private boolean isDeuceFinished(MatchProgressDto matchProgressDto) {
@@ -131,7 +116,6 @@ public class MatchScoreCalculationService {
         if (isTiebreakFinished(matchProgressDto)) {
             increaseSetScore(matchProgressDto);
         }
-        updateMatchState(matchProgressDto);
     }
 
     private boolean isTiebreakFinished(MatchProgressDto matchProgressDto) {
