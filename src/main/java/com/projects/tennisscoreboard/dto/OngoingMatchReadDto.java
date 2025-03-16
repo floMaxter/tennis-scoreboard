@@ -11,7 +11,9 @@ public class OngoingMatchReadDto {
 
     private final Player firstPlayer;
     private final Player secondPlayer;
-    private final MatchScoreDto matchScoreDto;
+
+    @Setter
+    private MatchScoreDto matchScoreDto;
 
     @Setter
     private MatchState matchState;

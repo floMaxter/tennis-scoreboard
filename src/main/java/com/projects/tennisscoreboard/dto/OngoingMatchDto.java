@@ -13,6 +13,7 @@ public class OngoingMatchDto {
 
     @Setter
     private  MatchScoreDto matchScoreDto;
+
     @Setter
     private MatchState matchState;
 }

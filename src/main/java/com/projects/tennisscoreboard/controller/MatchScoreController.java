@@ -1,6 +1,7 @@
 package com.projects.tennisscoreboard.controller;
 
 import com.projects.tennisscoreboard.Utils.JspHelper;
+import com.projects.tennisscoreboard.mapper.OngoingMatchReadMapper;
 import com.projects.tennisscoreboard.service.MatchScoreCalculationService;
 import com.projects.tennisscoreboard.service.OngoingMatchesService;
 import jakarta.servlet.ServletException;
@@ -16,6 +17,7 @@ public class MatchScoreController extends HttpServlet {
 
     private final OngoingMatchesService ongoingMatchesService = OngoingMatchesService.getInstance();
     private final MatchScoreCalculationService matchScoreCalculationService = MatchScoreCalculationService.getInstance();
+    private final OngoingMatchReadMapper ongoingMatchReadMapper = OngoingMatchReadMapper.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -31,9 +33,9 @@ public class MatchScoreController extends HttpServlet {
         var matchId = req.getParameter("uuid");
         var pointWinnerId = Long.valueOf(req.getParameter("pointWinnerId"));
 
-        var ongoingMatchReadDto = ongoingMatchesService.findById(matchId);
-        var ongoingMatchDto = matchScoreCalculationService.calculateScore(ongoingMatchReadDto, pointWinnerId);
-        ongoingMatchesService.updateOngoingMatch(matchId, ongoingMatchDto);
+        var findMatch = ongoingMatchesService.findById(matchId);
+        var updatedMatch = matchScoreCalculationService.calculateScore(findMatch, pointWinnerId);
+        ongoingMatchesService.updateOngoingMatch(matchId, ongoingMatchReadMapper.mapFrom(updatedMatch));
 
         resp.sendRedirect(String.format(req.getContextPath() + "/match-score?uuid=%s", matchId));
     }

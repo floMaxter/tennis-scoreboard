@@ -4,7 +4,6 @@ import com.projects.tennisscoreboard.Utils.ScoreUtil;
 import com.projects.tennisscoreboard.dto.MatchProgressDto;
 import com.projects.tennisscoreboard.dto.MatchScoreDto;
 import com.projects.tennisscoreboard.dto.MatchState;
-import com.projects.tennisscoreboard.dto.OngoingMatchDto;
 import com.projects.tennisscoreboard.dto.OngoingMatchReadDto;
 import com.projects.tennisscoreboard.dto.ScoreDto;
 
@@ -15,10 +14,10 @@ public class MatchScoreCalculationService {
     private MatchScoreCalculationService() {
     }
 
-    public OngoingMatchDto calculateScore(OngoingMatchReadDto ongoingMatchReadDto, Long pointWinnerId) {
+    public OngoingMatchReadDto calculateScore(OngoingMatchReadDto ongoingMatchReadDto, Long pointWinnerId) {
         var matchProgressDto = buildMatchProgressDto(ongoingMatchReadDto, pointWinnerId);
         increaseScore(matchProgressDto);
-        return buildOngoingMatchDto(matchProgressDto, ongoingMatchReadDto);
+        return buildOngoingMatchReadDto(matchProgressDto, ongoingMatchReadDto);
     }
 
     private MatchProgressDto buildMatchProgressDto(OngoingMatchReadDto ongoingMatchDto, Long pointWinnerId) {
@@ -42,31 +41,32 @@ public class MatchScoreCalculationService {
         return matchProgressDto;
     }
 
-    private OngoingMatchDto buildOngoingMatchDto(MatchProgressDto matchProgressDto,
-                                                 OngoingMatchReadDto baseOngoingMatchDto) {
-        var firstPlayerId = baseOngoingMatchDto.getFirstPlayer().getId();
-        var secondPlayerId = baseOngoingMatchDto.getSecondPlayer().getId();
+    private OngoingMatchReadDto buildOngoingMatchReadDto(MatchProgressDto matchProgressDto,
+                                                         OngoingMatchReadDto baseMatchReadDto) {
+        var firstPlayerId = baseMatchReadDto.getFirstPlayer().getId();
         var winnerScore = matchProgressDto.getWinnerScore();
         var loserScore = matchProgressDto.getLoserScore();
 
-        var updatedOngoingMatchDto = OngoingMatchDto.builder()
-                .firstPlayerId(firstPlayerId)
-                .secondPlayerId(secondPlayerId)
+        var updatedMatchReadDto = OngoingMatchReadDto.builder()
+                .firstPlayer(baseMatchReadDto.getFirstPlayer())
+                .secondPlayer(baseMatchReadDto.getSecondPlayer())
                 .matchState(matchProgressDto.getMatchState())
                 .build();
 
         if (matchProgressDto.getPointWinnerId().equals(firstPlayerId)) {
-            updatedOngoingMatchDto.setMatchScoreDto(MatchScoreDto.builder()
-                    .firstPlayerScore(winnerScore)
-                    .secondPlayerScore(loserScore)
-                    .build());
+            updatedMatchReadDto.setMatchScoreDto(buildMatchScoreDto(winnerScore, loserScore));
         } else {
-            updatedOngoingMatchDto.setMatchScoreDto(MatchScoreDto.builder()
-                    .firstPlayerScore(loserScore)
-                    .secondPlayerScore(winnerScore)
-                    .build());
+            updatedMatchReadDto.setMatchScoreDto(buildMatchScoreDto(loserScore, winnerScore));
         }
-        return updatedOngoingMatchDto;
+
+        return updatedMatchReadDto;
+    }
+
+    private MatchScoreDto buildMatchScoreDto(ScoreDto firstPlayerScore, ScoreDto secondPlayerScore) {
+        return MatchScoreDto.builder()
+                .firstPlayerScore(firstPlayerScore)
+                .secondPlayerScore(secondPlayerScore)
+                .build();
     }
 
     private void increaseScore(MatchProgressDto matchProgressDto) {
