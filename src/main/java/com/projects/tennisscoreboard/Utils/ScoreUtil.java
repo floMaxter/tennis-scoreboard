@@ -1,5 +1,7 @@
 package com.projects.tennisscoreboard.Utils;
 
+import com.projects.tennisscoreboard.dto.MatchScoreDto;
+import com.projects.tennisscoreboard.dto.ScoreDto;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -15,4 +17,11 @@ public class ScoreUtil {
     public static final int DEUCE_MIN_ADVANTAGE_DIFFERENCE = 2;
     public static final int SET_MIN_GAMES_TO_WIN = 7;
     public static final int SETS_TO_WIN = 2;
+
+    public static MatchScoreDto createInitialMatchScore() {
+        return MatchScoreDto.builder()
+                .firstPlayerScore(new ScoreDto())
+                .secondPlayerScore(new ScoreDto())
+                .build();
+    }
 }

@@ -20,7 +20,11 @@
         <jsp.jstl.glassfish.version>3.0.1</jsp.jstl.glassfish.version>
         <hibernate-core.version>6.6.8.Final</hibernate-core.version>
         <h2.version>2.3.232</h2.version>
+        <junit-jupiter-engine.version>5.10.0</junit-jupiter-engine.version>
+        <junit-jupiter-api.version>5.10.0</junit-jupiter-api.version>
         <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
+        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+        <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
     </properties>
 
     <dependencies>
@@ -57,14 +61,47 @@
             <artifactId>h2</artifactId>
             <version>${h2.version}</version>
         </dependency>
-    </dependencies>
 
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit-jupiter-engine.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit-jupiter-api.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>${maven-war-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>21</source>
+                    <target>21</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
             </plugin>
         </plugins>
     </build>

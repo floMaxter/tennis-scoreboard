@@ -1,12 +1,11 @@
 package com.projects.tennisscoreboard.service;
 
+import com.projects.tennisscoreboard.Utils.ScoreUtil;
 import com.projects.tennisscoreboard.Utils.ValidationUtil;
 import com.projects.tennisscoreboard.dto.MatchCreateDto;
-import com.projects.tennisscoreboard.dto.MatchScoreDto;
 import com.projects.tennisscoreboard.dto.MatchState;
 import com.projects.tennisscoreboard.dto.OngoingMatchDto;
 import com.projects.tennisscoreboard.dto.OngoingMatchReadDto;
-import com.projects.tennisscoreboard.dto.ScoreDto;
 import com.projects.tennisscoreboard.entity.Player;
 import com.projects.tennisscoreboard.repository.PlayerRepository;
 import com.projects.tennisscoreboard.validator.impl.CreateMatchValidator;
@@ -70,7 +69,7 @@ public class OngoingMatchesService {
         return OngoingMatchDto.builder()
                 .firstPlayerId(firstPlayer.getId())
                 .secondPlayerId(secondPlayer.getId())
-                .matchScoreDto(createInitialMatchScore())
+                .matchScoreDto(ScoreUtil.createInitialMatchScore())
                 .matchState(MatchState.REGULAR)
                 .build();
     }
@@ -78,13 +77,6 @@ public class OngoingMatchesService {
     private Player getOrCreatePlayer(String name) {
         var maybePlayer = playerRepository.findByName(name);
         return maybePlayer.orElseGet(() -> playerRepository.save(new Player(name)));
-    }
-
-    private MatchScoreDto createInitialMatchScore() {
-        return MatchScoreDto.builder()
-                .firstPlayerScore(new ScoreDto())
-                .secondPlayerScore(new ScoreDto())
-                .build();
     }
 
     public void updateOngoingMatch(String matchId, OngoingMatchDto ongoingMatchDto) {

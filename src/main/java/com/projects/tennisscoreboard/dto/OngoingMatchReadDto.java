@@ -2,10 +2,10 @@ package com.projects.tennisscoreboard.dto;
 
 import com.projects.tennisscoreboard.entity.Player;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.Setter;
 
-@Getter
+@Data
 @Builder
 public class OngoingMatchReadDto {
 
