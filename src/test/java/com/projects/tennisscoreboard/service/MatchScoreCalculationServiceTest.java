@@ -1,10 +1,10 @@
 package com.projects.tennisscoreboard.service;
 
 import com.projects.tennisscoreboard.Utils.ScoreUtil;
-import com.projects.tennisscoreboard.dto.MatchScoreDto;
-import com.projects.tennisscoreboard.dto.MatchState;
-import com.projects.tennisscoreboard.dto.OngoingMatchReadDto;
-import com.projects.tennisscoreboard.dto.ScoreDto;
+import com.projects.tennisscoreboard.dto.match.MatchScoreDto;
+import com.projects.tennisscoreboard.dto.match.MatchState;
+import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchReadDto;
+import com.projects.tennisscoreboard.dto.match.ScoreDto;
 import com.projects.tennisscoreboard.entity.Player;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

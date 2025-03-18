@@ -1,11 +1,11 @@
 package com.projects.tennisscoreboard.service;
 
 import com.projects.tennisscoreboard.Utils.ScoreUtil;
-import com.projects.tennisscoreboard.dto.MatchProgressDto;
-import com.projects.tennisscoreboard.dto.MatchScoreDto;
-import com.projects.tennisscoreboard.dto.MatchState;
-import com.projects.tennisscoreboard.dto.OngoingMatchReadDto;
-import com.projects.tennisscoreboard.dto.ScoreDto;
+import com.projects.tennisscoreboard.dto.match.ongoing.MatchProgressDto;
+import com.projects.tennisscoreboard.dto.match.MatchScoreDto;
+import com.projects.tennisscoreboard.dto.match.MatchState;
+import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchReadDto;
+import com.projects.tennisscoreboard.dto.match.ScoreDto;
 
 public class MatchScoreCalculationService {
 

@@ -1,4 +1,4 @@
-package com.projects.tennisscoreboard.dto;
+package com.projects.tennisscoreboard.dto.match;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

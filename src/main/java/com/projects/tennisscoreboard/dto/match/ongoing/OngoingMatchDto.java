@@ -1,5 +1,7 @@
-package com.projects.tennisscoreboard.dto;
+package com.projects.tennisscoreboard.dto.match.ongoing;
 
+import com.projects.tennisscoreboard.dto.match.MatchScoreDto;
+import com.projects.tennisscoreboard.dto.match.MatchState;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +14,7 @@ public class OngoingMatchDto {
     private final Long secondPlayerId;
 
     @Setter
-    private  MatchScoreDto matchScoreDto;
+    private MatchScoreDto matchScoreDto;
 
     @Setter
     private MatchState matchState;

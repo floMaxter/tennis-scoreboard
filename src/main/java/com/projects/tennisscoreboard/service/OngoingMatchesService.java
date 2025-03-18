@@ -2,10 +2,10 @@ package com.projects.tennisscoreboard.service;
 
 import com.projects.tennisscoreboard.Utils.ScoreUtil;
 import com.projects.tennisscoreboard.Utils.ValidationUtil;
-import com.projects.tennisscoreboard.dto.MatchCreateDto;
-import com.projects.tennisscoreboard.dto.MatchState;
-import com.projects.tennisscoreboard.dto.OngoingMatchDto;
-import com.projects.tennisscoreboard.dto.OngoingMatchReadDto;
+import com.projects.tennisscoreboard.dto.match.ongoing.MatchCreateDto;
+import com.projects.tennisscoreboard.dto.match.MatchState;
+import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchDto;
+import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchReadDto;
 import com.projects.tennisscoreboard.entity.Player;
 import com.projects.tennisscoreboard.repository.PlayerRepository;
 import com.projects.tennisscoreboard.validator.impl.CreateMatchValidator;

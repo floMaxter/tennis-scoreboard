@@ -1,4 +1,4 @@
-package com.projects.tennisscoreboard.dto;
+package com.projects.tennisscoreboard.dto.match;
 
 public enum MatchState {
     REGULAR,

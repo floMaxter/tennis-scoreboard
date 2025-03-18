@@ -1,7 +1,7 @@
 package com.projects.tennisscoreboard.Utils;
 
-import com.projects.tennisscoreboard.dto.MatchScoreDto;
-import com.projects.tennisscoreboard.dto.ScoreDto;
+import com.projects.tennisscoreboard.dto.match.MatchScoreDto;
+import com.projects.tennisscoreboard.dto.match.ScoreDto;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass

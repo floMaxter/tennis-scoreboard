@@ -1,5 +1,7 @@
-package com.projects.tennisscoreboard.dto;
+package com.projects.tennisscoreboard.dto.match.ongoing;
 
+import com.projects.tennisscoreboard.dto.match.MatchScoreDto;
+import com.projects.tennisscoreboard.dto.match.MatchState;
 import com.projects.tennisscoreboard.entity.Player;
 import lombok.Builder;
 import lombok.Data;
