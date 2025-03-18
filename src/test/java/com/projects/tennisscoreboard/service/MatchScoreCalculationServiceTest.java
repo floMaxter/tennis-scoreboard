@@ -12,26 +12,37 @@ import org.junit.jupiter.api.Test;
 
 class MatchScoreCalculationServiceTest {
 
+    private static final Player FIRST_PLAYER = new Player();
+    private static final Player SECOND_PLAYER = new Player();
+
     private OngoingMatchReadDto baseMatch;
     private MatchScoreCalculationService matchScoreCalculationService;
 
     @BeforeEach
     void prepare() {
+        initPlayers();
         this.matchScoreCalculationService = MatchScoreCalculationService.getInstance();
         this.baseMatch = OngoingMatchReadDto.builder()
-                .firstPlayer(new Player(1L, "Max"))
-                .secondPlayer(new Player(2L, "Ivan"))
+                .firstPlayer(FIRST_PLAYER)
+                .secondPlayer(SECOND_PLAYER)
                 .matchScoreDto(ScoreUtil.createInitialMatchScore())
                 .matchState(MatchState.REGULAR)
                 .build();
+    }
+    
+    void initPlayers() {
+        FIRST_PLAYER.setId(1L);
+        FIRST_PLAYER.setName("Max");
+        SECOND_PLAYER.setId(2L);
+        SECOND_PLAYER.setName("IVAN");
     }
 
     @Test
     void calculateScore_WhenInitialScoreIsZero_ShouldIncreaseFirstPlayerPoints() {
         var pointWinnerId = 1L;
         var expectedMatch = OngoingMatchReadDto.builder()
-                .firstPlayer(new Player(1L, "Max"))
-                .secondPlayer(new Player(2L, "Ivan"))
+                .firstPlayer(FIRST_PLAYER)
+                .secondPlayer(SECOND_PLAYER)
                 .matchScoreDto(MatchScoreDto.builder()
                         .firstPlayerScore(ScoreDto.builder()
                                 .pointsScore(15)
@@ -70,8 +81,8 @@ class MatchScoreCalculationServiceTest {
         );
 
         var expectedMatch = OngoingMatchReadDto.builder()
-                .firstPlayer(new Player(1L, "Max"))
-                .secondPlayer(new Player(2L, "Ivan"))
+                .firstPlayer(FIRST_PLAYER)
+                .secondPlayer(SECOND_PLAYER)
                 .matchScoreDto(MatchScoreDto.builder()
                         .firstPlayerScore(ScoreDto.builder()
                                 .pointsScore(0)
@@ -111,8 +122,8 @@ class MatchScoreCalculationServiceTest {
         );
 
         var expectedMatch = OngoingMatchReadDto.builder()
-                .firstPlayer(new Player(1L, "Max"))
-                .secondPlayer(new Player(2L, "Ivan"))
+                .firstPlayer(FIRST_PLAYER)
+                .secondPlayer(SECOND_PLAYER)
                 .matchScoreDto(MatchScoreDto.builder()
                         .firstPlayerScore(ScoreDto.builder()
                                 .pointsScore(40)
@@ -152,8 +163,8 @@ class MatchScoreCalculationServiceTest {
         baseMatch.setMatchState(MatchState.DEUCE);
 
         var expectedMatch = OngoingMatchReadDto.builder()
-                .firstPlayer(new Player(1L, "Max"))
-                .secondPlayer(new Player(2L, "Ivan"))
+                .firstPlayer(FIRST_PLAYER)
+                .secondPlayer(SECOND_PLAYER)
                 .matchScoreDto(MatchScoreDto.builder()
                         .firstPlayerScore(ScoreDto.builder()
                                 .pointsScore(40)
@@ -196,8 +207,8 @@ class MatchScoreCalculationServiceTest {
         baseMatch.setMatchState(MatchState.DEUCE);
 
         var expectedMatch = OngoingMatchReadDto.builder()
-                .firstPlayer(new Player(1L, "Max"))
-                .secondPlayer(new Player(2L, "Ivan"))
+                .firstPlayer(FIRST_PLAYER)
+                .secondPlayer(SECOND_PLAYER)
                 .matchScoreDto(MatchScoreDto.builder()
                         .firstPlayerScore(ScoreDto.builder()
                                 .pointsScore(40)
@@ -241,8 +252,8 @@ class MatchScoreCalculationServiceTest {
         baseMatch.setMatchState(MatchState.DEUCE);
 
         var expectedMatch = OngoingMatchReadDto.builder()
-                .firstPlayer(new Player(1L, "Max"))
-                .secondPlayer(new Player(2L, "Ivan"))
+                .firstPlayer(FIRST_PLAYER)
+                .secondPlayer(SECOND_PLAYER)
                 .matchScoreDto(MatchScoreDto.builder()
                         .firstPlayerScore(ScoreDto.builder()
                                 .pointsScore(0)
@@ -286,8 +297,8 @@ class MatchScoreCalculationServiceTest {
         baseMatch.setMatchState(MatchState.DEUCE);
 
         var expectedMatch = OngoingMatchReadDto.builder()
-                .firstPlayer(new Player(1L, "Max"))
-                .secondPlayer(new Player(2L, "Ivan"))
+                .firstPlayer(FIRST_PLAYER)
+                .secondPlayer(SECOND_PLAYER)
                 .matchScoreDto(MatchScoreDto.builder()
                         .firstPlayerScore(ScoreDto.builder()
                                 .pointsScore(0)
@@ -331,8 +342,8 @@ class MatchScoreCalculationServiceTest {
         baseMatch.setMatchState(MatchState.REGULAR);
 
         var expectedMatch = OngoingMatchReadDto.builder()
-                .firstPlayer(new Player(1L, "Max"))
-                .secondPlayer(new Player(2L, "Ivan"))
+                .firstPlayer(FIRST_PLAYER)
+                .secondPlayer(SECOND_PLAYER)
                 .matchScoreDto(MatchScoreDto.builder()
                         .firstPlayerScore(ScoreDto.builder()
                                 .pointsScore(0)
@@ -376,8 +387,8 @@ class MatchScoreCalculationServiceTest {
         baseMatch.setMatchState(MatchState.TIEBREAK);
 
         var expectedMatch = OngoingMatchReadDto.builder()
-                .firstPlayer(new Player(1L, "Max"))
-                .secondPlayer(new Player(2L, "Ivan"))
+                .firstPlayer(FIRST_PLAYER)
+                .secondPlayer(SECOND_PLAYER)
                 .matchScoreDto(MatchScoreDto.builder()
                         .firstPlayerScore(ScoreDto.builder()
                                 .pointsScore(0)
@@ -421,8 +432,8 @@ class MatchScoreCalculationServiceTest {
         baseMatch.setMatchState(MatchState.TIEBREAK);
 
         var expectedMatch = OngoingMatchReadDto.builder()
-                .firstPlayer(new Player(1L, "Max"))
-                .secondPlayer(new Player(2L, "Ivan"))
+                .firstPlayer(FIRST_PLAYER)
+                .secondPlayer(SECOND_PLAYER)
                 .matchScoreDto(MatchScoreDto.builder()
                         .firstPlayerScore(ScoreDto.builder()
                                 .pointsScore(7)
@@ -463,8 +474,8 @@ class MatchScoreCalculationServiceTest {
         );
 
         var expectedMatch = OngoingMatchReadDto.builder()
-                .firstPlayer(new Player(1L, "Max"))
-                .secondPlayer(new Player(2L, "Ivan"))
+                .firstPlayer(FIRST_PLAYER)
+                .secondPlayer(SECOND_PLAYER)
                 .matchScoreDto(MatchScoreDto.builder()
                         .firstPlayerScore(ScoreDto.builder()
                                 .pointsScore(0)
