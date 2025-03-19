@@ -82,8 +82,13 @@ public class OngoingMatchesService {
     public void updateOngoingMatch(String matchId, OngoingMatchDto ongoingMatchDto) {
         var matchUuid = UUID.fromString(matchId);
         if (ongoingMatches.containsKey(matchUuid)) {
-            this.ongoingMatches.put(matchUuid, ongoingMatchDto);
+            ongoingMatches.put(matchUuid, ongoingMatchDto);
         }
+    }
+
+    public void delete(String matchId) {
+        var matchUuid = UUID.fromString(matchId);
+        ongoingMatches.remove(matchUuid);
     }
 
     public static OngoingMatchesService getInstance() {

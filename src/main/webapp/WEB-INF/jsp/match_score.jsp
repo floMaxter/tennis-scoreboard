@@ -15,6 +15,8 @@
 <c:set var="secondPlayerPointsScore" value="${requestScope.ongoingMatch.matchScoreDto.secondPlayerScore.pointsScore}"/>
 <c:set var="secondPlayerAdvantagePointsScore" value="${requestScope.ongoingMatch.matchScoreDto.secondPlayerScore.advantagePointScore}"/>
 
+<c:set var="matchState" value="${requestScope.ongoingMatch.matchState}"/>
+
 <html>
     <head>
         <title>Match Score</title>
@@ -36,25 +38,33 @@
                 <td>${firstPlayerSetsScore}</td>
                 <td>${firstPlayerGamesScore}</td>
                 <td>${firstPlayerPointsScore}</td>
-                <td>
-                    <form action="<c:url value="/match-score?uuid=${param.uuid}"/>" method="post">
-                        <input type="hidden" name="pointWinnerId" value="${firstPlayerId}">
-                        <button type="submit">${firstPlayerName} wins a point</button>
-                    </form>
-                </td>
+                <c:if test="${matchState != 'FINISHED'}">
+                    <td>
+                        <form action="<c:url value="/match-score?uuid=${param.uuid}"/>" method="post">
+                            <input type="hidden" name="pointWinnerId" value="${firstPlayerId}">
+                            <button type="submit">${firstPlayerName} wins a point</button>
+                        </form>
+                    </td>
+                </c:if>
             </tr>
             <tr>
                 <td>${secondPlayerName}</td>
                 <td>${secondPlayerSetsScore}</td>
                 <td>${secondPlayerGamesScore}</td>
                 <td>${secondPlayerPointsScore}</td>
-                <td>
-                    <form action="<c:url value="/match-score?uuid=${param.uuid}"/>" method="post">
-                        <input type="hidden" name="pointWinnerId" value="${secondPlayerId}">
-                        <button type="submit">${secondPlayerName} wins a point</button>
-                    </form>
-                </td>
+                <c:if test="${matchState != 'FINISHED'}">
+                    <td>
+                        <form action="<c:url value="/match-score?uuid=${param.uuid}"/>" method="post">
+                            <input type="hidden" name="pointWinnerId" value="${secondPlayerId}">
+                            <button type="submit">${secondPlayerName} wins a point</button>
+                        </form>
+                    </td>
+                </c:if>
             </tr>
         </table>
+        <br/>
+        <c:if test="${matchState == 'FINISHED'}">
+            <a href="<c:url value="/home" />">Home</a> <span> page</span>
+        </c:if>
     </body>
 </html>
