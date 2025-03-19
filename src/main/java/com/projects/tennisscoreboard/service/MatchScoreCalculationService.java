@@ -136,17 +136,27 @@ public class MatchScoreCalculationService {
     private void increaseGameScore(MatchProgressDto matchProgressDto) {
         resetPoints(matchProgressDto);
         resetAdvantagePoints(matchProgressDto);
-        incrementGameScore(matchProgressDto.getWinnerScore());
 
-        if (matchProgressDto.getWinnerScore().getGamesScore() >= ScoreUtil.SET_MIN_GAMES_TO_WIN) {
+        if (isCrucialPointToWinSet(matchProgressDto)) {
             increaseSetScore(matchProgressDto);
+        } else {
+            incrementGameScore(matchProgressDto.getWinnerScore());
         }
     }
 
+    private boolean isCrucialPointToWinSet(MatchProgressDto matchProgressDto) {
+        var winnerGamesScore = matchProgressDto.getWinnerScore().getGamesScore();
+        return winnerGamesScore + 1 >= ScoreUtil.SET_MIN_GAMES_TO_WIN;
+    }
+
     private void increaseSetScore(MatchProgressDto matchProgressDto) {
-        resetPoints(matchProgressDto);
-        resetGames(matchProgressDto);
-        incrementSetScore(matchProgressDto.getWinnerScore());
+        var winnerScore = matchProgressDto.getWinnerScore();
+        incrementSetScore(winnerScore);
+
+        if (!isMatchFinished(winnerScore)) {
+            resetPoints(matchProgressDto);
+            resetGames(matchProgressDto);
+        }
     }
 
     private void updateMatchState(MatchProgressDto matchProgressDto) {
