@@ -15,7 +15,7 @@ public class MatchReadMapper implements Mapper<Match, MatchReadDto> {
         return MatchReadDto.builder()
                 .id(object.getId())
                 .firstPlayer(object.getFirstPlayer())
-                .seconaPlayer(object.getSecondPlayer())
+                .secondPlayer(object.getSecondPlayer())
                 .winner(object.getWinner())
                 .build();
     }

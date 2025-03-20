@@ -6,6 +6,6 @@ import lombok.Builder;
 @Builder
 public record MatchReadDto(Long id,
                            Player firstPlayer,
-                           Player seconaPlayer,
+                           Player secondPlayer,
                            Player winner) {
 }
