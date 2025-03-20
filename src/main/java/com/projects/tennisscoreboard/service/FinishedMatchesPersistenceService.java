@@ -6,6 +6,8 @@ import com.projects.tennisscoreboard.mapper.MatchReadMapper;
 import com.projects.tennisscoreboard.mapper.OngoingMatchMapper;
 import com.projects.tennisscoreboard.repository.MatchRepository;
 
+import java.util.List;
+
 public class FinishedMatchesPersistenceService {
 
     private final MatchRepository matchRepository;
@@ -23,6 +25,12 @@ public class FinishedMatchesPersistenceService {
         var match = ongoingMatchMapper.mapFrom(completedMatch);
         var savedMatch = matchRepository.save(match);
         return matchReadMapper.mapFrom(savedMatch);
+    }
+
+    public List<MatchReadDto> findAllByPlayerName(String name) {
+        return matchRepository.findAllByPlayerName(name).stream()
+                .map(matchReadMapper::mapFrom)
+                .toList();
     }
 
     public static FinishedMatchesPersistenceService getInstance() {
