@@ -1,13 +1,19 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<html>
+<html lang="en">
     <head>
-        <title>Home page</title>
+        <title>Tennis scoreboard</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="<c:url value="/css/styles.css"/>"/>
     </head>
-    <body>
-        <h1>Tennis score board</h1>
-        <a href="<c:url value="/new-match"/>">New</a> <span> - start new match</span>
-        <br>
-        <a href="<c:url value="/matches"/>">Matches</a> <span> - list of finished matches</span>
+    <body class="wrapper">
+        <main class="home-center-container">
+            <h2>Welcome to the Tennis scoreboard app</h2>
+            <div class="home-button-container">
+                <a href="<c:url value="/new-match"/>" class="home-button">New match</a>
+                <a href="<c:url value="/matches"/>" class="home-button">Completed matches</a>
+            </div>
+        </main>
     </body>
 </html>
