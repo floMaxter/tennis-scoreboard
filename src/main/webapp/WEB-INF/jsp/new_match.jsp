@@ -13,10 +13,10 @@
             <form action="<c:url value="/new-match"/>" name="players" method="post" autocomplete="on"
                   class="create-match-form">
                 <label for="firstPlayerName" class="input-label">The name of the first player: </label>
-                <input id="firstPlayerName" type="text" name="firstPlayerName" placeholder="Name" required>
+                <input id="firstPlayerName" type="text" name="firstPlayerName" placeholder="Name" required class="create-input">
                 <br>
                 <label for="secondPlayerName" class="input-label">The name of the second player: </label>
-                <input id="secondPlayerName" type="text" name="secondPlayerName" placeholder="Name" required>
+                <input id="secondPlayerName" type="text" name="secondPlayerName" placeholder="Name" required class="create-input">
             </form>
             <br>
             <input type="submit" value="Start" class="home-button">

@@ -33,6 +33,12 @@ public class FinishedMatchesPersistenceService {
                 .toList();
     }
 
+    public List<MatchReadDto> findAllMatches() {
+        return matchRepository.findAll().stream()
+                .map(matchReadMapper::mapFrom)
+                .toList();
+    }
+
     public static FinishedMatchesPersistenceService getInstance() {
         return INSTANCE;
     }

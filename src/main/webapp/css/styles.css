@@ -16,8 +16,8 @@
 
 .center-container {
     background-color: #d7dbdd;
-    height: 50vh;
-    width: 40vw;
+    height: 70vh;
+    width: 60vw;
     max-height: 400px;
     max-width: 600px;
     display: flex;
@@ -67,6 +67,7 @@
     border-radius: 30px;
     transition: all 0.3s ease-in-out;
     display: inline-block;
+    cursor: pointer;
 }
 
 .home-button:hover {
@@ -114,7 +115,7 @@
     width: 100%;
 }
 
-input[type="text"] {
+.create-input {
     width: 100%;
     max-width: 300px;
     padding: 10px;
@@ -127,3 +128,98 @@ input[type="text"] {
 
 /*COMPLETED MATCHES PAGE*/
 
+.matches-container {
+    width: 100vh;
+    max-width: 800px;
+    background-color: #d7dbdd;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 1);
+}
+
+.matches-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #34495e;
+    margin-bottom: 15px;
+}
+
+.search-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #626567;
+    border-radius: 5px;
+}
+
+.action-matches-button {
+    background-color: #a6acaf;
+    color: black;
+    font-size: 16px;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s ease-in-out;
+    text-align: center;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.action-matches-button:hover {
+    background-color: #626567;
+    color: white;
+}
+
+.matches-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.matches-table th, .matches-table td {
+    border: 2px solid #626567;
+    padding: 10px;
+    text-align: center;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+
+.matches-table th {
+    background-color: #a6acaf;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.pagination button {
+    background-color: #a6acaf;
+    border: 2px solid #626567;
+    padding: 5px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+}
+
+.pagination button:disabled {
+    background-color: #d7dbdd;
+    cursor: not-allowed;
+}
+
+.pagination button:hover:not(:disabled) {
+    background-color: #626567;
+    color: white;
+}
