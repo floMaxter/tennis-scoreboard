@@ -8,8 +8,8 @@
         <link rel="stylesheet" type="text/css" href="<c:url value="/css/styles.css"/>"/>
     </head>
     <body class="wrapper">
-        <main class="home-center-container">
-            <h2>Welcome to the Tennis scoreboard app</h2>
+        <main class="center-container">
+            <h2 class="welcome-text">Welcome to the Tennis scoreboard app</h2>
             <div class="home-button-container">
                 <a href="<c:url value="/new-match"/>" class="home-button">New match</a>
                 <a href="<c:url value="/matches"/>" class="home-button">Completed matches</a>
