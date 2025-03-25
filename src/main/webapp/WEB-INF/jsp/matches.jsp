@@ -14,7 +14,7 @@
         <main class="matches-container">
             <h2 class="matches-title">Matches</h2>
             <form action="<c:url value="/matches"/>" method="get" class="search-form">
-                <input type="text" name="filter_by_player_name" placeholder="Filter by name" class="search-input" value="${param.name}">
+                <input type="text" name="filter_by_player_name" placeholder="Filter by name" class="search-input" value="${param.filter_by_player_name}">
                 <input type="submit" value="Find" class="action-matches-button">
                 <a href="<c:url value="/matches"/>" class="action-matches-button">Reset</a>
             </form>
@@ -37,5 +37,6 @@
                 </tbody>
             </table>
         </main>
+        <script src="<c:url value="/js/searchFilter.js"/>"></script>
     </body>
 </html>
