@@ -4,6 +4,7 @@
 <c:set var="matches" value="${requestScope.matches}"/>
 <c:set var="currentPage" value="${requestScope.currentPage}"/>
 <c:set var="totalPages" value="${requestScope.totalPages}"/>
+<c:set var="filterByPlayerName" value="${param.filter_by_player_name}"/>
 
 <html>
     <head>
@@ -17,7 +18,7 @@
             <h2 class="matches-title">Matches</h2>
             <form action="<c:url value="/matches"/>" method="get" class="search-form">
                 <input type="text" name="filter_by_player_name" placeholder="Filter by name"
-                       class="search-input" value="${param.filter_by_player_name}">
+                       class="search-input" value="${filterByPlayerName}">
                 <input type="submit" value="Find" class="action-matches-button">
                 <a href="<c:url value="/matches"/>" class="action-matches-button">Reset</a>
             </form>
@@ -41,13 +42,25 @@
             </table>
             <div>
                 <c:if test="${currentPage > 1}">
-                    <a href="<c:url value="/matches?page=${currentPage - 1}&filter_by_player_name=${param.filter_by_player_name}"/>">Prev</a>
+                    <c:url var="prevUrl" value="/matches">
+                        <c:param name="page" value="${currentPage - 1}"/>
+                        <c:if test="${not empty filterByPlayerName}">
+                            <c:param name="filter_by_player_name" value="${filterByPlayerName}"/>
+                        </c:if>
+                    </c:url>
+                    <a href="<c:url value="${prevUrl}"/>">Prev</a>
                 </c:if>
 
                 <span>Page ${currentPage} of ${totalPages}</span>
 
                 <c:if test="${currentPage < totalPages}">
-                    <a href="<c:url value="/matches?page=${currentPage + 1}&filter_by_player_name=${param.filter_by_player_name}"/>">Next</a>
+                    <c:url var="nextUrl" value="/matches">
+                        <c:param name="page" value="${currentPage + 1}"/>
+                        <c:if test="${not empty filterByPlayerName}">
+                            <c:param name="filter_by_player_name" value="${filterByPlayerName}"/>
+                        </c:if>
+                    </c:url>
+                    <a href="<c:url value="${nextUrl}"/>">Next</a>
                 </c:if>
             </div>
         </main>
