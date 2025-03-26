@@ -160,11 +160,11 @@
 
 .action-matches-button {
     background-color: #a6acaf;
-    color: black;
+    color: #2c3e50;
     font-size: 16px;
     padding: 10px 15px;
-    border: none;
     cursor: pointer;
+    border: 2px solid #626567;
     border-radius: 5px;
     transition: background 0.3s ease-in-out;
     text-align: center;
@@ -196,30 +196,43 @@
     background-color: #a6acaf;
 }
 
-.pagination {
+/*PAGINATION*/
+
+.pagination-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 20px;
-    gap: 10px;
+    margin-top: 25px;
+    gap: 20px;
 }
 
-.pagination button {
+.pagination-link {
     background-color: #a6acaf;
+    color: #2c3e50;
+    padding: 8px 16px;
+    text-decoration: none;
+    font-weight: 500;
     border: 2px solid #626567;
-    padding: 5px 15px;
-    font-size: 16px;
-    cursor: pointer;
     border-radius: 5px;
-    transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease;
+    min-width: 80px;
+    text-align: center;
 }
 
-.pagination button:disabled {
-    background-color: #d7dbdd;
-    cursor: not-allowed;
-}
-
-.pagination button:hover:not(:disabled) {
+.pagination-link:hover {
     background-color: #626567;
     color: white;
+    transform: translateY(-2px);
+}
+
+.pagination-link:active {
+    transform: translateY(0);
+}
+
+.pagination-info {
+    font-size: 18px;
+    color: #34495e;
+    font-weight: 500;
+    min-width: 150px;
+    text-align: center;
 }

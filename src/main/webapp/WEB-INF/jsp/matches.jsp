@@ -40,7 +40,7 @@
                     </c:forEach>
                 </tbody>
             </table>
-            <div>
+            <div class="pagination-container">
                 <c:if test="${currentPage > 1}">
                     <c:url var="prevUrl" value="/matches">
                         <c:param name="page" value="${currentPage - 1}"/>
@@ -48,10 +48,10 @@
                             <c:param name="filter_by_player_name" value="${filterByPlayerName}"/>
                         </c:if>
                     </c:url>
-                    <a href="<c:url value="${prevUrl}"/>">Prev</a>
+                    <a href="<c:url value="${prevUrl}"/>" class="pagination-link">Prev</a>
                 </c:if>
 
-                <span>Page ${currentPage} of ${totalPages}</span>
+                <span class="pagination-info">Page ${currentPage} of ${totalPages}</span>
 
                 <c:if test="${currentPage < totalPages}">
                     <c:url var="nextUrl" value="/matches">
@@ -60,7 +60,7 @@
                             <c:param name="filter_by_player_name" value="${filterByPlayerName}"/>
                         </c:if>
                     </c:url>
-                    <a href="<c:url value="${nextUrl}"/>">Next</a>
+                    <a href="<c:url value="${nextUrl}"/>" class="pagination-link">Next</a>
                 </c:if>
             </div>
         </main>
