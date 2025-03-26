@@ -29,36 +29,31 @@ public class FinishedMatchesPersistenceService {
         return matchReadMapper.mapFrom(savedMatch);
     }
 
-    public List<MatchReadDto> findAllByPlayerName(String name, Integer page) {
+    public List<MatchReadDto> findMatches(String playerName, Long page) {
         var skipElements = RECORDS_PER_PAGES * (page - 1);
-        return matchRepository.findAllByPlayerName(name).stream()
+        var matches = isPlayerNameSpecified(playerName)
+                ? matchRepository.findAllByPlayerName(playerName)
+                : matchRepository.findAll();
+        return matches.stream()
                 .skip(skipElements)
                 .limit(RECORDS_PER_PAGES)
                 .map(matchReadMapper::mapFrom)
                 .toList();
     }
 
-    public List<MatchReadDto> findAllMatches(Integer page) {
-        var skipElements = RECORDS_PER_PAGES * (page - 1);
-        return matchRepository.findAll().stream()
-                .skip(skipElements)
-                .limit(RECORDS_PER_PAGES)
-                .map(matchReadMapper::mapFrom)
-                .toList();
-    }
-    
-    public Long getTotalNumberOfPagesByName(String name) {
-        var numberOfRecords = matchRepository.countAllByPlayerName(name);
-        return calculateTotalPages(numberOfRecords);
-    }
-
-    public Long getTotalNumberOfPages() {
-        var numberOfRecords = matchRepository.countAll();
-        return calculateTotalPages(numberOfRecords);
+    public Long getTotalPages(String playerName) {
+        var totalPages = isPlayerNameSpecified(playerName)
+                ? matchRepository.countAllByPlayerName(playerName)
+                : matchRepository.countAll();
+        return calculateTotalPages(totalPages);
     }
 
     private Long calculateTotalPages(Long numberOfRecords) {
         return (numberOfRecords + RECORDS_PER_PAGES - 1) / RECORDS_PER_PAGES;
+    }
+
+    private boolean isPlayerNameSpecified(String name) {
+        return name != null && !name.trim().isEmpty();
     }
 
     public static FinishedMatchesPersistenceService getInstance() {
