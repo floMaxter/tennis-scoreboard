@@ -4,8 +4,7 @@ import com.projects.tennisscoreboard.entity.Player;
 import lombok.Builder;
 
 @Builder
-public record MatchReadDto(Long id,
-                           Player firstPlayer,
+public record MatchReadDto(Player firstPlayer,
                            Player secondPlayer,
                            Player winner) {
 }
