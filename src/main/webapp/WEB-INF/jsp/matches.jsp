@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <c:set var="matches" value="${requestScope.matches}"/>
@@ -48,7 +48,7 @@
                     </c:if>
                 </c:url>
                 <a href="<c:url value="${currentPage > 1 ? prevUrl : '#'}"/>"
-                class="pagination-link ${currentPage > 1 ? '' : 'hidden'}">Prev</a>
+                   class="pagination-link ${currentPage > 1 ? '' : 'hidden'}">Prev</a>
 
                 <span class="pagination-info">Page ${currentPage} of ${totalPages}</span>
 
