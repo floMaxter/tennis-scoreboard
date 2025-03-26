@@ -20,15 +20,22 @@ public class MatchesController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         var playerName = req.getParameter("filter_by_player_name");
+        var page = req.getParameter("page") == null ? 1 : Integer.parseInt(req.getParameter("page"));
         List<MatchReadDto> matches;
+        Long totalPages;
 
         if (playerName != null && !playerName.trim().isEmpty()) {
-            matches = finishedMatchesPersistenceService.findAllByPlayerName(playerName);
+            matches = finishedMatchesPersistenceService.findAllByPlayerName(playerName, page);
+            totalPages = finishedMatchesPersistenceService.getTotalNumberOfPagesByName(playerName);
         } else {
-            matches = finishedMatchesPersistenceService.findAllMatches();
+            matches = finishedMatchesPersistenceService.findAllMatches(page);
+            totalPages = finishedMatchesPersistenceService.getTotalNumberOfPages();
         }
 
         req.setAttribute("matches", matches);
+        req.setAttribute("totalPages", totalPages);
+        req.setAttribute("currentPage", page);
+
         req.getRequestDispatcher(JspHelper.getPath("matches"))
                 .forward(req, resp);
     }

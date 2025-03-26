@@ -14,11 +14,28 @@ public class MatchRepository extends BaseRepository<Long, Match> {
 
     public List<Match> findAllByPlayerName(String name) {
         try (var session = sessionFactory.openSession()) {
-            return session.createQuery("select m from Match m inner " +
-                                       "join Player p on m.firstPlayer.id = p.id " +
+            return session.createQuery("select m from Match m " +
+                                       "inner join Player p on m.firstPlayer.id = p.id " +
                                        "or m.secondPlayer.id = p.id where p.name = :name", Match.class)
                     .setParameter("name", name)
                     .getResultList();
+        }
+    }
+
+    public Long countAllByPlayerName(String name) {
+        try (var session = sessionFactory.openSession()) {
+            return session.createQuery("select count(m.id) from Match m " +
+                                       "inner join Player p on m.firstPlayer.id = p.id " +
+                                       "or m.secondPlayer.id = p.id where p.name = :name", Long.class)
+                    .setParameter("name", name)
+                    .uniqueResult();
+        }
+    }
+
+    public Long countAll() {
+        try (var session = sessionFactory.openSession()) {
+            return session.createQuery("select count(*) from Match m", Long.class)
+                    .uniqueResult();
         }
     }
 
