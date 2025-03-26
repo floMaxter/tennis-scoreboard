@@ -229,6 +229,11 @@
     transform: translateY(0);
 }
 
+.pagination-link.hidden {
+    visibility: hidden;
+    pointer-events: none;
+}
+
 .pagination-info {
     font-size: 18px;
     color: #34495e;

@@ -41,27 +41,25 @@
                 </tbody>
             </table>
             <div class="pagination-container">
-                <c:if test="${currentPage > 1}">
-                    <c:url var="prevUrl" value="/matches">
-                        <c:param name="page" value="${currentPage - 1}"/>
-                        <c:if test="${not empty filterByPlayerName}">
-                            <c:param name="filter_by_player_name" value="${filterByPlayerName}"/>
-                        </c:if>
-                    </c:url>
-                    <a href="<c:url value="${prevUrl}"/>" class="pagination-link">Prev</a>
-                </c:if>
+                <c:url var="prevUrl" value="/matches">
+                    <c:param name="page" value="${currentPage - 1}"/>
+                    <c:if test="${not empty filterByPlayerName}">
+                        <c:param name="filter_by_player_name" value="${filterByPlayerName}"/>
+                    </c:if>
+                </c:url>
+                <a href="<c:url value="${currentPage > 1 ? prevUrl : '#'}"/>"
+                class="pagination-link ${currentPage > 1 ? '' : 'hidden'}">Prev</a>
 
                 <span class="pagination-info">Page ${currentPage} of ${totalPages}</span>
 
-                <c:if test="${currentPage < totalPages}">
-                    <c:url var="nextUrl" value="/matches">
-                        <c:param name="page" value="${currentPage + 1}"/>
-                        <c:if test="${not empty filterByPlayerName}">
-                            <c:param name="filter_by_player_name" value="${filterByPlayerName}"/>
-                        </c:if>
-                    </c:url>
-                    <a href="<c:url value="${nextUrl}"/>" class="pagination-link">Next</a>
-                </c:if>
+                <c:url var="nextUrl" value="/matches">
+                    <c:param name="page" value="${currentPage + 1}"/>
+                    <c:if test="${not empty filterByPlayerName}">
+                        <c:param name="filter_by_player_name" value="${filterByPlayerName}"/>
+                    </c:if>
+                </c:url>
+                <a href="<c:url value="${currentPage < totalPages ? nextUrl : '#'}"/>"
+                   class="pagination-link ${currentPage < totalPages ? '' : 'hidden'}">Next</a>
             </div>
         </main>
         <script src="<c:url value="/js/searchFilter.js"/>"></script>
