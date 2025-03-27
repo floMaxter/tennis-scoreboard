@@ -107,7 +107,8 @@ public class MatchScoreCalculationService {
         return hasSufficientAdvantagePointDifference(winnerAdvantagePointScore, loserAdvantagePointScore);
     }
 
-    private boolean hasSufficientAdvantagePointDifference(int winnerAdvantagePointScore, int loserAdvantagePointScore) {
+    private boolean hasSufficientAdvantagePointDifference(int winnerAdvantagePointScore,
+                                                          int loserAdvantagePointScore) {
         return winnerAdvantagePointScore - loserAdvantagePointScore == ScoreUtil.DEUCE_MIN_ADVANTAGE_DIFFERENCE;
     }
 
@@ -136,18 +137,27 @@ public class MatchScoreCalculationService {
     private void increaseGameScore(MatchProgressDto matchProgressDto) {
         resetPoints(matchProgressDto);
         resetAdvantagePoints(matchProgressDto);
-
-        if (isCrucialPointToWinSet(matchProgressDto)) {
+        incrementGameScore(matchProgressDto.getWinnerScore());
+        if (isSetOver(matchProgressDto)) {
             increaseSetScore(matchProgressDto);
-        } else {
-            incrementGameScore(matchProgressDto.getWinnerScore());
         }
     }
 
-    private boolean isCrucialPointToWinSet(MatchProgressDto matchProgressDto) {
+    private boolean isSetOver(MatchProgressDto matchProgressDto) {
         var winnerGamesScore = matchProgressDto.getWinnerScore().getGamesScore();
-        return winnerGamesScore + 1 >= ScoreUtil.SET_MIN_GAMES_TO_WIN;
+        var loserGameScore = matchProgressDto.getLoserScore().getGamesScore();
+        return hasGamesToWinSet(winnerGamesScore)
+               && hasRequiredGameDifference(winnerGamesScore, loserGameScore);
     }
+
+    private boolean hasGamesToWinSet(int winnerGamesScore) {
+        return winnerGamesScore >= ScoreUtil.SET_MIN_GAMES_TO_WIN;
+    }
+
+    private boolean hasRequiredGameDifference(int winnerGamesScore, int loserGameScore) {
+        return winnerGamesScore - loserGameScore >= ScoreUtil.MIN_GAMES_DIFFERENCE_FOR_WIN;
+    }
+
 
     private void increaseSetScore(MatchProgressDto matchProgressDto) {
         var winnerScore = matchProgressDto.getWinnerScore();
