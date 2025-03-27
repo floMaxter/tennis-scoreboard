@@ -3,8 +3,8 @@ package com.projects.tennisscoreboard.service;
 import com.projects.tennisscoreboard.Utils.ScoreUtil;
 import com.projects.tennisscoreboard.dto.match.MatchScoreDto;
 import com.projects.tennisscoreboard.dto.match.MatchState;
-import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchReadDto;
 import com.projects.tennisscoreboard.dto.match.ScoreDto;
+import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchReadDto;
 import com.projects.tennisscoreboard.entity.Player;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +29,7 @@ class MatchScoreCalculationServiceTest {
                 .matchState(MatchState.REGULAR)
                 .build();
     }
-    
+
     void initPlayers() {
         FIRST_PLAYER.setId(1L);
         FIRST_PLAYER.setName("Max");
@@ -175,7 +175,7 @@ class MatchScoreCalculationServiceTest {
                                 .pointsScore(40)
                                 .gamesScore(0)
                                 .setsScore(0)
-                                .advantagePointScore(1)
+                                .hasAdvantage(true)
                                 .build())
                         .build())
                 .matchState(MatchState.DEUCE)
@@ -194,13 +194,13 @@ class MatchScoreCalculationServiceTest {
                         .pointsScore(40)
                         .gamesScore(0)
                         .setsScore(0)
-                        .advantagePointScore(1)
+                        .hasAdvantage(true)
                         .build())
                 .secondPlayerScore(ScoreDto.builder()
                         .pointsScore(40)
                         .gamesScore(0)
                         .setsScore(0)
-                        .advantagePointScore(0)
+                        .hasAdvantage(false)
                         .build())
                 .build()
         );
@@ -214,13 +214,13 @@ class MatchScoreCalculationServiceTest {
                                 .pointsScore(40)
                                 .gamesScore(0)
                                 .setsScore(0)
-                                .advantagePointScore(1)
+                                .hasAdvantage(false)
                                 .build())
                         .secondPlayerScore(ScoreDto.builder()
                                 .pointsScore(40)
                                 .gamesScore(0)
                                 .setsScore(0)
-                                .advantagePointScore(1)
+                                .hasAdvantage(false)
                                 .build())
                         .build())
                 .matchState(MatchState.DEUCE)
@@ -239,13 +239,13 @@ class MatchScoreCalculationServiceTest {
                         .pointsScore(40)
                         .gamesScore(0)
                         .setsScore(0)
-                        .advantagePointScore(1)
+                        .hasAdvantage(true)
                         .build())
                 .secondPlayerScore(ScoreDto.builder()
                         .pointsScore(40)
                         .gamesScore(0)
                         .setsScore(0)
-                        .advantagePointScore(0)
+                        .hasAdvantage(false)
                         .build())
                 .build()
         );
@@ -259,13 +259,13 @@ class MatchScoreCalculationServiceTest {
                                 .pointsScore(0)
                                 .gamesScore(1)
                                 .setsScore(0)
-                                .advantagePointScore(0)
+                                .hasAdvantage(false)
                                 .build())
                         .secondPlayerScore(ScoreDto.builder()
                                 .pointsScore(0)
                                 .gamesScore(0)
                                 .setsScore(0)
-                                .advantagePointScore(0)
+                                .hasAdvantage(false)
                                 .build())
                         .build())
                 .matchState(MatchState.REGULAR)
@@ -284,13 +284,13 @@ class MatchScoreCalculationServiceTest {
                         .pointsScore(40)
                         .gamesScore(5)
                         .setsScore(0)
-                        .advantagePointScore(1)
+                        .hasAdvantage(true)
                         .build())
                 .secondPlayerScore(ScoreDto.builder()
                         .pointsScore(30)
                         .gamesScore(6)
                         .setsScore(0)
-                        .advantagePointScore(0)
+                        .hasAdvantage(false)
                         .build())
                 .build()
         );
@@ -304,13 +304,13 @@ class MatchScoreCalculationServiceTest {
                                 .pointsScore(0)
                                 .gamesScore(6)
                                 .setsScore(0)
-                                .advantagePointScore(0)
+                                .hasAdvantage(false)
                                 .build())
                         .secondPlayerScore(ScoreDto.builder()
                                 .pointsScore(0)
                                 .gamesScore(6)
                                 .setsScore(0)
-                                .advantagePointScore(0)
+                                .hasAdvantage(false)
                                 .build())
                         .build())
                 .matchState(MatchState.TIEBREAK)
@@ -329,13 +329,11 @@ class MatchScoreCalculationServiceTest {
                         .pointsScore(40)
                         .gamesScore(5)
                         .setsScore(0)
-                        .advantagePointScore(0)
                         .build())
                 .secondPlayerScore(ScoreDto.builder()
                         .pointsScore(0)
                         .gamesScore(6)
                         .setsScore(0)
-                        .advantagePointScore(0)
                         .build())
                 .build()
         );
@@ -349,13 +347,11 @@ class MatchScoreCalculationServiceTest {
                                 .pointsScore(0)
                                 .gamesScore(6)
                                 .setsScore(0)
-                                .advantagePointScore(0)
                                 .build())
                         .secondPlayerScore(ScoreDto.builder()
                                 .pointsScore(0)
                                 .gamesScore(6)
                                 .setsScore(0)
-                                .advantagePointScore(0)
                                 .build())
                         .build())
                 .matchState(MatchState.TIEBREAK)
@@ -374,13 +370,11 @@ class MatchScoreCalculationServiceTest {
                         .pointsScore(6)
                         .gamesScore(6)
                         .setsScore(0)
-                        .advantagePointScore(0)
                         .build())
                 .secondPlayerScore(ScoreDto.builder()
                         .pointsScore(5)
                         .gamesScore(6)
                         .setsScore(0)
-                        .advantagePointScore(0)
                         .build())
                 .build()
         );
@@ -394,13 +388,11 @@ class MatchScoreCalculationServiceTest {
                                 .pointsScore(0)
                                 .gamesScore(0)
                                 .setsScore(1)
-                                .advantagePointScore(0)
                                 .build())
                         .secondPlayerScore(ScoreDto.builder()
                                 .pointsScore(0)
                                 .gamesScore(0)
                                 .setsScore(0)
-                                .advantagePointScore(0)
                                 .build())
                         .build())
                 .matchState(MatchState.REGULAR)
@@ -419,13 +411,11 @@ class MatchScoreCalculationServiceTest {
                         .pointsScore(6)
                         .gamesScore(6)
                         .setsScore(0)
-                        .advantagePointScore(0)
                         .build())
                 .secondPlayerScore(ScoreDto.builder()
                         .pointsScore(6)
                         .gamesScore(6)
                         .setsScore(0)
-                        .advantagePointScore(0)
                         .build())
                 .build()
         );
@@ -439,13 +429,11 @@ class MatchScoreCalculationServiceTest {
                                 .pointsScore(7)
                                 .gamesScore(6)
                                 .setsScore(0)
-                                .advantagePointScore(0)
                                 .build())
                         .secondPlayerScore(ScoreDto.builder()
                                 .pointsScore(6)
                                 .gamesScore(6)
                                 .setsScore(0)
-                                .advantagePointScore(0)
                                 .build())
                         .build())
                 .matchState(MatchState.TIEBREAK)
@@ -457,7 +445,48 @@ class MatchScoreCalculationServiceTest {
     }
 
     @Test
-    void calculateScore_WhenSecondPlayerWinsFromPointsThirtyFortyGamesZeroSixSetsZeroOne_ShouldFinishedMatch() {
+    void calculateScore_WhenFirstPlayerWinsFromGamesFiveZero_ShouldWinsSet() {
+        var pointWinnerId = 1L;
+        baseMatch.setMatchScoreDto(MatchScoreDto.builder()
+                .firstPlayerScore(ScoreDto.builder()
+                        .pointsScore(40)
+                        .gamesScore(5)
+                        .setsScore(0)
+                        .build())
+                .secondPlayerScore(ScoreDto.builder()
+                        .pointsScore(0)
+                        .gamesScore(0)
+                        .setsScore(0)
+                        .build())
+                .build()
+        );
+        baseMatch.setMatchState(MatchState.REGULAR);
+
+        var expectedMatch = OngoingMatchReadDto.builder()
+                .firstPlayer(FIRST_PLAYER)
+                .secondPlayer(SECOND_PLAYER)
+                .matchScoreDto(MatchScoreDto.builder()
+                        .firstPlayerScore(ScoreDto.builder()
+                                .pointsScore(0)
+                                .gamesScore(0)
+                                .setsScore(1)
+                                .build())
+                        .secondPlayerScore(ScoreDto.builder()
+                                .pointsScore(0)
+                                .gamesScore(0)
+                                .setsScore(0)
+                                .build())
+                        .build())
+                .matchState(MatchState.REGULAR)
+                .build();
+
+        var updatedMatch = matchScoreCalculationService.calculateScore(baseMatch, pointWinnerId);
+
+        Assertions.assertEquals(expectedMatch, updatedMatch);
+    }
+
+    @Test
+    void calculateScore_WhenSecondPlayerWinsFromPointsThirtyFortyGamesZeroFiveSetsZeroOne_ShouldFinishedMatch() {
         var pointWinnerId = 2L;
         baseMatch.setMatchScoreDto(MatchScoreDto.builder()
                 .firstPlayerScore(ScoreDto.builder()
@@ -467,7 +496,7 @@ class MatchScoreCalculationServiceTest {
                         .build())
                 .secondPlayerScore(ScoreDto.builder()
                         .pointsScore(40)
-                        .gamesScore(6)
+                        .gamesScore(5)
                         .setsScore(1)
                         .build())
                 .build()
@@ -484,7 +513,7 @@ class MatchScoreCalculationServiceTest {
                                 .build())
                         .secondPlayerScore(ScoreDto.builder()
                                 .pointsScore(0)
-                                .gamesScore(0)
+                                .gamesScore(6)
                                 .setsScore(2)
                                 .build())
                         .build())
