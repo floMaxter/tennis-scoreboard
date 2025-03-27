@@ -1,6 +1,6 @@
 package com.projects.tennisscoreboard.controller;
 
-import com.projects.tennisscoreboard.Utils.JspHelper;
+import com.projects.tennisscoreboard.utils.JspHelper;
 import com.projects.tennisscoreboard.dto.match.MatchState;
 import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchReadDto;
 import com.projects.tennisscoreboard.mapper.OngoingMatchReadMapper;

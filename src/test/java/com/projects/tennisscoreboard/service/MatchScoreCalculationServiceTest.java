@@ -1,6 +1,6 @@
 package com.projects.tennisscoreboard.service;
 
-import com.projects.tennisscoreboard.Utils.ScoreUtil;
+import com.projects.tennisscoreboard.utils.ScoreUtil;
 import com.projects.tennisscoreboard.dto.match.MatchScoreDto;
 import com.projects.tennisscoreboard.dto.match.MatchState;
 import com.projects.tennisscoreboard.dto.match.ScoreDto;

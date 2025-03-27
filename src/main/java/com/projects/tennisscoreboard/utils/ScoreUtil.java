@@ -1,4 +1,4 @@
-package com.projects.tennisscoreboard.Utils;
+package com.projects.tennisscoreboard.utils;
 
 import com.projects.tennisscoreboard.dto.match.MatchScoreDto;
 import com.projects.tennisscoreboard.dto.match.ScoreDto;

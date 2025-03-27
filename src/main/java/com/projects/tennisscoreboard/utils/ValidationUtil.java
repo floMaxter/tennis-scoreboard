@@ -1,4 +1,4 @@
-package com.projects.tennisscoreboard.Utils;
+package com.projects.tennisscoreboard.utils;
 
 import com.projects.tennisscoreboard.exception.ValidationException;
 import com.projects.tennisscoreboard.validator.ValidationResult;

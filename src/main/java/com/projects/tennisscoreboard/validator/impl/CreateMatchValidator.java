@@ -1,6 +1,6 @@
 package com.projects.tennisscoreboard.validator.impl;
 
-import com.projects.tennisscoreboard.Utils.PropertiesUtil;
+import com.projects.tennisscoreboard.utils.PropertiesUtil;
 import com.projects.tennisscoreboard.dto.match.ongoing.MatchCreateDto;
 import com.projects.tennisscoreboard.validator.ValidationError;
 import com.projects.tennisscoreboard.validator.ValidationResult;

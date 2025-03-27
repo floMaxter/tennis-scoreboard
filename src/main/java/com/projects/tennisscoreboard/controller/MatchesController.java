@@ -1,6 +1,6 @@
 package com.projects.tennisscoreboard.controller;
 
-import com.projects.tennisscoreboard.Utils.JspHelper;
+import com.projects.tennisscoreboard.utils.JspHelper;
 import com.projects.tennisscoreboard.service.FinishedMatchesPersistenceService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

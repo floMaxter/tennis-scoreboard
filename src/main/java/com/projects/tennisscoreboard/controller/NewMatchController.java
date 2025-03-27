@@ -1,6 +1,6 @@
 package com.projects.tennisscoreboard.controller;
 
-import com.projects.tennisscoreboard.Utils.JspHelper;
+import com.projects.tennisscoreboard.utils.JspHelper;
 import com.projects.tennisscoreboard.exception.ValidationException;
 import com.projects.tennisscoreboard.mapper.MatchCreateMapper;
 import com.projects.tennisscoreboard.service.OngoingMatchesService;
