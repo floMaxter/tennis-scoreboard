@@ -15,7 +15,6 @@ public class ScoreUtil {
     public static final int MIN_GAMES_DIFFERENCE_FOR_WIN = 2;
     public static final int MIN_POINT_DIFFERENCE_FOR_WIN_TIEBREAK = 2;
     public static final int TIEBREAK_MIN_POINTS_TO_WIN = 7;
-    public static final int MIN_POINT_DIFFERENCE_TO_WIN_DEUCE = 2;
     public static final int SET_MIN_GAMES_TO_WIN = 6;
     public static final int SETS_TO_WIN = 2;
 

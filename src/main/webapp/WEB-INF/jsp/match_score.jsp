@@ -6,16 +6,16 @@
 <c:set var="firstPlayerSetsScore" value="${requestScope.ongoingMatch.matchScoreDto.firstPlayerScore.setsScore}"/>
 <c:set var="firstPlayerGamesScore" value="${requestScope.ongoingMatch.matchScoreDto.firstPlayerScore.gamesScore}"/>
 <c:set var="firstPlayerPointsScore" value="${requestScope.ongoingMatch.matchScoreDto.firstPlayerScore.pointsScore}"/>
-<c:set var="firstPlayerAdvantagePointsScore"
-       value="${requestScope.ongoingMatch.matchScoreDto.firstPlayerScore.advantagePointScore}"/>
+<c:set var="firstPlayerHasAdvantage"
+       value="${requestScope.ongoingMatch.matchScoreDto.firstPlayerScore.hasAdvantage}"/>
 
 <c:set var="secondPlayerId" value="${requestScope.ongoingMatch.secondPlayer.id}"/>
 <c:set var="secondPlayerName" value="${requestScope.ongoingMatch.secondPlayer.name}"/>
 <c:set var="secondPlayerSetsScore" value="${requestScope.ongoingMatch.matchScoreDto.secondPlayerScore.setsScore}"/>
 <c:set var="secondPlayerGamesScore" value="${requestScope.ongoingMatch.matchScoreDto.secondPlayerScore.gamesScore}"/>
 <c:set var="secondPlayerPointsScore" value="${requestScope.ongoingMatch.matchScoreDto.secondPlayerScore.pointsScore}"/>
-<c:set var="secondPlayerAdvantagePointsScore"
-       value="${requestScope.ongoingMatch.matchScoreDto.secondPlayerScore.advantagePointScore}"/>
+<c:set var="secondPlayerHasAdvantage"
+       value="${requestScope.ongoingMatch.matchScoreDto.secondPlayerScore.hasAdvantage}"/>
 
 <c:set var="matchState" value="${requestScope.ongoingMatch.matchState}"/>
 
@@ -43,7 +43,12 @@
                     <td>${firstPlayerName}</td>
                     <td>${firstPlayerSetsScore}</td>
                     <td>${firstPlayerGamesScore}</td>
-                    <td>${firstPlayerPointsScore}</td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${firstPlayerHasAdvantage}">AD</c:when>
+                            <c:otherwise>${firstPlayerPointsScore}</c:otherwise>
+                        </c:choose>
+                    </td>
                     <c:if test="${matchState != 'FINISHED'}">
                         <td>
                             <form action="<c:url value="/match-score?uuid=${param.uuid}"/>" method="post">
@@ -57,7 +62,12 @@
                     <td>${secondPlayerName}</td>
                     <td>${secondPlayerSetsScore}</td>
                     <td>${secondPlayerGamesScore}</td>
-                    <td>${secondPlayerPointsScore}</td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${secondPlayerHasAdvantage}">AD</c:when>
+                            <c:otherwise>${secondPlayerPointsScore}</c:otherwise>
+                        </c:choose>
+                    </td>
                     <c:if test="${matchState != 'FINISHED'}">
                         <td>
                             <form action="<c:url value="/match-score?uuid=${param.uuid}"/>" method="post">
