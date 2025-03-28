@@ -1,5 +1,7 @@
-package com.projects.tennisscoreboard.Utils;
+package com.projects.tennisscoreboard.utils;
 
+import com.projects.tennisscoreboard.entity.Match;
+import com.projects.tennisscoreboard.entity.Player;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import org.hibernate.SessionFactory;
@@ -14,6 +16,8 @@ public class HibernateUtil {
     private static SessionFactory buildSessionFactory() {
         try {
             Configuration configuration = new Configuration();
+            configuration.addAnnotatedClass(Match.class);
+            configuration.addAnnotatedClass(Player.class);
             configuration.configure();
             return configuration.buildSessionFactory();
         } catch (Throwable e) {

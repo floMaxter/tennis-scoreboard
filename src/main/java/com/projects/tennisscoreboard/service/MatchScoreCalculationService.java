@@ -1,11 +1,11 @@
 package com.projects.tennisscoreboard.service;
 
-import com.projects.tennisscoreboard.Utils.ScoreUtil;
-import com.projects.tennisscoreboard.dto.MatchProgressDto;
-import com.projects.tennisscoreboard.dto.MatchScoreDto;
-import com.projects.tennisscoreboard.dto.MatchState;
-import com.projects.tennisscoreboard.dto.OngoingMatchReadDto;
-import com.projects.tennisscoreboard.dto.ScoreDto;
+import com.projects.tennisscoreboard.utils.ScoreUtil;
+import com.projects.tennisscoreboard.dto.match.ongoing.MatchProgressDto;
+import com.projects.tennisscoreboard.dto.match.MatchScoreDto;
+import com.projects.tennisscoreboard.dto.match.MatchState;
+import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchReadDto;
+import com.projects.tennisscoreboard.dto.match.ScoreDto;
 
 public class MatchScoreCalculationService {
 
@@ -95,58 +95,73 @@ public class MatchScoreCalculationService {
     }
 
     private void increaseAdvantagePointScore(MatchProgressDto matchProgressDto) {
-        incrementAdvantagePointScore(matchProgressDto.getWinnerScore());
-        if (isDeuceFinished(matchProgressDto)) {
+        var winnerScore = matchProgressDto.getWinnerScore();
+        var loserScore = matchProgressDto.getLoserScore();
+
+        if (!winnerScore.isHasAdvantage() && !loserScore.isHasAdvantage()) {
+            winnerScore.setHasAdvantage(true);
+        } else if (!winnerScore.isHasAdvantage()) {
+            loserScore.setHasAdvantage(false);
+        } else {
             increaseGameScore(matchProgressDto);
         }
     }
 
-    private boolean isDeuceFinished(MatchProgressDto matchProgressDto) {
-        var winnerAdvantagePointScore = matchProgressDto.getWinnerScore().getAdvantagePointScore();
-        var loserAdvantagePointScore = matchProgressDto.getLoserScore().getAdvantagePointScore();
-        return hasSufficientAdvantagePointDifference(winnerAdvantagePointScore, loserAdvantagePointScore);
-    }
-
-    private boolean hasSufficientAdvantagePointDifference(int winnerAdvantagePointScore, int loserAdvantagePointScore) {
-        return winnerAdvantagePointScore - loserAdvantagePointScore == ScoreUtil.DEUCE_MIN_ADVANTAGE_DIFFERENCE;
-    }
-
     private void increaseTieBreakPointScore(MatchProgressDto matchProgressDto) {
         incrementPointScore(matchProgressDto.getWinnerScore());
-        if (isTiebreakFinished(matchProgressDto)) {
+        if (isTiebreakOver(matchProgressDto)) {
             increaseSetScore(matchProgressDto);
         }
     }
 
-    private boolean isTiebreakFinished(MatchProgressDto matchProgressDto) {
+    private boolean isTiebreakOver(MatchProgressDto matchProgressDto) {
         var winnerPointScore = matchProgressDto.getWinnerScore().getPointsScore();
         var loserPointScore = matchProgressDto.getLoserScore().getPointsScore();
-        return hasMinimumWinningPoints(winnerPointScore)
-               && hasSufficientRegularPointDifference(winnerPointScore, loserPointScore);
+        return hasPointsToWinTiebreak(winnerPointScore)
+               && hasRequiredRegularPointDifference(winnerPointScore, loserPointScore);
     }
 
-    private boolean hasMinimumWinningPoints(int winnerPointScore) {
+    private boolean hasPointsToWinTiebreak(int winnerPointScore) {
         return winnerPointScore >= ScoreUtil.TIEBREAK_MIN_POINTS_TO_WIN;
     }
 
-    private boolean hasSufficientRegularPointDifference(int winnerPointScore, int loserPointScore) {
-        return winnerPointScore - loserPointScore >= ScoreUtil.TIEBREAK_MIN_POINT_DIFFERENCE;
+    private boolean hasRequiredRegularPointDifference(int winnerPointScore, int loserPointScore) {
+        return winnerPointScore - loserPointScore >= ScoreUtil.MIN_POINT_DIFFERENCE_FOR_WIN_TIEBREAK;
     }
 
     private void increaseGameScore(MatchProgressDto matchProgressDto) {
         resetPoints(matchProgressDto);
-        resetAdvantagePoints(matchProgressDto);
+        resetAdvantage(matchProgressDto);
         incrementGameScore(matchProgressDto.getWinnerScore());
-
-        if (matchProgressDto.getWinnerScore().getGamesScore() >= ScoreUtil.SET_MIN_GAMES_TO_WIN) {
+        if (isSetOver(matchProgressDto)) {
             increaseSetScore(matchProgressDto);
         }
     }
 
+    private boolean isSetOver(MatchProgressDto matchProgressDto) {
+        var winnerGamesScore = matchProgressDto.getWinnerScore().getGamesScore();
+        var loserGameScore = matchProgressDto.getLoserScore().getGamesScore();
+        return hasGamesToWinSet(winnerGamesScore)
+               && hasRequiredGamesDifference(winnerGamesScore, loserGameScore);
+    }
+
+    private boolean hasGamesToWinSet(int winnerGamesScore) {
+        return winnerGamesScore >= ScoreUtil.SET_MIN_GAMES_TO_WIN;
+    }
+
+    private boolean hasRequiredGamesDifference(int winnerGamesScore, int loserGameScore) {
+        return winnerGamesScore - loserGameScore >= ScoreUtil.MIN_GAMES_DIFFERENCE_FOR_WIN;
+    }
+
+
     private void increaseSetScore(MatchProgressDto matchProgressDto) {
-        resetPoints(matchProgressDto);
-        resetGames(matchProgressDto);
-        incrementSetScore(matchProgressDto.getWinnerScore());
+        var winnerScore = matchProgressDto.getWinnerScore();
+        incrementSetScore(winnerScore);
+
+        if (!isMatchFinished(winnerScore)) {
+            resetPoints(matchProgressDto);
+            resetGames(matchProgressDto);
+        }
     }
 
     private void updateMatchState(MatchProgressDto matchProgressDto) {
@@ -193,18 +208,14 @@ public class MatchScoreCalculationService {
         scoreDto.setSetsScore(scoreDto.getSetsScore() + 1);
     }
 
-    private void incrementAdvantagePointScore(ScoreDto scoreDto) {
-        scoreDto.setAdvantagePointScore(scoreDto.getAdvantagePointScore() + 1);
-    }
-
     private void resetPoints(MatchProgressDto matchProgressDto) {
         matchProgressDto.getWinnerScore().setPointsScore(0);
         matchProgressDto.getLoserScore().setPointsScore(0);
     }
 
-    private void resetAdvantagePoints(MatchProgressDto matchProgressDto) {
-        matchProgressDto.getWinnerScore().setAdvantagePointScore(0);
-        matchProgressDto.getLoserScore().setAdvantagePointScore(0);
+    private void resetAdvantage(MatchProgressDto matchProgressDto) {
+        matchProgressDto.getWinnerScore().setHasAdvantage(false);
+        matchProgressDto.getLoserScore().setHasAdvantage(false);
     }
 
     private void resetGames(MatchProgressDto matchProgressDto) {

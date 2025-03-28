@@ -1,6 +1,6 @@
 package com.projects.tennisscoreboard.repository;
 
-import com.projects.tennisscoreboard.Utils.HibernateUtil;
+import com.projects.tennisscoreboard.utils.HibernateUtil;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 

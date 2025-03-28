@@ -14,5 +14,6 @@
     <property name="hibernate.current_session_context_class">thread</property>
 
     <mapping class="com.projects.tennisscoreboard.entity.Player"/>
+    <mapping class="com.projects.tennisscoreboard.entity.Match"/>
   </session-factory>
 </hibernate-configuration>

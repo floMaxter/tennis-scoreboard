@@ -1,4 +1,4 @@
-package com.projects.tennisscoreboard.dto;
+package com.projects.tennisscoreboard.dto.match;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,5 +14,5 @@ public class ScoreDto {
     private int pointsScore;
     private int gamesScore;
     private int setsScore;
-    private int advantagePointScore;
+    private boolean hasAdvantage;
 }
