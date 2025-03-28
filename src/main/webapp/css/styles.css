@@ -55,14 +55,14 @@
     flex-wrap: nowrap;
 }
 
-.home-button {
+.primary-button {
     background-color: #a6acaf;
     min-width: 150px;
     font-size: 20px;
     padding: 10px 20px;
     margin-bottom: 15px;
     text-decoration: none;
-    color: black;
+    color: #2c3e50;
     border: 2px solid #626567;
     border-radius: 30px;
     transition: all 0.3s ease-in-out;
@@ -70,14 +70,14 @@
     cursor: pointer;
 }
 
-.home-button:hover {
+.primary-button:hover {
     background-color: #626567;
     color: #d7dbdd;
     border: 2px solid black;
     transform: scale(1.1);
 }
 
-.home-button:active {
+.primary-button:active {
     color: #7b8287;
 }
 

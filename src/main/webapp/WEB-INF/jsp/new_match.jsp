@@ -18,7 +18,7 @@
                 <label for="secondPlayerName" class="input-label">The name of the second player: </label>
                 <input id="secondPlayerName" type="text" name="secondPlayerName" placeholder="Name" required class="create-input">
                 <br>
-                <input type="submit" value="Start" class="home-button">
+                <input type="submit" value="Start" class="primary-button">
             </form>
             <c:if test="${not empty requestScope.errors}">
                 <div>
