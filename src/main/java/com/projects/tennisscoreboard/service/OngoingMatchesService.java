@@ -28,7 +28,7 @@ public class OngoingMatchesService {
         var matchUuid = UUID.fromString(matchId);
         var ongoingMatchDto = ongoingMatches.get(matchUuid);
         if (ongoingMatchDto == null) {
-            throw new NoSuchElementException("Match with ID " + matchId + " not fount");
+            throw new NoSuchElementException("Match with ID " + matchId + " not found");
         }
 
         return buildOngoingMatchReadDto(ongoingMatchDto);

@@ -1,12 +1,12 @@
 package com.projects.tennisscoreboard.controller;
 
-import com.projects.tennisscoreboard.utils.JspHelper;
 import com.projects.tennisscoreboard.dto.match.MatchState;
 import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchReadDto;
 import com.projects.tennisscoreboard.mapper.OngoingMatchReadMapper;
 import com.projects.tennisscoreboard.service.FinishedMatchesPersistenceService;
 import com.projects.tennisscoreboard.service.MatchScoreCalculationService;
 import com.projects.tennisscoreboard.service.OngoingMatchesService;
+import com.projects.tennisscoreboard.utils.JspHelper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 @WebServlet("/match-score")
 public class MatchScoreController extends HttpServlet {
@@ -25,11 +26,18 @@ public class MatchScoreController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        var ongoingMatchReadDto = ongoingMatchesService.findById(req.getParameter("uuid"));
+        try {
+            var ongoingMatchReadDto = ongoingMatchesService.findById(req.getParameter("uuid"));
 
-        req.setAttribute("ongoingMatch", ongoingMatchReadDto);
-        req.getRequestDispatcher(JspHelper.getPath("/match_score"))
-                .forward(req, resp);
+            req.setAttribute("ongoingMatch", ongoingMatchReadDto);
+            req.getRequestDispatcher(JspHelper.getPath("/match_score"))
+                    .forward(req, resp);
+        } catch (NoSuchElementException e) {
+            req.setAttribute("errorMessage", e.getMessage());
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            req.getRequestDispatcher(JspHelper.getPath("/error_page"))
+                    .forward(req, resp);
+        }
     }
 
     @Override
