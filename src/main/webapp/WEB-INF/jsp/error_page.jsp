@@ -19,7 +19,7 @@
                 </c:if>
             </p>
             <div class="error-actions">
-                <a href="<c:url value='/' />" class="error-button">Go to Home</a>
+                <a href="<c:url value='/home' />" class="error-button">Go to Home</a>
                 <a href="<c:url value='/matches' />" class="error-button">View Matches</a>
             </div>
         </div>

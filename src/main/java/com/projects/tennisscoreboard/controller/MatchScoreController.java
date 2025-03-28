@@ -32,12 +32,12 @@ public class MatchScoreController extends HttpServlet {
             var ongoingMatchReadDto = ongoingMatchesService.findById(req.getParameter("uuid"));
 
             req.setAttribute("ongoingMatch", ongoingMatchReadDto);
-            req.getRequestDispatcher(JspHelper.getPath("/match_score"))
+            req.getRequestDispatcher(JspHelper.getPath("match_score"))
                     .forward(req, resp);
         } catch (NotFoundException e) {
             req.setAttribute("errorMessage", e.getMessage());
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            req.getRequestDispatcher(JspHelper.getPath("/error_page"))
+            req.getRequestDispatcher(JspHelper.getPath("error_page"))
                     .forward(req, resp);
         }
     }
@@ -58,7 +58,7 @@ public class MatchScoreController extends HttpServlet {
 
                 req.setAttribute("ongoingMatch", updatedMatch);
                 req.setAttribute("winner", winner);
-                req.getRequestDispatcher(JspHelper.getPath("/match_score"))
+                req.getRequestDispatcher(JspHelper.getPath("match_score"))
                         .forward(req, resp);
             } else {
                 ongoingMatchesService.updateOngoingMatch(matchId, ongoingMatchReadMapper.mapFrom(updatedMatch));
@@ -67,7 +67,7 @@ public class MatchScoreController extends HttpServlet {
         } catch (NotFoundException e) {
             req.setAttribute("errorMessage", e.getMessage());
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            req.getRequestDispatcher(JspHelper.getPath("/error_page"))
+            req.getRequestDispatcher(JspHelper.getPath("error_page"))
                     .forward(req, resp);
         }
     }

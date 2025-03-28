@@ -23,7 +23,7 @@ public class NewMatchController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher(JspHelper.getPath("/new_match"))
+        req.getRequestDispatcher(JspHelper.getPath("new_match"))
                 .forward(req, resp);
     }
 
