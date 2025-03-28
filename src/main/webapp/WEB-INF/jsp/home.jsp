@@ -11,9 +11,10 @@
         <main class="center-container">
             <h2 class="welcome-text">Welcome to the Tennis scoreboard app</h2>
             <div class="home-button-container">
-                <a href="<c:url value="/new-match"/>" class="home-button">New match</a>
-                <a href="<c:url value="/matches"/>" class="home-button">Completed matches</a>
+                <a href="<c:url value="/new-match"/>" class="primary-button">New match</a>
+                <a href="<c:url value="/matches"/>" class="primary-button">Completed matches</a>
             </div>
         </main>
+        <%@ include file="footer.jsp"%>
     </body>
 </html>

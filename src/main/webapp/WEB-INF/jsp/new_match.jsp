@@ -8,6 +8,7 @@
         <link rel="stylesheet" type="text/css" href="<c:url value="/css/styles.css"/>"/>
     </head>
     <body class="wrapper">
+        <%@ include file="header.jsp"%>
         <main class="center-container">
             <h2 class="new-match-title">New match</h2>
             <form action="<c:url value="/new-match"/>" name="players" method="post" autocomplete="on"
@@ -18,7 +19,7 @@
                 <label for="secondPlayerName" class="input-label">The name of the second player: </label>
                 <input id="secondPlayerName" type="text" name="secondPlayerName" placeholder="Name" required class="create-input">
                 <br>
-                <input type="submit" value="Start" class="home-button">
+                <input type="submit" value="Start" class="primary-button">
             </form>
             <c:if test="${not empty requestScope.errors}">
                 <div>
@@ -28,5 +29,6 @@
                 </div>
             </c:if>
         </main>
+        <%@ include file="footer.jsp"%>
     </body>
 </html>

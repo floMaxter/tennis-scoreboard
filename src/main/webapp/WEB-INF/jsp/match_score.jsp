@@ -27,6 +27,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body class="wrapper">
+        <%@ include file="header.jsp"%>
         <main class="match-score-container">
             <h2 class="match-score-title">Match score</h2>
             <table class="score-table">
@@ -78,10 +79,14 @@
                     </c:if>
                 </tr>
             </table>
+            <c:if test="${matchState == 'TIEBREAK'}">
+                <div class="tiebreak-message">Tiebreak in progress!</div>
+            </c:if>
             <br/>
             <c:if test="${matchState == 'FINISHED'}">
                 <a href="<c:url value="/home" />" class="home-link-span">Home</a> <span> page</span>
             </c:if>
         </main>
+        <%@ include file="footer.jsp"%>
     </body>
 </html>
