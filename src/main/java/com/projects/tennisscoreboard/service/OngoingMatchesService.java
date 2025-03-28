@@ -5,11 +5,11 @@ import com.projects.tennisscoreboard.dto.match.ongoing.MatchCreateDto;
 import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchDto;
 import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchReadDto;
 import com.projects.tennisscoreboard.entity.Player;
+import com.projects.tennisscoreboard.exception.NotFoundException;
 import com.projects.tennisscoreboard.repository.PlayerRepository;
 import com.projects.tennisscoreboard.utils.ScoreUtil;
 
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,7 +28,7 @@ public class OngoingMatchesService {
         var matchUuid = UUID.fromString(matchId);
         var ongoingMatchDto = ongoingMatches.get(matchUuid);
         if (ongoingMatchDto == null) {
-            throw new NoSuchElementException("Match with ID " + matchId + " not found");
+            throw new NotFoundException("Match with ID " + matchId + " not found");
         }
 
         return buildOngoingMatchReadDto(ongoingMatchDto);

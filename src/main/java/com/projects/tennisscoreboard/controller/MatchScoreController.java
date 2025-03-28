@@ -16,7 +16,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.NoSuchElementException;
 
 @WebServlet("/match-score")
 public class MatchScoreController extends HttpServlet {
@@ -35,7 +34,7 @@ public class MatchScoreController extends HttpServlet {
             req.setAttribute("ongoingMatch", ongoingMatchReadDto);
             req.getRequestDispatcher(JspHelper.getPath("/match_score"))
                     .forward(req, resp);
-        } catch (NoSuchElementException e) {
+        } catch (NotFoundException e) {
             req.setAttribute("errorMessage", e.getMessage());
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             req.getRequestDispatcher(JspHelper.getPath("/error_page"))
