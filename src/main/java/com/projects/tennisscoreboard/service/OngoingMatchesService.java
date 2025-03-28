@@ -8,10 +8,10 @@ import com.projects.tennisscoreboard.entity.Player;
 import com.projects.tennisscoreboard.repository.PlayerRepository;
 import com.projects.tennisscoreboard.utils.ScoreUtil;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class OngoingMatchesService {
 
@@ -20,7 +20,7 @@ public class OngoingMatchesService {
     private static final OngoingMatchesService INSTANCE = new OngoingMatchesService();
 
     private OngoingMatchesService() {
-        ongoingMatches = new HashMap<>();
+        ongoingMatches = new ConcurrentHashMap<>();
         playerRepository = PlayerRepository.getInstance();
     }
 
