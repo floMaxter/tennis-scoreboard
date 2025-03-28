@@ -3,8 +3,8 @@ package com.projects.tennisscoreboard.service;
 import com.projects.tennisscoreboard.utils.PropertiesUtil;
 import com.projects.tennisscoreboard.dto.match.completed.MatchReadDto;
 import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchReadDto;
-import com.projects.tennisscoreboard.mapper.MatchReadMapper;
-import com.projects.tennisscoreboard.mapper.OngoingMatchMapper;
+import com.projects.tennisscoreboard.mapper.match.MatchReadMapper;
+import com.projects.tennisscoreboard.mapper.match.OngoingMatchMapper;
 import com.projects.tennisscoreboard.repository.MatchRepository;
 
 import java.util.List;

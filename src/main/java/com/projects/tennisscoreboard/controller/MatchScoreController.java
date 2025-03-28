@@ -2,10 +2,12 @@ package com.projects.tennisscoreboard.controller;
 
 import com.projects.tennisscoreboard.dto.match.MatchState;
 import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchReadDto;
-import com.projects.tennisscoreboard.mapper.OngoingMatchReadMapper;
+import com.projects.tennisscoreboard.exception.NotFoundException;
+import com.projects.tennisscoreboard.mapper.match.OngoingMatchReadMapper;
 import com.projects.tennisscoreboard.service.FinishedMatchesPersistenceService;
 import com.projects.tennisscoreboard.service.MatchScoreCalculationService;
 import com.projects.tennisscoreboard.service.OngoingMatchesService;
+import com.projects.tennisscoreboard.service.PlayerService;
 import com.projects.tennisscoreboard.utils.JspHelper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -22,6 +24,7 @@ public class MatchScoreController extends HttpServlet {
     private final OngoingMatchesService ongoingMatchesService = OngoingMatchesService.getInstance();
     private final MatchScoreCalculationService matchScoreCalculationService = MatchScoreCalculationService.getInstance();
     private final FinishedMatchesPersistenceService finishedMatchesPersistenceService = FinishedMatchesPersistenceService.getInstance();
+    private final PlayerService playerService = PlayerService.getInstance();
     private final OngoingMatchReadMapper ongoingMatchReadMapper = OngoingMatchReadMapper.getInstance();
 
     @Override
@@ -45,18 +48,28 @@ public class MatchScoreController extends HttpServlet {
         var matchId = req.getParameter("uuid");
         var pointWinnerId = Long.valueOf(req.getParameter("pointWinnerId"));
 
-        var findMatch = ongoingMatchesService.findById(matchId);
-        var updatedMatch = matchScoreCalculationService.calculateScore(findMatch, pointWinnerId);
-        if (isMatchFinished(updatedMatch)) {
-            finishedMatchesPersistenceService.save(updatedMatch);
-            ongoingMatchesService.delete(matchId);
+        try {
+            var findMatch = ongoingMatchesService.findById(matchId);
+            var updatedMatch = matchScoreCalculationService.calculateScore(findMatch, pointWinnerId);
+            if (isMatchFinished(updatedMatch)) {
+                var savedMatch = finishedMatchesPersistenceService.save(updatedMatch);
+                ongoingMatchesService.delete(matchId);
 
-            req.setAttribute("ongoingMatch", updatedMatch);
-            req.getRequestDispatcher(JspHelper.getPath("/match_score"))
+                var winner = playerService.findById(savedMatch.winner().getId());
+
+                req.setAttribute("ongoingMatch", updatedMatch);
+                req.setAttribute("winner", winner);
+                req.getRequestDispatcher(JspHelper.getPath("/match_score"))
+                        .forward(req, resp);
+            } else {
+                ongoingMatchesService.updateOngoingMatch(matchId, ongoingMatchReadMapper.mapFrom(updatedMatch));
+                resp.sendRedirect(String.format(req.getContextPath() + "/match-score?uuid=%s", matchId));
+            }
+        } catch (NotFoundException e) {
+            req.setAttribute("errorMessage", e.getMessage());
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            req.getRequestDispatcher(JspHelper.getPath("/error_page"))
                     .forward(req, resp);
-        } else {
-            ongoingMatchesService.updateOngoingMatch(matchId, ongoingMatchReadMapper.mapFrom(updatedMatch));
-            resp.sendRedirect(String.format(req.getContextPath() + "/match-score?uuid=%s", matchId));
         }
     }
 

@@ -1,7 +1,8 @@
-package com.projects.tennisscoreboard.mapper;
+package com.projects.tennisscoreboard.mapper.match;
 
 import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchDto;
 import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchReadDto;
+import com.projects.tennisscoreboard.mapper.Mapper;
 
 public class OngoingMatchReadMapper implements Mapper<OngoingMatchReadDto, OngoingMatchDto> {
 

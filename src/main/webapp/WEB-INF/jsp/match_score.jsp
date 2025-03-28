@@ -18,6 +18,7 @@
        value="${requestScope.ongoingMatch.matchScoreDto.secondPlayerScore.hasAdvantage}"/>
 
 <c:set var="matchState" value="${requestScope.ongoingMatch.matchState}"/>
+<c:set var="winner" value="${requestScope.winner.name}"/>
 
 <html>
     <head>
@@ -85,7 +86,7 @@
             </c:if>
             <br/>
             <c:if test="${matchState == 'FINISHED'}">
-                <a href="<c:url value="/home" />" class="home-link-span">Home</a> <span> page</span>
+                <div class="winner-player-message">${winner} win the match!</div>
             </c:if>
         </main>
         <%@ include file="footer.jsp"%>

@@ -1,5 +1,6 @@
-package com.projects.tennisscoreboard.mapper;
+package com.projects.tennisscoreboard.mapper.match;
 
+import com.projects.tennisscoreboard.mapper.Mapper;
 import com.projects.tennisscoreboard.utils.ScoreUtil;
 import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchReadDto;
 import com.projects.tennisscoreboard.entity.Match;

@@ -1,7 +1,8 @@
-package com.projects.tennisscoreboard.mapper;
+package com.projects.tennisscoreboard.mapper.match;
 
 import com.projects.tennisscoreboard.dto.match.completed.MatchReadDto;
 import com.projects.tennisscoreboard.entity.Match;
+import com.projects.tennisscoreboard.mapper.Mapper;
 
 public class MatchReadMapper implements Mapper<Match, MatchReadDto> {
 
