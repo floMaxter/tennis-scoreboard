@@ -21,10 +21,11 @@
 
 <html>
     <head>
-        <meta charset="UTF-8">
         <title>Match score</title>
-        <link rel="stylesheet" href="<c:url value="/css/styles.css"/>">
+        <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="<c:url value="/css/styles.css"/>">
+        <link rel="icon" type="image/png" href="<c:url value='/images/favicon.ico'/>">
     </head>
     <body class="wrapper">
         <%@ include file="header.jsp"%>
