@@ -1,14 +1,12 @@
 package com.projects.tennisscoreboard.service;
 
-import com.projects.tennisscoreboard.utils.ScoreUtil;
-import com.projects.tennisscoreboard.utils.ValidationUtil;
-import com.projects.tennisscoreboard.dto.match.ongoing.MatchCreateDto;
 import com.projects.tennisscoreboard.dto.match.MatchState;
+import com.projects.tennisscoreboard.dto.match.ongoing.MatchCreateDto;
 import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchDto;
 import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchReadDto;
 import com.projects.tennisscoreboard.entity.Player;
 import com.projects.tennisscoreboard.repository.PlayerRepository;
-import com.projects.tennisscoreboard.validator.impl.CreateMatchValidator;
+import com.projects.tennisscoreboard.utils.ScoreUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,13 +17,11 @@ public class OngoingMatchesService {
 
     private final PlayerRepository playerRepository;
     private final Map<UUID, OngoingMatchDto> ongoingMatches;
-    private final CreateMatchValidator createMatchValidator;
     private static final OngoingMatchesService INSTANCE = new OngoingMatchesService();
 
     private OngoingMatchesService() {
         ongoingMatches = new HashMap<>();
         playerRepository = PlayerRepository.getInstance();
-        createMatchValidator = CreateMatchValidator.getInstance();
     }
 
     public OngoingMatchReadDto findById(String matchId) {
@@ -53,8 +49,6 @@ public class OngoingMatchesService {
     }
 
     public UUID create(MatchCreateDto matchCreateDto) {
-        ValidationUtil.validate(createMatchValidator.isValid(matchCreateDto));
-
         var ongoingMatchDto = buildOngoingMatchDto(matchCreateDto);
         var matchId = UUID.randomUUID();
         ongoingMatches.put(matchId, ongoingMatchDto);

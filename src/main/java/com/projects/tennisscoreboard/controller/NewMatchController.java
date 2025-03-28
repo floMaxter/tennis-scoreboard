@@ -4,6 +4,8 @@ import com.projects.tennisscoreboard.utils.JspHelper;
 import com.projects.tennisscoreboard.exception.ValidationException;
 import com.projects.tennisscoreboard.mapper.MatchCreateMapper;
 import com.projects.tennisscoreboard.service.OngoingMatchesService;
+import com.projects.tennisscoreboard.utils.ValidationUtil;
+import com.projects.tennisscoreboard.validator.impl.CreateMatchValidator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,6 +17,7 @@ import java.io.IOException;
 @WebServlet("/new-match")
 public class NewMatchController extends HttpServlet {
 
+    private final CreateMatchValidator createMatchValidator = CreateMatchValidator.getInstance();
     private final OngoingMatchesService ongoingMatchesService = OngoingMatchesService.getInstance();
     private final MatchCreateMapper matchCreateMapper = MatchCreateMapper.getInstance();
 
@@ -27,7 +30,9 @@ public class NewMatchController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         var matchCreateDto = matchCreateMapper.mapFrom(req);
+
         try {
+            ValidationUtil.validate(createMatchValidator.isValid(matchCreateDto));
             var matchId = ongoingMatchesService.create(matchCreateDto);
             resp.sendRedirect(String.format(req.getContextPath() + "/match-score?uuid=%s", matchId));
         } catch (ValidationException e) {

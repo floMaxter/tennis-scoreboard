@@ -20,7 +20,7 @@
                 <br>
                 <input type="submit" value="Start" class="home-button">
             </form>
-            <c:if test="${not empty requestScope.errors}">--%>
+            <c:if test="${not empty requestScope.errors}">
                 <div>
                     <c:forEach var="error" items="${requestScope.errors}">
                         <span>${error.message}</span><br/>
