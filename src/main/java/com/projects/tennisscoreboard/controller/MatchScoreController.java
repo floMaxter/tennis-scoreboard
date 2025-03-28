@@ -2,6 +2,7 @@ package com.projects.tennisscoreboard.controller;
 
 import com.projects.tennisscoreboard.dto.match.MatchState;
 import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchReadDto;
+import com.projects.tennisscoreboard.exception.IllegalStateException;
 import com.projects.tennisscoreboard.exception.NotFoundException;
 import com.projects.tennisscoreboard.mapper.match.OngoingMatchReadMapper;
 import com.projects.tennisscoreboard.service.FinishedMatchesPersistenceService;
@@ -53,7 +54,6 @@ public class MatchScoreController extends HttpServlet {
             if (isMatchFinished(updatedMatch)) {
                 var savedMatch = finishedMatchesPersistenceService.save(updatedMatch);
                 ongoingMatchesService.delete(matchId);
-
                 var winner = playerService.findById(savedMatch.winner().getId());
 
                 req.setAttribute("ongoingMatch", updatedMatch);
@@ -64,7 +64,7 @@ public class MatchScoreController extends HttpServlet {
                 ongoingMatchesService.updateOngoingMatch(matchId, ongoingMatchReadMapper.mapFrom(updatedMatch));
                 resp.sendRedirect(String.format(req.getContextPath() + "/match-score?uuid=%s", matchId));
             }
-        } catch (NotFoundException e) {
+        } catch (NotFoundException | IllegalStateException e) {
             req.setAttribute("errorMessage", e.getMessage());
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             req.getRequestDispatcher(JspHelper.getPath("error_page"))

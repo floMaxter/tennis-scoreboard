@@ -1,5 +1,7 @@
 package com.projects.tennisscoreboard.service;
 
+import com.projects.tennisscoreboard.exception.IllegalStateException;
+import com.projects.tennisscoreboard.utils.PropertiesUtil;
 import com.projects.tennisscoreboard.utils.ScoreUtil;
 import com.projects.tennisscoreboard.dto.match.ongoing.MatchProgressDto;
 import com.projects.tennisscoreboard.dto.match.MatchScoreDto;
@@ -74,7 +76,7 @@ public class MatchScoreCalculationService {
             case REGULAR -> increaseRegularPointScore(matchProgressDto);
             case DEUCE -> increaseAdvantagePointScore(matchProgressDto);
             case TIEBREAK -> increaseTieBreakPointScore(matchProgressDto);
-            default -> throw new RuntimeException("Illegal match state");
+            default -> throw new IllegalStateException(PropertiesUtil.get("exception.illegal_state_message"));
         }
         updateMatchState(matchProgressDto);
     }
