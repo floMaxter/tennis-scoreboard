@@ -8,6 +8,7 @@
         <link rel="stylesheet" type="text/css" href="<c:url value="/css/styles.css"/>"/>
     </head>
     <body class="wrapper">
+        <%@ include file="header.jsp"%>
         <main class="center-container">
             <h2 class="new-match-title">New match</h2>
             <form action="<c:url value="/new-match"/>" name="players" method="post" autocomplete="on"
@@ -28,5 +29,6 @@
                 </div>
             </c:if>
         </main>
+        <%@ include file="footer.jsp"%>
     </body>
 </html>

@@ -14,6 +14,7 @@
         <link rel="stylesheet" type="text/css" href="<c:url value="/css/styles.css"/>">
     </head>
     <body class="wrapper">
+        <%@ include file="header.jsp"%>
         <main class="matches-container">
             <h2 class="matches-title">Matches</h2>
             <form action="<c:url value="/matches"/>" method="get" class="search-form">
@@ -62,6 +63,7 @@
                    class="pagination-link ${currentPage < totalPages ? '' : 'hidden'}">Next</a>
             </div>
         </main>
+        <%@ include file="footer.jsp"%>
         <script src="<c:url value="/js/searchFilter.js"/>"></script>
     </body>
 </html>

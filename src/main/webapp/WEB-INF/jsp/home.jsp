@@ -15,5 +15,6 @@
                 <a href="<c:url value="/matches"/>" class="primary-button">Completed matches</a>
             </div>
         </main>
+        <%@ include file="footer.jsp"%>
     </body>
 </html>
