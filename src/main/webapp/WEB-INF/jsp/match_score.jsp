@@ -78,6 +78,9 @@
                     </c:if>
                 </tr>
             </table>
+            <c:if test="${matchState == 'TIEBREAK'}">
+                <div class="tiebreak-message">Tiebreak in progress!</div>
+            </c:if>
             <br/>
             <c:if test="${matchState == 'FINISHED'}">
                 <a href="<c:url value="/home" />" class="home-link-span">Home</a> <span> page</span>

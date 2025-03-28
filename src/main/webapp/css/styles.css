@@ -303,6 +303,17 @@
     transform: translateY(-2px);
 }
 
+.tiebreak-message {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: #d35400;
+    background-color: #fbeee0;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
 .home-link {
     background-color: #a6acaf;
     color: #2c3e50;
