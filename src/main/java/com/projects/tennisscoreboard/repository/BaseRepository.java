@@ -1,5 +1,6 @@
 package com.projects.tennisscoreboard.repository;
 
+import com.projects.tennisscoreboard.exception.AlreadyExistsException;
 import com.projects.tennisscoreboard.utils.HibernateUtil;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -28,10 +29,21 @@ public abstract class BaseRepository<K extends Serializable, E> implements Repos
             transaction.commit();
             return entity;
         } catch (RuntimeException e) {
-            if (transaction != null) {
-                transaction.rollback();
+            rollbackTransaction(transaction);
+            if (e.getMessage().contains("UNIQUE")) {
+                throw new AlreadyExistsException("Such an entity already exists");
             }
             throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    private void rollbackTransaction(Transaction transaction) {
+        if (transaction != null && transaction.isActive()) {
+            try {
+                transaction.rollback();
+            } catch (Exception ex) {
+                System.out.println("Failed to rollback transaction");
+            }
         }
     }
 
