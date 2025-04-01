@@ -1,6 +1,7 @@
 package com.projects.tennisscoreboard.repository;
 
 import com.projects.tennisscoreboard.exception.AlreadyExistsException;
+import com.projects.tennisscoreboard.exception.DatabaseException;
 import com.projects.tennisscoreboard.utils.HibernateUtil;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -33,7 +34,7 @@ public abstract class BaseRepository<K extends Serializable, E> implements Repos
             if (e.getMessage().contains("UNIQUE")) {
                 throw new AlreadyExistsException("Such an entity already exists");
             }
-            throw new RuntimeException(e.getMessage());
+            throw new DatabaseException("Database error.");
         }
     }
 
@@ -41,7 +42,7 @@ public abstract class BaseRepository<K extends Serializable, E> implements Repos
         if (transaction != null && transaction.isActive()) {
             try {
                 transaction.rollback();
-            } catch (Exception ex) {
+            } catch (Exception e) {
                 System.out.println("Failed to rollback transaction");
             }
         }
@@ -51,6 +52,8 @@ public abstract class BaseRepository<K extends Serializable, E> implements Repos
     public Optional<E> findById(K id) {
         try (var session = sessionFactory.openSession()) {
             return Optional.ofNullable(session.get(entityClass, id));
+        } catch (RuntimeException e) {
+            throw new DatabaseException("Database error.");
         }
     }
 
@@ -61,6 +64,8 @@ public abstract class BaseRepository<K extends Serializable, E> implements Repos
             criteria.from(entityClass);
             return session.createQuery(criteria)
                     .getResultList();
+        } catch (RuntimeException e) {
+            throw new DatabaseException("Database error.");
         }
     }
 }
