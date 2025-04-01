@@ -36,43 +36,6 @@ public abstract class BaseRepository<K extends Serializable, E> implements Repos
     }
 
     @Override
-    public void delete(K id) {
-        Transaction transaction = null;
-        try (var session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-
-            var entity = session.get(entityClass, id);
-            if (entity != null) {
-                session.remove(entity);
-            } else {
-                throw new RuntimeException("Entity not found");
-            }
-
-            transaction.commit();
-        } catch (RuntimeException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-
-    @Override
-    public void update(E entity) {
-        Transaction transaction = null;
-        try (var session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            session.merge(entity);
-            transaction.commit();
-        } catch (RuntimeException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-
-    @Override
     public Optional<E> findById(K id) {
         try (var session = sessionFactory.openSession()) {
             return Optional.ofNullable(session.get(entityClass, id));
