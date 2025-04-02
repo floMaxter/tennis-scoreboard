@@ -4,7 +4,7 @@ import com.projects.tennisscoreboard.utils.ScoreUtil;
 import com.projects.tennisscoreboard.dto.match.MatchScoreDto;
 import com.projects.tennisscoreboard.dto.match.MatchState;
 import com.projects.tennisscoreboard.dto.match.ScoreDto;
-import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchReadDto;
+import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchDto;
 import com.projects.tennisscoreboard.entity.Player;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,14 +15,14 @@ class MatchScoreCalculationServiceTest {
     private static final Player FIRST_PLAYER = new Player();
     private static final Player SECOND_PLAYER = new Player();
 
-    private OngoingMatchReadDto baseMatch;
+    private OngoingMatchDto baseMatch;
     private MatchScoreCalculationService matchScoreCalculationService;
 
     @BeforeEach
     void prepare() {
         initPlayers();
         this.matchScoreCalculationService = MatchScoreCalculationService.getInstance();
-        this.baseMatch = OngoingMatchReadDto.builder()
+        this.baseMatch = OngoingMatchDto.builder()
                 .firstPlayer(FIRST_PLAYER)
                 .secondPlayer(SECOND_PLAYER)
                 .matchScoreDto(ScoreUtil.createInitialMatchScore())
@@ -40,7 +40,7 @@ class MatchScoreCalculationServiceTest {
     @Test
     void calculateScore_WhenInitialScoreIsZero_ShouldIncreaseFirstPlayerPoints() {
         var pointWinnerId = 1L;
-        var expectedMatch = OngoingMatchReadDto.builder()
+        var expectedMatch = OngoingMatchDto.builder()
                 .firstPlayer(FIRST_PLAYER)
                 .secondPlayer(SECOND_PLAYER)
                 .matchScoreDto(MatchScoreDto.builder()
@@ -80,7 +80,7 @@ class MatchScoreCalculationServiceTest {
                 .build()
         );
 
-        var expectedMatch = OngoingMatchReadDto.builder()
+        var expectedMatch = OngoingMatchDto.builder()
                 .firstPlayer(FIRST_PLAYER)
                 .secondPlayer(SECOND_PLAYER)
                 .matchScoreDto(MatchScoreDto.builder()
@@ -121,7 +121,7 @@ class MatchScoreCalculationServiceTest {
                 .build()
         );
 
-        var expectedMatch = OngoingMatchReadDto.builder()
+        var expectedMatch = OngoingMatchDto.builder()
                 .firstPlayer(FIRST_PLAYER)
                 .secondPlayer(SECOND_PLAYER)
                 .matchScoreDto(MatchScoreDto.builder()
@@ -162,7 +162,7 @@ class MatchScoreCalculationServiceTest {
         );
         baseMatch.setMatchState(MatchState.DEUCE);
 
-        var expectedMatch = OngoingMatchReadDto.builder()
+        var expectedMatch = OngoingMatchDto.builder()
                 .firstPlayer(FIRST_PLAYER)
                 .secondPlayer(SECOND_PLAYER)
                 .matchScoreDto(MatchScoreDto.builder()
@@ -206,7 +206,7 @@ class MatchScoreCalculationServiceTest {
         );
         baseMatch.setMatchState(MatchState.DEUCE);
 
-        var expectedMatch = OngoingMatchReadDto.builder()
+        var expectedMatch = OngoingMatchDto.builder()
                 .firstPlayer(FIRST_PLAYER)
                 .secondPlayer(SECOND_PLAYER)
                 .matchScoreDto(MatchScoreDto.builder()
@@ -251,7 +251,7 @@ class MatchScoreCalculationServiceTest {
         );
         baseMatch.setMatchState(MatchState.DEUCE);
 
-        var expectedMatch = OngoingMatchReadDto.builder()
+        var expectedMatch = OngoingMatchDto.builder()
                 .firstPlayer(FIRST_PLAYER)
                 .secondPlayer(SECOND_PLAYER)
                 .matchScoreDto(MatchScoreDto.builder()
@@ -296,7 +296,7 @@ class MatchScoreCalculationServiceTest {
         );
         baseMatch.setMatchState(MatchState.DEUCE);
 
-        var expectedMatch = OngoingMatchReadDto.builder()
+        var expectedMatch = OngoingMatchDto.builder()
                 .firstPlayer(FIRST_PLAYER)
                 .secondPlayer(SECOND_PLAYER)
                 .matchScoreDto(MatchScoreDto.builder()
@@ -339,7 +339,7 @@ class MatchScoreCalculationServiceTest {
         );
         baseMatch.setMatchState(MatchState.REGULAR);
 
-        var expectedMatch = OngoingMatchReadDto.builder()
+        var expectedMatch = OngoingMatchDto.builder()
                 .firstPlayer(FIRST_PLAYER)
                 .secondPlayer(SECOND_PLAYER)
                 .matchScoreDto(MatchScoreDto.builder()
@@ -380,7 +380,7 @@ class MatchScoreCalculationServiceTest {
         );
         baseMatch.setMatchState(MatchState.TIEBREAK);
 
-        var expectedMatch = OngoingMatchReadDto.builder()
+        var expectedMatch = OngoingMatchDto.builder()
                 .firstPlayer(FIRST_PLAYER)
                 .secondPlayer(SECOND_PLAYER)
                 .matchScoreDto(MatchScoreDto.builder()
@@ -421,7 +421,7 @@ class MatchScoreCalculationServiceTest {
         );
         baseMatch.setMatchState(MatchState.TIEBREAK);
 
-        var expectedMatch = OngoingMatchReadDto.builder()
+        var expectedMatch = OngoingMatchDto.builder()
                 .firstPlayer(FIRST_PLAYER)
                 .secondPlayer(SECOND_PLAYER)
                 .matchScoreDto(MatchScoreDto.builder()
@@ -462,7 +462,7 @@ class MatchScoreCalculationServiceTest {
         );
         baseMatch.setMatchState(MatchState.REGULAR);
 
-        var expectedMatch = OngoingMatchReadDto.builder()
+        var expectedMatch = OngoingMatchDto.builder()
                 .firstPlayer(FIRST_PLAYER)
                 .secondPlayer(SECOND_PLAYER)
                 .matchScoreDto(MatchScoreDto.builder()
@@ -502,7 +502,7 @@ class MatchScoreCalculationServiceTest {
                 .build()
         );
 
-        var expectedMatch = OngoingMatchReadDto.builder()
+        var expectedMatch = OngoingMatchDto.builder()
                 .firstPlayer(FIRST_PLAYER)
                 .secondPlayer(SECOND_PLAYER)
                 .matchScoreDto(MatchScoreDto.builder()

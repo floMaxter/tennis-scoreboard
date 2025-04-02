@@ -1,13 +1,13 @@
 package com.projects.tennisscoreboard.service;
 
+import com.projects.tennisscoreboard.dto.match.MatchScoreDto;
+import com.projects.tennisscoreboard.dto.match.MatchState;
+import com.projects.tennisscoreboard.dto.match.ScoreDto;
+import com.projects.tennisscoreboard.dto.match.ongoing.MatchProgressDto;
+import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchDto;
 import com.projects.tennisscoreboard.exception.IllegalStateException;
 import com.projects.tennisscoreboard.utils.PropertiesUtil;
 import com.projects.tennisscoreboard.utils.ScoreUtil;
-import com.projects.tennisscoreboard.dto.match.ongoing.MatchProgressDto;
-import com.projects.tennisscoreboard.dto.match.MatchScoreDto;
-import com.projects.tennisscoreboard.dto.match.MatchState;
-import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchReadDto;
-import com.projects.tennisscoreboard.dto.match.ScoreDto;
 
 public class MatchScoreCalculationService {
 
@@ -16,13 +16,13 @@ public class MatchScoreCalculationService {
     private MatchScoreCalculationService() {
     }
 
-    public OngoingMatchReadDto calculateScore(OngoingMatchReadDto ongoingMatchReadDto, Long pointWinnerId) {
-        var matchProgressDto = buildMatchProgressDto(ongoingMatchReadDto, pointWinnerId);
+    public OngoingMatchDto calculateScore(OngoingMatchDto ongoingMatch, Long pointWinnerId) {
+        var matchProgressDto = buildMatchProgressDto(ongoingMatch, pointWinnerId);
         increaseScore(matchProgressDto);
-        return buildOngoingMatchReadDto(matchProgressDto, ongoingMatchReadDto);
+        return buildOngoingMatchDto(matchProgressDto, ongoingMatch);
     }
 
-    private MatchProgressDto buildMatchProgressDto(OngoingMatchReadDto ongoingMatchDto, Long pointWinnerId) {
+    private MatchProgressDto buildMatchProgressDto(OngoingMatchDto ongoingMatchDto, Long pointWinnerId) {
         var matchScoreDto = ongoingMatchDto.getMatchScoreDto();
         var firstPlayerScore = matchScoreDto.getFirstPlayerScore();
         var secondPlayerScore = matchScoreDto.getSecondPlayerScore();
@@ -43,25 +43,25 @@ public class MatchScoreCalculationService {
         return matchProgressDto;
     }
 
-    private OngoingMatchReadDto buildOngoingMatchReadDto(MatchProgressDto matchProgressDto,
-                                                         OngoingMatchReadDto baseMatchReadDto) {
-        var firstPlayerId = baseMatchReadDto.getFirstPlayer().getId();
-        var winnerScore = matchProgressDto.getWinnerScore();
-        var loserScore = matchProgressDto.getLoserScore();
+    private OngoingMatchDto buildOngoingMatchDto(MatchProgressDto matchProgress,
+                                                 OngoingMatchDto baseMatch) {
+        var firstPlayerId = baseMatch.getFirstPlayer().getId();
+        var winnerScore = matchProgress.getWinnerScore();
+        var loserScore = matchProgress.getLoserScore();
 
-        var updatedMatchReadDto = OngoingMatchReadDto.builder()
-                .firstPlayer(baseMatchReadDto.getFirstPlayer())
-                .secondPlayer(baseMatchReadDto.getSecondPlayer())
-                .matchState(matchProgressDto.getMatchState())
+        var updatedMatchDto = OngoingMatchDto.builder()
+                .firstPlayer(baseMatch.getFirstPlayer())
+                .secondPlayer(baseMatch.getSecondPlayer())
+                .matchState(matchProgress.getMatchState())
                 .build();
 
-        if (matchProgressDto.getPointWinnerId().equals(firstPlayerId)) {
-            updatedMatchReadDto.setMatchScoreDto(buildMatchScoreDto(winnerScore, loserScore));
+        if (matchProgress.getPointWinnerId().equals(firstPlayerId)) {
+            updatedMatchDto.setMatchScoreDto(buildMatchScoreDto(winnerScore, loserScore));
         } else {
-            updatedMatchReadDto.setMatchScoreDto(buildMatchScoreDto(loserScore, winnerScore));
+            updatedMatchDto.setMatchScoreDto(buildMatchScoreDto(loserScore, winnerScore));
         }
 
-        return updatedMatchReadDto;
+        return updatedMatchDto;
     }
 
     private MatchScoreDto buildMatchScoreDto(ScoreDto firstPlayerScore, ScoreDto secondPlayerScore) {

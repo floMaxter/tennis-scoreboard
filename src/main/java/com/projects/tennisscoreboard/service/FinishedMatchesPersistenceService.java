@@ -1,11 +1,11 @@
 package com.projects.tennisscoreboard.service;
 
-import com.projects.tennisscoreboard.utils.PropertiesUtil;
 import com.projects.tennisscoreboard.dto.match.completed.MatchReadDto;
-import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchReadDto;
+import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchDto;
 import com.projects.tennisscoreboard.mapper.match.MatchReadMapper;
 import com.projects.tennisscoreboard.mapper.match.OngoingMatchMapper;
 import com.projects.tennisscoreboard.repository.MatchRepository;
+import com.projects.tennisscoreboard.utils.PropertiesUtil;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class FinishedMatchesPersistenceService {
         matchReadMapper = MatchReadMapper.getInstance();
     }
 
-    public MatchReadDto save(OngoingMatchReadDto completedMatch) {
+    public MatchReadDto save(OngoingMatchDto completedMatch) {
         var match = ongoingMatchMapper.mapFrom(completedMatch);
         var savedMatch = matchRepository.save(match);
         return matchReadMapper.mapFrom(savedMatch);

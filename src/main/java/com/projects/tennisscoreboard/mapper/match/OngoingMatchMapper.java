@@ -1,11 +1,11 @@
 package com.projects.tennisscoreboard.mapper.match;
 
+import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchDto;
+import com.projects.tennisscoreboard.entity.Match;
 import com.projects.tennisscoreboard.mapper.Mapper;
 import com.projects.tennisscoreboard.utils.ScoreUtil;
-import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchReadDto;
-import com.projects.tennisscoreboard.entity.Match;
 
-public class OngoingMatchMapper implements Mapper<OngoingMatchReadDto, Match> {
+public class OngoingMatchMapper implements Mapper<OngoingMatchDto, Match> {
 
     private static final OngoingMatchMapper INSTANCE = new OngoingMatchMapper();
 
@@ -13,8 +13,9 @@ public class OngoingMatchMapper implements Mapper<OngoingMatchReadDto, Match> {
     }
 
     @Override
-    public Match mapFrom(OngoingMatchReadDto object) {
-        var firstPlayerSetsScore = object.getMatchScoreDto().getFirstPlayerScore().getSetsScore();
+    public Match mapFrom(OngoingMatchDto object) {
+        var matchScore = object.getMatchScoreDto();
+        var firstPlayerSetsScore = matchScore.getFirstPlayerScore().getSetsScore();
         var match = Match.builder()
                 .firstPlayer(object.getFirstPlayer())
                 .secondPlayer(object.getSecondPlayer())

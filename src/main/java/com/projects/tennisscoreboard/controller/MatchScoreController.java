@@ -1,8 +1,7 @@
 package com.projects.tennisscoreboard.controller;
 
 import com.projects.tennisscoreboard.dto.match.MatchState;
-import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchReadDto;
-import com.projects.tennisscoreboard.mapper.match.OngoingMatchReadMapper;
+import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchDto;
 import com.projects.tennisscoreboard.service.FinishedMatchesPersistenceService;
 import com.projects.tennisscoreboard.service.MatchScoreCalculationService;
 import com.projects.tennisscoreboard.service.OngoingMatchesService;
@@ -23,13 +22,12 @@ public class MatchScoreController extends HttpServlet {
     private final MatchScoreCalculationService matchScoreCalculationService = MatchScoreCalculationService.getInstance();
     private final FinishedMatchesPersistenceService finishedMatchesPersistenceService = FinishedMatchesPersistenceService.getInstance();
     private final PlayerService playerService = PlayerService.getInstance();
-    private final OngoingMatchReadMapper ongoingMatchReadMapper = OngoingMatchReadMapper.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        var ongoingMatchReadDto = ongoingMatchesService.findById(req.getParameter("uuid"));
+        var ongoingMatch = ongoingMatchesService.findById(req.getParameter("uuid"));
 
-        req.setAttribute("ongoingMatch", ongoingMatchReadDto);
+        req.setAttribute("ongoingMatch", ongoingMatch);
         req.getRequestDispatcher(JspHelper.getPath("match_score"))
                 .forward(req, resp);
     }
@@ -51,12 +49,12 @@ public class MatchScoreController extends HttpServlet {
             req.getRequestDispatcher(JspHelper.getPath("match_score"))
                     .forward(req, resp);
         } else {
-            ongoingMatchesService.updateOngoingMatch(matchId, ongoingMatchReadMapper.mapFrom(updatedMatch));
+            ongoingMatchesService.updateOngoingMatch(matchId, updatedMatch);
             resp.sendRedirect(String.format(req.getContextPath() + "/match-score?uuid=%s", matchId));
         }
     }
 
-    private boolean isMatchFinished(OngoingMatchReadDto updatedMatch) {
+    private boolean isMatchFinished(OngoingMatchDto updatedMatch) {
         return updatedMatch.getMatchState().equals(MatchState.FINISHED);
     }
 }

@@ -3,7 +3,6 @@ package com.projects.tennisscoreboard.service;
 import com.projects.tennisscoreboard.dto.match.MatchState;
 import com.projects.tennisscoreboard.dto.match.ongoing.MatchCreateDto;
 import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchDto;
-import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchReadDto;
 import com.projects.tennisscoreboard.entity.Player;
 import com.projects.tennisscoreboard.exception.NotFoundException;
 import com.projects.tennisscoreboard.repository.PlayerRepository;
@@ -24,28 +23,14 @@ public class OngoingMatchesService {
         playerRepository = PlayerRepository.getInstance();
     }
 
-    public OngoingMatchReadDto findById(String matchId) {
+    public OngoingMatchDto findById(String matchId) {
         var matchUuid = UUID.fromString(matchId);
         var ongoingMatchDto = ongoingMatches.get(matchUuid);
         if (ongoingMatchDto == null) {
             throw new NotFoundException("Match with ID " + matchId + " not found");
         }
 
-        return buildOngoingMatchReadDto(ongoingMatchDto);
-    }
-
-    private OngoingMatchReadDto buildOngoingMatchReadDto(OngoingMatchDto ongoingMatchDto) {
-        var firstPlayer = playerRepository.findById(ongoingMatchDto.getFirstPlayerId())
-                .orElseThrow(IllegalArgumentException::new);
-        var secondPlayer = playerRepository.findById(ongoingMatchDto.getSecondPlayerId())
-                .orElseThrow(IllegalArgumentException::new);
-
-        return OngoingMatchReadDto.builder()
-                .firstPlayer(firstPlayer)
-                .secondPlayer(secondPlayer)
-                .matchScoreDto(ongoingMatchDto.getMatchScoreDto())
-                .matchState(ongoingMatchDto.getMatchState())
-                .build();
+        return ongoingMatchDto;
     }
 
     public UUID create(MatchCreateDto matchCreateDto) {
@@ -61,8 +46,8 @@ public class OngoingMatchesService {
         var secondPlayer = getOrCreatePlayer(matchCreateDto.secondPlayerName());
 
         return OngoingMatchDto.builder()
-                .firstPlayerId(firstPlayer.getId())
-                .secondPlayerId(secondPlayer.getId())
+                .firstPlayer(firstPlayer)
+                .secondPlayer(secondPlayer)
                 .matchScoreDto(ScoreUtil.createInitialMatchScore())
                 .matchState(MatchState.REGULAR)
                 .build();
