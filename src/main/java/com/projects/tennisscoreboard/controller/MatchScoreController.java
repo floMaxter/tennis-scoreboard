@@ -42,7 +42,7 @@ public class MatchScoreController extends HttpServlet {
         if (isMatchFinished(updatedMatch)) {
             var savedMatch = finishedMatchesPersistenceService.save(updatedMatch);
             ongoingMatchesService.delete(matchId);
-            var winner = playerService.findById(savedMatch.winner().getId());
+            var winner = playerService.findById(savedMatch.winner().id());
 
             req.setAttribute("ongoingMatch", updatedMatch);
             req.setAttribute("winner", winner);

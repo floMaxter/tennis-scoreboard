@@ -3,9 +3,11 @@ package com.projects.tennisscoreboard.mapper.match;
 import com.projects.tennisscoreboard.dto.match.completed.MatchReadDto;
 import com.projects.tennisscoreboard.entity.Match;
 import com.projects.tennisscoreboard.mapper.Mapper;
+import com.projects.tennisscoreboard.mapper.player.PlayerDtoMapper;
 
 public class MatchReadMapper implements Mapper<Match, MatchReadDto> {
 
+    private final PlayerDtoMapper playerDtoMapper = PlayerDtoMapper.getInstance();
     private static final MatchReadMapper INSTANCE = new MatchReadMapper();
 
     private MatchReadMapper() {
@@ -14,9 +16,9 @@ public class MatchReadMapper implements Mapper<Match, MatchReadDto> {
     @Override
     public MatchReadDto mapFrom(Match object) {
         return MatchReadDto.builder()
-                .firstPlayer(object.getFirstPlayer())
-                .secondPlayer(object.getSecondPlayer())
-                .winner(object.getWinner())
+                .firstPlayer(playerDtoMapper.mapFrom(object.getFirstPlayer()))
+                .secondPlayer(playerDtoMapper.mapFrom(object.getSecondPlayer()))
+                .winner(playerDtoMapper.mapFrom(object.getWinner()))
                 .build();
     }
 

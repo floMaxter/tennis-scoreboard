@@ -1,26 +1,25 @@
 package com.projects.tennisscoreboard.service;
 
-import com.projects.tennisscoreboard.utils.ScoreUtil;
 import com.projects.tennisscoreboard.dto.match.MatchScoreDto;
 import com.projects.tennisscoreboard.dto.match.MatchState;
 import com.projects.tennisscoreboard.dto.match.ScoreDto;
 import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchDto;
-import com.projects.tennisscoreboard.entity.Player;
+import com.projects.tennisscoreboard.dto.player.PlayerDto;
+import com.projects.tennisscoreboard.utils.ScoreUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class MatchScoreCalculationServiceTest {
 
-    private static final Player FIRST_PLAYER = new Player();
-    private static final Player SECOND_PLAYER = new Player();
+    private static final PlayerDto FIRST_PLAYER = new PlayerDto(1L, "Max");
+    private static final PlayerDto SECOND_PLAYER = new PlayerDto(2L, "Ivan");
 
     private OngoingMatchDto baseMatch;
     private MatchScoreCalculationService matchScoreCalculationService;
 
     @BeforeEach
     void prepare() {
-        initPlayers();
         this.matchScoreCalculationService = MatchScoreCalculationService.getInstance();
         this.baseMatch = OngoingMatchDto.builder()
                 .firstPlayer(FIRST_PLAYER)
@@ -28,13 +27,6 @@ class MatchScoreCalculationServiceTest {
                 .matchScoreDto(ScoreUtil.createInitialMatchScore())
                 .matchState(MatchState.REGULAR)
                 .build();
-    }
-
-    void initPlayers() {
-        FIRST_PLAYER.setId(1L);
-        FIRST_PLAYER.setName("Max");
-        SECOND_PLAYER.setId(2L);
-        SECOND_PLAYER.setName("IVAN");
     }
 
     @Test

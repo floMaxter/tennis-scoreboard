@@ -13,7 +13,7 @@ public class PlayerDtoMapper implements Mapper<Player, PlayerDto> {
 
     @Override
     public PlayerDto mapFrom(Player object) {
-        return new PlayerDto(object.getName());
+        return new PlayerDto(object.getId(), object.getName());
     }
 
     public static PlayerDtoMapper getInstance() {

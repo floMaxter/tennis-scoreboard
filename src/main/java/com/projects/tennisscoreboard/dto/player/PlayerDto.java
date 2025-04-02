@@ -1,4 +1,4 @@
 package com.projects.tennisscoreboard.dto.player;
 
-public record PlayerDto(String name) {
+public record PlayerDto(Long id, String name) {
 }

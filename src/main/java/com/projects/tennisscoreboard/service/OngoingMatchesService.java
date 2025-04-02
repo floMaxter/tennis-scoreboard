@@ -5,6 +5,7 @@ import com.projects.tennisscoreboard.dto.match.ongoing.MatchCreateDto;
 import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchDto;
 import com.projects.tennisscoreboard.entity.Player;
 import com.projects.tennisscoreboard.exception.NotFoundException;
+import com.projects.tennisscoreboard.mapper.player.PlayerDtoMapper;
 import com.projects.tennisscoreboard.repository.PlayerRepository;
 import com.projects.tennisscoreboard.utils.ScoreUtil;
 
@@ -16,11 +17,13 @@ public class OngoingMatchesService {
 
     private final PlayerRepository playerRepository;
     private final Map<UUID, OngoingMatchDto> ongoingMatches;
+    private final PlayerDtoMapper playerDtoMapper;
     private static final OngoingMatchesService INSTANCE = new OngoingMatchesService();
 
     private OngoingMatchesService() {
         ongoingMatches = new ConcurrentHashMap<>();
         playerRepository = PlayerRepository.getInstance();
+        playerDtoMapper = PlayerDtoMapper.getInstance();
     }
 
     public OngoingMatchDto findById(String matchId) {
@@ -46,8 +49,8 @@ public class OngoingMatchesService {
         var secondPlayer = getOrCreatePlayer(matchCreateDto.secondPlayerName());
 
         return OngoingMatchDto.builder()
-                .firstPlayer(firstPlayer)
-                .secondPlayer(secondPlayer)
+                .firstPlayer(playerDtoMapper.mapFrom(firstPlayer))
+                .secondPlayer(playerDtoMapper.mapFrom(secondPlayer))
                 .matchScoreDto(ScoreUtil.createInitialMatchScore())
                 .matchState(MatchState.REGULAR)
                 .build();

@@ -33,7 +33,7 @@ public class MatchScoreCalculationService {
                 .matchState(matchState)
                 .build();
 
-        if (ongoingMatchDto.getFirstPlayer().getId().equals(pointWinnerId)) {
+        if (ongoingMatchDto.getFirstPlayer().id().equals(pointWinnerId)) {
             matchProgressDto.setWinnerScore(firstPlayerScore);
             matchProgressDto.setLoserScore(secondPlayerScore);
         } else {
@@ -45,7 +45,7 @@ public class MatchScoreCalculationService {
 
     private OngoingMatchDto buildOngoingMatchDto(MatchProgressDto matchProgress,
                                                  OngoingMatchDto baseMatch) {
-        var firstPlayerId = baseMatch.getFirstPlayer().getId();
+        var firstPlayerId = baseMatch.getFirstPlayer().id();
         var winnerScore = matchProgress.getWinnerScore();
         var loserScore = matchProgress.getLoserScore();
 
