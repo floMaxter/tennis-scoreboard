@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class OngoingMatchesService {
 
     private final PlayerRepository playerRepository;
-    private final Map<UUID, OngoingMatchDto> ongoingMatches;
+    private final Map<String, OngoingMatchDto> ongoingMatches;
     private final PlayerDtoMapper playerDtoMapper;
     private static final OngoingMatchesService INSTANCE = new OngoingMatchesService();
 
@@ -27,8 +27,7 @@ public class OngoingMatchesService {
     }
 
     public OngoingMatchDto findById(String matchId) {
-        var matchUuid = UUID.fromString(matchId);
-        var ongoingMatchDto = ongoingMatches.get(matchUuid);
+        var ongoingMatchDto = ongoingMatches.get(matchId);
         if (ongoingMatchDto == null) {
             throw new NotFoundException("Match with ID " + matchId + " not found");
         }
@@ -36,9 +35,9 @@ public class OngoingMatchesService {
         return ongoingMatchDto;
     }
 
-    public UUID create(MatchCreateDto matchCreateDto) {
+    public String create(MatchCreateDto matchCreateDto) {
         var ongoingMatchDto = buildOngoingMatchDto(matchCreateDto);
-        var matchId = UUID.randomUUID();
+        var matchId = UUID.randomUUID().toString();
         ongoingMatches.put(matchId, ongoingMatchDto);
 
         return matchId;
@@ -62,15 +61,11 @@ public class OngoingMatchesService {
     }
 
     public void updateOngoingMatch(String matchId, OngoingMatchDto ongoingMatchDto) {
-        var matchUuid = UUID.fromString(matchId);
-        if (ongoingMatches.containsKey(matchUuid)) {
-            ongoingMatches.put(matchUuid, ongoingMatchDto);
-        }
+        ongoingMatches.put(matchId, ongoingMatchDto);
     }
 
     public void delete(String matchId) {
-        var matchUuid = UUID.fromString(matchId);
-        ongoingMatches.remove(matchUuid);
+        ongoingMatches.remove(matchId);
     }
 
     public static OngoingMatchesService getInstance() {
