@@ -406,3 +406,30 @@
     border-radius: 5px;
     margin-top: 10px;
 }
+
+/*FINISHED PAGE*/
+
+.save-match-form {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.save-match-button {
+    background-color: #28a745;
+    color: white;
+    font-size: 18px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.save-match-button:hover {
+    background-color: #218838;
+}
+
+.save-match-button:active {
+    background-color: #1e7e34;
+}
