@@ -1,10 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<c:set var="matches" value="${requestScope.matches}"/>
-<c:set var="currentPage" value="${requestScope.currentPage}"/>
-<c:set var="totalPages" value="${requestScope.totalPages}"/>
 <c:set var="filterByPlayerName" value="${param.filter_by_player_name}"/>
+<c:set var="currentPage" value="${requestScope.matchPage.currentPage}" />
+<c:set var="totalPages" value="${requestScope.matchPage.totalPages}" />
+<c:set var="matches" value="${requestScope.matchPage.matches}" />
 
 <html>
     <head>

@@ -53,7 +53,8 @@ public abstract class BaseRepository<K extends Serializable, E> implements Repos
     public List<E> findAll(Integer page) {
         var offset = (page - 1) * PaginationUtil.RECORDS_PER_PAGE;
 
-        try (var session = sessionFactory.openSession()) {
+        try {
+            var session = sessionFactory.getCurrentSession();
             var criteria = session.getCriteriaBuilder().createQuery(entityClass);
             criteria.from(entityClass);
             return session.createQuery(criteria)

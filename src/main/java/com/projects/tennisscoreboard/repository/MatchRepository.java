@@ -17,7 +17,8 @@ public class MatchRepository extends BaseRepository<Long, Match> {
     public List<Match> findAllByPlayerName(String name, Integer page) {
         var offset = (page - 1) * PaginationUtil.RECORDS_PER_PAGE;
 
-        try (var session = sessionFactory.openSession()) {
+        try {
+            var session = sessionFactory.getCurrentSession();
             return session.createQuery("select m from Match m " +
                                        "inner join Player p on m.firstPlayer.id = p.id " +
                                        "or m.secondPlayer.id = p.id where p.name = :name", Match.class)
@@ -31,7 +32,8 @@ public class MatchRepository extends BaseRepository<Long, Match> {
     }
 
     public Long countAllByPlayerName(String name) {
-        try (var session = sessionFactory.openSession()) {
+        try {
+            var session = sessionFactory.getCurrentSession();
             return session.createQuery("select count(m.id) from Match m " +
                                        "inner join Player p on m.firstPlayer.id = p.id " +
                                        "or m.secondPlayer.id = p.id where p.name = :name", Long.class)
@@ -43,7 +45,8 @@ public class MatchRepository extends BaseRepository<Long, Match> {
     }
 
     public Long countAll() {
-        try (var session = sessionFactory.openSession()) {
+        try {
+            var session = sessionFactory.getCurrentSession();
             return session.createQuery("select count(*) from Match m", Long.class)
                     .uniqueResult();
         } catch (RuntimeException e) {

@@ -24,28 +24,21 @@ public class MatchesController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         var playerName = req.getParameter("filter_by_player_name");
-        var page = req.getParameter("page");
+        var page = parseOrDefault(req.getParameter("page"));
         ValidationUtil.validate(filterByPlayerNameValidator.isValid(playerName));
 
-        var totalPages = finishedMatchesPersistenceService.getTotalPages(playerName);
-        var currentPage = normalizePageNumber(page, totalPages);
-        var matches = finishedMatchesPersistenceService.findMatches(playerName, currentPage);
+        var matchPageDto = finishedMatchesPersistenceService.getPaginatedMatches(playerName, page);
 
-        req.setAttribute("totalPages", totalPages);
-        req.setAttribute("currentPage", currentPage);
-        req.setAttribute("matches", matches);
+        req.setAttribute("matchPage", matchPageDto);
         req.getRequestDispatcher(JspHelper.getPath("matches"))
                 .forward(req, resp);
     }
 
-    private Integer normalizePageNumber(String page, Long totalPage) {
-        var currentPage = page == null ? 1 : parsePageNumber(page);
-        return Math.toIntExact(Math.max(1, Math.min(currentPage, totalPage)));
-    }
+    private Integer parseOrDefault(String page) {
+        if (page == null) return 1;
 
-    private Integer parsePageNumber(String page) {
         try {
-            return Integer.valueOf(page);
+            return Integer.parseInt(page);
         } catch (NumberFormatException e) {
             throw new ValidationException(Collections
                     .singletonList(ValidationError.of("Current page number can not parse to Long: " + page)));

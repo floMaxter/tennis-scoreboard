@@ -22,6 +22,8 @@ public class MatchReadMapper implements Mapper<Match, MatchReadDto> {
                 .build();
     }
 
+
+
     public static MatchReadMapper getInstance() {
         return INSTANCE;
     }
