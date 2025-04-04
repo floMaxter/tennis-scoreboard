@@ -5,7 +5,7 @@ import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchDto;
 import com.projects.tennisscoreboard.mapper.match.MatchReadMapper;
 import com.projects.tennisscoreboard.mapper.match.OngoingMatchMapper;
 import com.projects.tennisscoreboard.repository.MatchRepository;
-import com.projects.tennisscoreboard.utils.PropertiesUtil;
+import com.projects.tennisscoreboard.utils.PaginationUtil;
 
 import java.util.List;
 
@@ -15,7 +15,6 @@ public class FinishedMatchesPersistenceService {
     private final OngoingMatchMapper ongoingMatchMapper;
     private final MatchReadMapper matchReadMapper;
     private static final FinishedMatchesPersistenceService INSTANCE = new FinishedMatchesPersistenceService();
-    private static final Integer RECORDS_PER_PAGES = Integer.parseInt(PropertiesUtil.get("pagination.matches_per_page"));
 
     private FinishedMatchesPersistenceService() {
         matchRepository = MatchRepository.getInstance();
@@ -29,14 +28,12 @@ public class FinishedMatchesPersistenceService {
         return matchReadMapper.mapFrom(savedMatch);
     }
 
-    public List<MatchReadDto> findMatches(String playerName, Long page) {
-        var skipElements = RECORDS_PER_PAGES * (page - 1);
+    public List<MatchReadDto> findMatches(String playerName, Integer page) {
         var matches = isPlayerNameSpecified(playerName)
-                ? matchRepository.findAllByPlayerName(playerName)
-                : matchRepository.findAll();
+                ? matchRepository.findAllByPlayerName(playerName, page)
+                : matchRepository.findAll(page);
+
         return matches.stream()
-                .skip(skipElements)
-                .limit(RECORDS_PER_PAGES)
                 .map(matchReadMapper::mapFrom)
                 .toList();
     }
@@ -49,7 +46,7 @@ public class FinishedMatchesPersistenceService {
     }
 
     private Long calculateTotalPages(Long numberOfRecords) {
-        return (numberOfRecords + RECORDS_PER_PAGES - 1) / RECORDS_PER_PAGES;
+        return (numberOfRecords + PaginationUtil.RECORDS_PER_PAGE - 1) / PaginationUtil.RECORDS_PER_PAGE;
     }
 
     private boolean isPlayerNameSpecified(String name) {

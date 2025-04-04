@@ -38,14 +38,14 @@ public class MatchesController extends HttpServlet {
                 .forward(req, resp);
     }
 
-    private Long normalizePageNumber(String page, Long totalPage) {
+    private Integer normalizePageNumber(String page, Long totalPage) {
         var currentPage = page == null ? 1 : parsePageNumber(page);
-        return Math.max(1, Math.min(currentPage, totalPage));
+        return Math.toIntExact(Math.max(1, Math.min(currentPage, totalPage)));
     }
 
-    private Long parsePageNumber(String page) {
+    private Integer parsePageNumber(String page) {
         try {
-            return Long.parseLong(page);
+            return Integer.valueOf(page);
         } catch (NumberFormatException e) {
             throw new ValidationException(Collections
                     .singletonList(ValidationError.of("Current page number can not parse to Long: " + page)));

@@ -3,18 +3,19 @@ package com.projects.tennisscoreboard.repository;
 import com.projects.tennisscoreboard.exception.AlreadyExistsException;
 import com.projects.tennisscoreboard.exception.DatabaseException;
 import com.projects.tennisscoreboard.utils.HibernateUtil;
+import com.projects.tennisscoreboard.utils.PaginationUtil;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Optional;
 
 
 public abstract class BaseRepository<K extends Serializable, E> implements Repository<K, E> {
 
     private final Class<E> entityClass;
     protected final SessionFactory sessionFactory;
+
 
     public BaseRepository(Class<E> entityClass) {
         this.entityClass = entityClass;
@@ -49,20 +50,15 @@ public abstract class BaseRepository<K extends Serializable, E> implements Repos
     }
 
     @Override
-    public Optional<E> findById(K id) {
-        try (var session = sessionFactory.openSession()) {
-            return Optional.ofNullable(session.get(entityClass, id));
-        } catch (RuntimeException e) {
-            throw new DatabaseException("Database error.");
-        }
-    }
+    public List<E> findAll(Integer page) {
+        var offset = (page - 1) * PaginationUtil.RECORDS_PER_PAGE;
 
-    @Override
-    public List<E> findAll() {
         try (var session = sessionFactory.openSession()) {
             var criteria = session.getCriteriaBuilder().createQuery(entityClass);
             criteria.from(entityClass);
             return session.createQuery(criteria)
+                    .setFirstResult(offset)
+                    .setMaxResults(PaginationUtil.RECORDS_PER_PAGE)
                     .getResultList();
         } catch (RuntimeException e) {
             throw new DatabaseException("Database error.");
