@@ -5,6 +5,8 @@ import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchDto;
 import com.projects.tennisscoreboard.service.MatchScoreCalculationService;
 import com.projects.tennisscoreboard.service.OngoingMatchesService;
 import com.projects.tennisscoreboard.utils.JspHelper;
+import com.projects.tennisscoreboard.utils.ValidationUtil;
+import com.projects.tennisscoreboard.validator.impl.UUIDValidator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,10 +20,14 @@ public class MatchScoreController extends HttpServlet {
 
     private final OngoingMatchesService ongoingMatchesService = OngoingMatchesService.getInstance();
     private final MatchScoreCalculationService matchScoreCalculationService = MatchScoreCalculationService.getInstance();
+    private final UUIDValidator uuidValidator = UUIDValidator.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        var ongoingMatch = ongoingMatchesService.findById(req.getParameter("uuid"));
+        var matchId = req.getParameter("uuid");
+        ValidationUtil.validate(uuidValidator.isValid(matchId));
+
+        var ongoingMatch = ongoingMatchesService.findById(matchId);
 
         req.setAttribute("ongoingMatch", ongoingMatch);
         req.getRequestDispatcher(JspHelper.getPath("match_score"))
@@ -32,6 +38,8 @@ public class MatchScoreController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var matchId = req.getParameter("uuid");
         var pointWinnerId = Long.valueOf(req.getParameter("pointWinnerId"));
+
+        ValidationUtil.validate(uuidValidator.isValid(matchId));
 
         var findMatch = ongoingMatchesService.findById(matchId);
         var updatedMatch = matchScoreCalculationService.calculateScore(findMatch, pointWinnerId);

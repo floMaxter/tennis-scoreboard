@@ -14,6 +14,7 @@ public class ExceptionHandler {
         return switch (throwable.getClass().getSimpleName()) {
             case "NotFoundException" -> HttpServletResponse.SC_NOT_FOUND;
             case "AlreadyExistsException" -> HttpServletResponse.SC_CONFLICT;
+            case "ValidationException" -> HttpServletResponse.SC_BAD_REQUEST;
             default -> HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
         };
     }
