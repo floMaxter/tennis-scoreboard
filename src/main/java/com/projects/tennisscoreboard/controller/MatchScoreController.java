@@ -6,6 +6,7 @@ import com.projects.tennisscoreboard.service.MatchScoreCalculationService;
 import com.projects.tennisscoreboard.service.OngoingMatchesService;
 import com.projects.tennisscoreboard.utils.JspHelper;
 import com.projects.tennisscoreboard.utils.ValidationUtil;
+import com.projects.tennisscoreboard.validator.impl.LongIDValidator;
 import com.projects.tennisscoreboard.validator.impl.UUIDValidator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -21,6 +22,7 @@ public class MatchScoreController extends HttpServlet {
     private final OngoingMatchesService ongoingMatchesService = OngoingMatchesService.getInstance();
     private final MatchScoreCalculationService matchScoreCalculationService = MatchScoreCalculationService.getInstance();
     private final UUIDValidator uuidValidator = UUIDValidator.getInstance();
+    private final LongIDValidator longIDValidator = LongIDValidator.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -37,13 +39,16 @@ public class MatchScoreController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var matchId = req.getParameter("uuid");
-        var pointWinnerId = Long.valueOf(req.getParameter("pointWinnerId"));
-
+        var pointWinnerIdParam = req.getParameter("pointWinnerId");
         ValidationUtil.validate(uuidValidator.isValid(matchId));
+        ValidationUtil.validate(longIDValidator.isValid(pointWinnerIdParam));
 
         var findMatch = ongoingMatchesService.findById(matchId);
+        var pointWinnerId = Long.valueOf(pointWinnerIdParam);
+
         var updatedMatch = matchScoreCalculationService.calculateScore(findMatch, pointWinnerId);
         ongoingMatchesService.updateOngoingMatch(matchId, updatedMatch);
+
         if (isMatchFinished(updatedMatch)) {
             resp.sendRedirect(String.format(req.getContextPath() + "/finished-match?uuid=%s", matchId));
         } else {
