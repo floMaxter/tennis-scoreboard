@@ -13,12 +13,14 @@ import java.io.IOException;
 @WebServlet("/matches")
 public class MatchesController extends HttpServlet {
 
+    private final FilterByPlayerNameValidator filterByPlayerNameValidator = FilterByPlayerNameValidator.getInstance();
     private final FinishedMatchesPersistenceService finishedMatchesPersistenceService = FinishedMatchesPersistenceService.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         var playerName = req.getParameter("filter_by_player_name");
         var page = req.getParameter("page");
+        ValidationUtil.validate(filterByPlayerNameValidator.isValid(playerName));
 
         var totalPages = finishedMatchesPersistenceService.getTotalPages(playerName);
         var currentPage = normalizePageNumber(page, totalPages);
