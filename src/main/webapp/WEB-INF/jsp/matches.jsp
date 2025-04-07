@@ -39,6 +39,14 @@
                             <td>${match.winner.name}</td>
                         </tr>
                     </c:forEach>
+
+                    <c:if test="${empty matches}">
+                        <tr>
+                            <td colspan="3" class="no-matches-message">
+                                No matches found
+                            </td>
+                        </tr>
+                    </c:if>
                 </tbody>
             </table>
             <div class="pagination-container">

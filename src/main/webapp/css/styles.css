@@ -281,6 +281,14 @@
     background-color: #a6acaf;
 }
 
+.no-matches-message {
+    text-align: center;
+    font-style: italic;
+    padding: 1em;
+    font-size: 18px;
+    color: #7f8c8d;
+}
+
 /*PAGINATION*/
 
 .pagination-container {
