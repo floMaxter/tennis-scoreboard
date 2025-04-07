@@ -65,5 +65,9 @@
         </main>
         <%@ include file="footer.jsp"%>
         <script src="<c:url value="/js/searchFilter.js"/>"></script>
+        <script>
+            window.actualPageFromServer = ${currentPage};
+        </script>
+        <script src="<c:url value="/js/normalizePageParam.js"/>"></script>
     </body>
 </html>

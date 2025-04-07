@@ -47,7 +47,7 @@ public class FinishedMatchesPersistenceService {
                 ? matchRepository.countAllByPlayerName(playerName)
                 : matchRepository.countAll();
 
-        var totalPages = calculateTotalPages(rowsAmount);
+        var totalPages = Math.max(1, calculateTotalPages(rowsAmount));
         var currentPage = normalizePageNumber(page, totalPages);
 
         var matches = isPlayerNameSpecified(playerName)
