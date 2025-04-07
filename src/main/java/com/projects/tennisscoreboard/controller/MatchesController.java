@@ -11,10 +11,12 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.Collections;
 
+@Slf4j
 @WebServlet("/matches")
 public class MatchesController extends HttpServlet {
 
@@ -40,6 +42,8 @@ public class MatchesController extends HttpServlet {
         try {
             return Integer.parseInt(page);
         } catch (NumberFormatException e) {
+            log.warn("The request to get matches by player name could not be completed due to the " +
+                     "inability to convert the page number={}.", page);
             throw new ValidationException(Collections
                     .singletonList(ValidationError.of("Current page number can not parse to Long: " + page)));
         }

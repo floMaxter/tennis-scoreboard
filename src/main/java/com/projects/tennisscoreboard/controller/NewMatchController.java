@@ -11,9 +11,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
+@Slf4j
 @WebServlet("/new-match")
 public class NewMatchController extends HttpServlet {
 
@@ -36,6 +38,8 @@ public class NewMatchController extends HttpServlet {
             var matchId = ongoingMatchesService.create(matchCreateDto);
             resp.sendRedirect(String.format(req.getContextPath() + "/match-score?uuid=%s", matchId));
         } catch (ValidationException e) {
+            log.warn("Validation failed for a request to create a new match with parameters: firstPlayerName={}, secondPlayerName={}",
+                    matchCreateDto.firstPlayerName(), matchCreateDto.secondPlayerName());
             req.setAttribute("errors", e.getErrors());
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             doGet(req, resp);

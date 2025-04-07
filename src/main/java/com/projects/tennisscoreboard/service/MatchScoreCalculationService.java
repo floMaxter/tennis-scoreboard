@@ -8,7 +8,9 @@ import com.projects.tennisscoreboard.exception.IllegalStateException;
 import com.projects.tennisscoreboard.mapper.match.MatchProgressMapper;
 import com.projects.tennisscoreboard.utils.PropertiesUtil;
 import com.projects.tennisscoreboard.utils.ScoreUtil;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class MatchScoreCalculationService {
 
     private final MatchProgressMapper matchProgressMapper = MatchProgressMapper.getInstance();
@@ -28,7 +30,11 @@ public class MatchScoreCalculationService {
             case REGULAR -> increaseRegularPointScore(matchProgressDto);
             case DEUCE -> increaseAdvantagePointScore(matchProgressDto);
             case TIEBREAK -> increaseTieBreakPointScore(matchProgressDto);
-            default -> throw new IllegalStateException(PropertiesUtil.get("exception.illegal_state_message"));
+            default -> {
+                log.error("Error during increase score. A completed match should not be included in the scoring method {}",
+                        matchProgressDto);
+                throw new IllegalStateException(PropertiesUtil.get("exception.illegal_state_message"));
+            }
         }
         updateMatchState(matchProgressDto);
     }

@@ -8,11 +8,13 @@ import com.projects.tennisscoreboard.exception.NotFoundException;
 import com.projects.tennisscoreboard.mapper.player.PlayerDtoMapper;
 import com.projects.tennisscoreboard.repository.PlayerRepository;
 import com.projects.tennisscoreboard.utils.ScoreUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 public class OngoingMatchesService {
 
     private final PlayerRepository playerRepository;
@@ -29,6 +31,7 @@ public class OngoingMatchesService {
     public OngoingMatchDto findById(String matchId) {
         var ongoingMatchDto = ongoingMatches.get(matchId);
         if (ongoingMatchDto == null) {
+            log.error("Error when searching ongoing match by id {}", matchId);
             throw new NotFoundException("Match with ID " + matchId + " not found");
         }
 

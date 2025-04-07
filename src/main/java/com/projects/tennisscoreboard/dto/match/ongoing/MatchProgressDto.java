@@ -3,11 +3,9 @@ package com.projects.tennisscoreboard.dto.match.ongoing;
 import com.projects.tennisscoreboard.dto.match.MatchState;
 import com.projects.tennisscoreboard.dto.match.ScoreDto;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 @Builder
 public class MatchProgressDto {
 
