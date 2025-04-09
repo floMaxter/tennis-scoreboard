@@ -10,7 +10,7 @@ import lombok.Data;
 public class MatchProgressDto {
 
     private final Long pointWinnerId;
-    private ScoreDto winnerScore;
-    private ScoreDto loserScore;
+    private final ScoreDto winnerScore;
+    private final ScoreDto loserScore;
     private MatchState matchState;
 }

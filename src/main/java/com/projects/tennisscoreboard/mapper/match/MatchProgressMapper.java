@@ -13,24 +13,25 @@ public class MatchProgressMapper {
     }
 
     public MatchProgressDto mapToMatchProgress(OngoingMatchDto ongoingMatchDto, Long pointWinnerId) {
+        var firstPlayerId = ongoingMatchDto.getFirstPlayer().id();
         var matchScoreDto = ongoingMatchDto.getMatchScoreDto();
         var firstPlayerScore = matchScoreDto.getFirstPlayerScore();
         var secondPlayerScore = matchScoreDto.getSecondPlayerScore();
         var matchState = ongoingMatchDto.getMatchState();
 
-        MatchProgressDto matchProgressDto = MatchProgressDto.builder()
+        var winnerScore = isPointWinnerId(firstPlayerId, pointWinnerId)
+                ? copyScoreDto(firstPlayerScore)
+                : copyScoreDto(secondPlayerScore);
+        var loserScore = isPointWinnerId(firstPlayerId, pointWinnerId)
+                ? copyScoreDto(secondPlayerScore)
+                : copyScoreDto(firstPlayerScore);
+                
+        return MatchProgressDto.builder()
                 .pointWinnerId(pointWinnerId)
+                .winnerScore(winnerScore)
+                .loserScore(loserScore)
                 .matchState(matchState)
                 .build();
-
-        if (ongoingMatchDto.getFirstPlayer().id().equals(pointWinnerId)) {
-            matchProgressDto.setWinnerScore(copyScoreDto(firstPlayerScore));
-            matchProgressDto.setLoserScore(copyScoreDto(secondPlayerScore));
-        } else {
-            matchProgressDto.setWinnerScore(copyScoreDto(secondPlayerScore));
-            matchProgressDto.setLoserScore(copyScoreDto(firstPlayerScore));
-        }
-        return matchProgressDto;
     }
 
     private ScoreDto copyScoreDto(ScoreDto scoreDto) {
@@ -47,20 +48,6 @@ public class MatchProgressMapper {
         var winnerScore = matchProgressDto.getWinnerScore();
         var loserScore = matchProgressDto.getLoserScore();
 
-//        var updatedMatchDto = OngoingMatchDto.builder()
-//                .firstPlayer(baseMatch.getFirstPlayer())
-//                .secondPlayer(baseMatch.getSecondPlayer())
-//                .matchState(matchProgressDto.getMatchState())
-//                .build();
-//
-//        if (matchProgressDto.getPointWinnerId().equals(firstPlayerId)) {
-//            updatedMatchDto.setMatchScoreDto(buildMatchScoreDto(winnerScore, loserScore));
-//        } else {
-//            updatedMatchDto.setMatchScoreDto(buildMatchScoreDto(loserScore, winnerScore));
-//        }
-//
-//        return updatedMatchDto;
-
         var updatedMatchScoreDto = isFirstPlayerWinPoint(firstPlayerId, matchProgressDto)
                 ? buildMatchScoreDto(winnerScore, loserScore)
                 : buildMatchScoreDto(loserScore, winnerScore);
@@ -73,10 +60,13 @@ public class MatchProgressMapper {
                 .build();
     }
 
+    private boolean isPointWinnerId(Long firstPlayerId, Long pointWinnerId) {
+        return firstPlayerId.equals(pointWinnerId);
+    }
+    
     private boolean isFirstPlayerWinPoint(Long firstPlayerId, MatchProgressDto matchProgressDto) {
         return matchProgressDto.getPointWinnerId().equals(firstPlayerId);
     }
-
 
     private MatchScoreDto buildMatchScoreDto(ScoreDto firstPlayerScore, ScoreDto secondPlayerScore) {
         return MatchScoreDto.builder()
