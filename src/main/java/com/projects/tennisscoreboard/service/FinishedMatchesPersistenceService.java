@@ -1,7 +1,6 @@
 package com.projects.tennisscoreboard.service;
 
 import com.projects.tennisscoreboard.dto.match.MatchPageDto;
-import com.projects.tennisscoreboard.dto.match.completed.MatchReadDto;
 import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchDto;
 import com.projects.tennisscoreboard.mapper.match.MatchReadMapper;
 import com.projects.tennisscoreboard.mapper.match.OngoingMatchMapper;
@@ -25,10 +24,9 @@ public class FinishedMatchesPersistenceService {
         sessionFactory = HibernateUtil.getSessionFactory();
     }
 
-    public MatchReadDto save(OngoingMatchDto completedMatch) {
+    public void save(OngoingMatchDto completedMatch) {
         var match = ongoingMatchMapper.mapFrom(completedMatch);
-        var savedMatch = matchRepository.save(match);
-        return matchReadMapper.mapFrom(savedMatch);
+        matchRepository.save(match);
     }
 
     public MatchPageDto getPaginatedMatches(String playerName, Integer page) {
