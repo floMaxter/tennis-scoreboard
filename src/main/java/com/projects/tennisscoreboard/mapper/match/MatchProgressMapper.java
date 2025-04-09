@@ -47,20 +47,36 @@ public class MatchProgressMapper {
         var winnerScore = matchProgressDto.getWinnerScore();
         var loserScore = matchProgressDto.getLoserScore();
 
-        var updatedMatchDto = OngoingMatchDto.builder()
+//        var updatedMatchDto = OngoingMatchDto.builder()
+//                .firstPlayer(baseMatch.getFirstPlayer())
+//                .secondPlayer(baseMatch.getSecondPlayer())
+//                .matchState(matchProgressDto.getMatchState())
+//                .build();
+//
+//        if (matchProgressDto.getPointWinnerId().equals(firstPlayerId)) {
+//            updatedMatchDto.setMatchScoreDto(buildMatchScoreDto(winnerScore, loserScore));
+//        } else {
+//            updatedMatchDto.setMatchScoreDto(buildMatchScoreDto(loserScore, winnerScore));
+//        }
+//
+//        return updatedMatchDto;
+
+        var updatedMatchScoreDto = isFirstPlayerWinPoint(firstPlayerId, matchProgressDto)
+                ? buildMatchScoreDto(winnerScore, loserScore)
+                : buildMatchScoreDto(loserScore, winnerScore);
+
+        return OngoingMatchDto.builder()
                 .firstPlayer(baseMatch.getFirstPlayer())
                 .secondPlayer(baseMatch.getSecondPlayer())
+                .matchScoreDto(updatedMatchScoreDto)
                 .matchState(matchProgressDto.getMatchState())
                 .build();
-
-        if (matchProgressDto.getPointWinnerId().equals(firstPlayerId)) {
-            updatedMatchDto.setMatchScoreDto(buildMatchScoreDto(winnerScore, loserScore));
-        } else {
-            updatedMatchDto.setMatchScoreDto(buildMatchScoreDto(loserScore, winnerScore));
-        }
-
-        return updatedMatchDto;
     }
+
+    private boolean isFirstPlayerWinPoint(Long firstPlayerId, MatchProgressDto matchProgressDto) {
+        return matchProgressDto.getPointWinnerId().equals(firstPlayerId);
+    }
+
 
     private MatchScoreDto buildMatchScoreDto(ScoreDto firstPlayerScore, ScoreDto secondPlayerScore) {
         return MatchScoreDto.builder()

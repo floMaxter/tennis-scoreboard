@@ -5,9 +5,7 @@ import com.projects.tennisscoreboard.dto.match.MatchState;
 import com.projects.tennisscoreboard.dto.match.ScoreDto;
 import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchDto;
 import com.projects.tennisscoreboard.dto.player.PlayerDto;
-import com.projects.tennisscoreboard.utils.ScoreUtil;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class MatchScoreCalculationServiceTest {
@@ -17,31 +15,21 @@ class MatchScoreCalculationServiceTest {
 
     private OngoingMatchDto baseMatch;
     private OngoingMatchDto expectedMatch;
-    private MatchScoreCalculationService matchScoreCalculationService;
-
-    @BeforeEach
-    void prepare() {
-        this.matchScoreCalculationService = MatchScoreCalculationService.getInstance();
-        this.baseMatch = OngoingMatchDto.builder()
-                .firstPlayer(FIRST_PLAYER)
-                .secondPlayer(SECOND_PLAYER)
-                .matchScoreDto(ScoreUtil.createInitialMatchScore())
-                .matchState(MatchState.REGULAR)
-                .build();
-        this.expectedMatch = OngoingMatchDto.builder()
-                .firstPlayer(FIRST_PLAYER)
-                .secondPlayer(SECOND_PLAYER)
-                .build();
-    }
+    private final MatchScoreCalculationService matchScoreCalculationService = MatchScoreCalculationService.getInstance();
 
     @Test
     void calculateScore_WhenFirstPlayerWinsFromZeroZero_ShouldIncreaseFirstPlayerPoints() {
         var pointWinnerId = 1L;
-        expectedMatch.setMatchScoreDto(MatchScoreDto.builder()
-                .firstPlayerScore(buildScoreDto(15, 0, 0))
-                .secondPlayerScore(buildScoreDto(0, 0, 0))
-                .build());
-        expectedMatch.setMatchState(MatchState.REGULAR);
+        baseMatch = buildOngoingMatch(
+                buildScoreDto(0, 0, 0),
+                buildScoreDto(0, 0, 0),
+                MatchState.REGULAR
+        );
+        expectedMatch = buildOngoingMatch(
+                buildScoreDto(15, 0, 0),
+                buildScoreDto(0, 0, 0),
+                MatchState.REGULAR
+        );
 
         var updatedMatch = matchScoreCalculationService.calculateScore(baseMatch, pointWinnerId);
 
@@ -51,16 +39,16 @@ class MatchScoreCalculationServiceTest {
     @Test
     void calculateScore_WhenSecondPlayerWinsFromThirtyForty_ShouldResetPointsAndIncreaseGames() {
         var pointWinnerId = 2L;
-        baseMatch.setMatchScoreDto(MatchScoreDto.builder()
-                .firstPlayerScore(buildScoreDto(30, 0, 0))
-                .secondPlayerScore(buildScoreDto(40, 0, 0))
-                .build());
-
-        expectedMatch.setMatchScoreDto(MatchScoreDto.builder()
-                .firstPlayerScore(buildScoreDto(0, 0, 0))
-                .secondPlayerScore(buildScoreDto(0, 1, 0))
-                .build());
-        expectedMatch.setMatchState(MatchState.REGULAR);
+        baseMatch = buildOngoingMatch(
+                buildScoreDto(30, 0, 0),
+                buildScoreDto(40, 0, 0),
+                MatchState.REGULAR
+        );
+        expectedMatch = buildOngoingMatch(
+                buildScoreDto(0, 0, 0),
+                buildScoreDto(0, 1, 0),
+                MatchState.REGULAR
+        );
 
         var updatedMatch = matchScoreCalculationService.calculateScore(baseMatch, pointWinnerId);
 
@@ -71,17 +59,16 @@ class MatchScoreCalculationServiceTest {
     @Test
     void calculateScore_WhenFirstPlayerWinsFromThirtyForty_ShouldEnterDeuce() {
         var pointWinnerId = 1L;
-        baseMatch.setMatchScoreDto(MatchScoreDto.builder()
-                .firstPlayerScore(buildScoreDto(30, 0, 0))
-                .secondPlayerScore(buildScoreDto(40, 0, 0))
-                .build()
+        baseMatch = buildOngoingMatch(
+                buildScoreDto(30, 0, 0),
+                buildScoreDto(40, 0, 0),
+                MatchState.REGULAR
         );
-
-        expectedMatch.setMatchScoreDto(MatchScoreDto.builder()
-                .firstPlayerScore(buildScoreDto(40, 0, 0))
-                .secondPlayerScore(buildScoreDto(40, 0, 0))
-                .build());
-        expectedMatch.setMatchState(MatchState.DEUCE);
+        expectedMatch = buildOngoingMatch(
+                buildScoreDto(40, 0, 0),
+                buildScoreDto(40, 0, 0),
+                MatchState.DEUCE
+        );
 
         var updatedMatch = matchScoreCalculationService.calculateScore(baseMatch, pointWinnerId);
 
@@ -91,18 +78,16 @@ class MatchScoreCalculationServiceTest {
     @Test
     void calculateScore_WhenSecondPlayerWinsFromDeuce_ShouldEnterAdvantage() {
         var pointWinnerId = 2L;
-        baseMatch.setMatchScoreDto(MatchScoreDto.builder()
-                .firstPlayerScore(buildScoreDto(40, 0, 0))
-                .secondPlayerScore(buildScoreDto(40, 0, 0))
-                .build()
+        baseMatch = buildOngoingMatch(
+                buildScoreDto(40, 0, 0, false),
+                buildScoreDto(40, 0, 0, false),
+                MatchState.DEUCE
         );
-        baseMatch.setMatchState(MatchState.DEUCE);
-
-        expectedMatch.setMatchScoreDto(MatchScoreDto.builder()
-                .firstPlayerScore(buildScoreDto(40, 0, 0))
-                .secondPlayerScore(buildScoreDto(40, 0, 0, true))
-                .build());
-        expectedMatch.setMatchState(MatchState.DEUCE);
+        expectedMatch = buildOngoingMatch(
+                buildScoreDto(40, 0, 0, false),
+                buildScoreDto(40, 0, 0, true),
+                MatchState.DEUCE
+        );
 
         var updatedMatch = matchScoreCalculationService.calculateScore(baseMatch, pointWinnerId);
 
@@ -112,18 +97,16 @@ class MatchScoreCalculationServiceTest {
     @Test
     void calculateScore_WhenSecondPlayerWinsFromDeuceAndAdvantageFirstPlayer_ShouldEnterAdvantage() {
         var pointWinnerId = 2L;
-        baseMatch.setMatchScoreDto(MatchScoreDto.builder()
-                .firstPlayerScore(buildScoreDto(40, 0, 0, true))
-                .secondPlayerScore(buildScoreDto(40, 0, 0, false))
-                .build()
+        baseMatch = buildOngoingMatch(
+                buildScoreDto(40, 0, 0, true),
+                buildScoreDto(40, 0, 0, false),
+                MatchState.DEUCE
         );
-        baseMatch.setMatchState(MatchState.DEUCE);
-
-        expectedMatch.setMatchScoreDto(MatchScoreDto.builder()
-                .firstPlayerScore(buildScoreDto(40, 0, 0, false))
-                .secondPlayerScore(buildScoreDto(40, 0, 0, false))
-                .build());
-        expectedMatch.setMatchState(MatchState.DEUCE);
+        expectedMatch = buildOngoingMatch(
+                buildScoreDto(40, 0, 0, false),
+                buildScoreDto(40, 0, 0, false),
+                MatchState.DEUCE
+        );
 
         var updatedMatch = matchScoreCalculationService.calculateScore(baseMatch, pointWinnerId);
 
@@ -133,22 +116,16 @@ class MatchScoreCalculationServiceTest {
     @Test
     void calculateScore_WhenFirstPlayerHasAdvantageAndScores_FirstPlayerShouldWinGame() {
         var pointWinnerId = 1L;
-        baseMatch.setMatchScoreDto(MatchScoreDto.builder()
-                .firstPlayerScore(buildScoreDto(40, 0, 0, true))
-                .secondPlayerScore(buildScoreDto(40, 0, 0, false))
-                .build()
+        baseMatch = buildOngoingMatch(
+                buildScoreDto(40, 0, 0, true),
+                buildScoreDto(40, 0, 0, false),
+                MatchState.DEUCE
         );
-        baseMatch.setMatchState(MatchState.DEUCE);
-
-        var expectedMatch = OngoingMatchDto.builder()
-                .firstPlayer(FIRST_PLAYER)
-                .secondPlayer(SECOND_PLAYER)
-                .matchScoreDto(MatchScoreDto.builder()
-                        .firstPlayerScore(buildScoreDto(0, 1, 0, false))
-                        .secondPlayerScore(buildScoreDto(0, 0, 0, false))
-                        .build())
-                .matchState(MatchState.REGULAR)
-                .build();
+        expectedMatch = buildOngoingMatch(
+                buildScoreDto(0, 1, 0, false),
+                buildScoreDto(0, 0, 0, false),
+                MatchState.REGULAR
+        );
 
         var updatedMatch = matchScoreCalculationService.calculateScore(baseMatch, pointWinnerId);
 
@@ -158,18 +135,16 @@ class MatchScoreCalculationServiceTest {
     @Test
     void calculateScore_WhenFirstPlayerWinsFromDeuceAndAdvantageFirstPlayerAndGamesFiveSix_ShouldEnterTiebreak() {
         var pointWinnerId = 1L;
-        baseMatch.setMatchScoreDto(MatchScoreDto.builder()
-                .firstPlayerScore(buildScoreDto(40, 5, 0, true))
-                .secondPlayerScore(buildScoreDto(30, 6, 0, false))
-                .build()
+        baseMatch = buildOngoingMatch(
+                buildScoreDto(40, 5, 0, true),
+                buildScoreDto(30, 6, 0, false),
+                MatchState.DEUCE
         );
-        baseMatch.setMatchState(MatchState.DEUCE);
-
-        expectedMatch.setMatchScoreDto(MatchScoreDto.builder()
-                .firstPlayerScore(buildScoreDto(0, 6, 0, false))
-                .secondPlayerScore(buildScoreDto(0, 6, 0, false))
-                .build());
-        expectedMatch.setMatchState(MatchState.TIEBREAK);
+        expectedMatch = buildOngoingMatch(
+                buildScoreDto(0, 6, 0, false),
+                buildScoreDto(0, 6, 0, false),
+                MatchState.TIEBREAK
+        );
 
         var updatedMatch = matchScoreCalculationService.calculateScore(baseMatch, pointWinnerId);
 
@@ -179,18 +154,16 @@ class MatchScoreCalculationServiceTest {
     @Test
     void calculateScore_WhenFirstPlayerWinsFromGamesFiveSix_ShouldEnterTiebreak() {
         var pointWinnerId = 1L;
-        baseMatch.setMatchScoreDto(MatchScoreDto.builder()
-                .firstPlayerScore(buildScoreDto(40, 5, 0))
-                .secondPlayerScore(buildScoreDto(0, 6, 0))
-                .build()
+        baseMatch = buildOngoingMatch(
+                buildScoreDto(40, 5, 0),
+                buildScoreDto(0, 6, 0),
+                MatchState.REGULAR
         );
-        baseMatch.setMatchState(MatchState.REGULAR);
-
-        expectedMatch.setMatchScoreDto(MatchScoreDto.builder()
-                .firstPlayerScore(buildScoreDto(0, 6, 0))
-                .secondPlayerScore(buildScoreDto(0, 6, 0))
-                .build());
-        expectedMatch.setMatchState(MatchState.TIEBREAK);
+        expectedMatch = buildOngoingMatch(
+                buildScoreDto(0, 6, 0),
+                buildScoreDto(0, 6, 0),
+                MatchState.TIEBREAK
+        );
 
         var updatedMatch = matchScoreCalculationService.calculateScore(baseMatch, pointWinnerId);
 
@@ -200,18 +173,16 @@ class MatchScoreCalculationServiceTest {
     @Test
     void calculateScore_WhenFirstPlayerWinsPointAtFiveSixInTiebreak_ShouldWinSet() {
         var pointWinnerId = 1L;
-        baseMatch.setMatchScoreDto(MatchScoreDto.builder()
-                .firstPlayerScore(buildScoreDto(6, 6, 0))
-                .secondPlayerScore(buildScoreDto(5, 6, 0))
-                .build()
+        baseMatch = buildOngoingMatch(
+                buildScoreDto(6, 6, 0),
+                buildScoreDto(5, 6, 0),
+                MatchState.TIEBREAK
         );
-        baseMatch.setMatchState(MatchState.TIEBREAK);
-
-        expectedMatch.setMatchScoreDto(MatchScoreDto.builder()
-                .firstPlayerScore(buildScoreDto(0, 0, 1))
-                .secondPlayerScore(buildScoreDto(0, 0, 0))
-                .build());
-        expectedMatch.setMatchState(MatchState.REGULAR);
+        expectedMatch = buildOngoingMatch(
+                buildScoreDto(0, 0, 1),
+                buildScoreDto(0, 0, 0),
+                MatchState.REGULAR
+        );
 
         var updatedMatch = matchScoreCalculationService.calculateScore(baseMatch, pointWinnerId);
 
@@ -221,18 +192,16 @@ class MatchScoreCalculationServiceTest {
     @Test
     void calculateScore_WhenFirstPlayerWinsFromTiebreakAndPointsSixSix_ShouldEnterTiebreak() {
         var pointWinnerId = 1L;
-        baseMatch.setMatchScoreDto(MatchScoreDto.builder()
-                .firstPlayerScore(buildScoreDto(6, 6, 0))
-                .secondPlayerScore(buildScoreDto(6, 6, 0))
-                .build()
+        baseMatch = buildOngoingMatch(
+                buildScoreDto(6, 6, 0),
+                buildScoreDto(6, 6, 0),
+                MatchState.TIEBREAK
         );
-        baseMatch.setMatchState(MatchState.TIEBREAK);
-
-        expectedMatch.setMatchScoreDto(MatchScoreDto.builder()
-                .firstPlayerScore(buildScoreDto(7, 6, 0))
-                .secondPlayerScore(buildScoreDto(6, 6, 0))
-                .build());
-        expectedMatch.setMatchState(MatchState.TIEBREAK);
+        expectedMatch = buildOngoingMatch(
+                buildScoreDto(7, 6, 0),
+                buildScoreDto(6, 6, 0),
+                MatchState.TIEBREAK
+        );
 
         var updatedMatch = matchScoreCalculationService.calculateScore(baseMatch, pointWinnerId);
 
@@ -242,18 +211,16 @@ class MatchScoreCalculationServiceTest {
     @Test
     void calculateScore_WhenFirstPlayerWinsFromGamesFiveZero_ShouldWinsSet() {
         var pointWinnerId = 1L;
-        baseMatch.setMatchScoreDto(MatchScoreDto.builder()
-                .firstPlayerScore(buildScoreDto(40, 5, 0))
-                .secondPlayerScore(buildScoreDto(0, 0, 0))
-                .build()
+        baseMatch = buildOngoingMatch(
+                buildScoreDto(40, 5, 0),
+                buildScoreDto(0, 0, 0),
+                MatchState.REGULAR
         );
-        baseMatch.setMatchState(MatchState.REGULAR);
-
-        expectedMatch.setMatchScoreDto(MatchScoreDto.builder()
-                .firstPlayerScore(buildScoreDto(0, 0, 1))
-                .secondPlayerScore(buildScoreDto(0, 0, 0))
-                .build());
-        expectedMatch.setMatchState(MatchState.REGULAR);
+        expectedMatch = buildOngoingMatch(
+                buildScoreDto(0, 0, 1),
+                buildScoreDto(0, 0, 0),
+                MatchState.REGULAR
+        );
 
         var updatedMatch = matchScoreCalculationService.calculateScore(baseMatch, pointWinnerId);
 
@@ -263,21 +230,34 @@ class MatchScoreCalculationServiceTest {
     @Test
     void calculateScore_WhenSecondPlayerWinsFromPointsThirtyFortyGamesZeroFiveSetsZeroOne_ShouldFinishedMatch() {
         var pointWinnerId = 2L;
-        baseMatch.setMatchScoreDto(MatchScoreDto.builder()
-                .firstPlayerScore(buildScoreDto(30, 0, 0))
-                .secondPlayerScore(buildScoreDto(40, 5, 1))
-                .build()
+        baseMatch = buildOngoingMatch(
+                buildScoreDto(30, 0, 0),
+                buildScoreDto(40, 5, 1),
+                MatchState.REGULAR
         );
-
-        expectedMatch.setMatchScoreDto(MatchScoreDto.builder()
-                .firstPlayerScore(buildScoreDto(0, 0, 0))
-                .secondPlayerScore(buildScoreDto(0, 6, 2))
-                .build());
-        expectedMatch.setMatchState(MatchState.FINISHED);
+        expectedMatch = buildOngoingMatch(
+                buildScoreDto(0, 0, 0),
+                buildScoreDto(0, 6, 2),
+                MatchState.FINISHED
+        );
 
         var updatedMatch = matchScoreCalculationService.calculateScore(baseMatch, pointWinnerId);
 
         Assertions.assertEquals(expectedMatch, updatedMatch);
+    }
+
+    private OngoingMatchDto buildOngoingMatch(ScoreDto firstPlayerScore,
+                                              ScoreDto secondPlayerScore,
+                                              MatchState matchState) {
+        return OngoingMatchDto.builder()
+                .firstPlayer(FIRST_PLAYER)
+                .secondPlayer(SECOND_PLAYER)
+                .matchScoreDto(MatchScoreDto.builder()
+                        .firstPlayerScore(firstPlayerScore)
+                        .secondPlayerScore(secondPlayerScore)
+                        .build())
+                .matchState(matchState)
+                .build();
     }
 
     private ScoreDto buildScoreDto(int points, int games, int sets) {
