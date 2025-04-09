@@ -42,8 +42,11 @@ public class OngoingMatchesService {
     }
 
     private OngoingMatchDto buildOngoingMatchDto(MatchCreateDto matchCreateDto) {
-        var firstPlayer = getOrCreatePlayer(matchCreateDto.firstPlayerName());
-        var secondPlayer = getOrCreatePlayer(matchCreateDto.secondPlayerName());
+        var firstPlayer = playerRepository.findByName(matchCreateDto.firstPlayerName())
+                .orElse(playerRepository.save(new Player(matchCreateDto.firstPlayerName())));
+
+        var secondPlayer = playerRepository.findByName(matchCreateDto.secondPlayerName())
+                .orElse(playerRepository.save(new Player(matchCreateDto.secondPlayerName())));
 
         return OngoingMatchDto.builder()
                 .firstPlayer(playerDtoMapper.mapFrom(firstPlayer))
@@ -51,11 +54,6 @@ public class OngoingMatchesService {
                 .matchScoreDto(ScoreUtil.createInitialMatchScore())
                 .matchState(MatchState.REGULAR)
                 .build();
-    }
-
-    private Player getOrCreatePlayer(String name) {
-        var maybePlayer = playerRepository.findByName(name);
-        return maybePlayer.orElseGet(() -> playerRepository.save(new Player(name)));
     }
 
     public OngoingMatchDto updateOngoingMatch(String matchId, Long pointWinnerId) {
