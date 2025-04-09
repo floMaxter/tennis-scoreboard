@@ -6,44 +6,39 @@ import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchDto;
 import com.projects.tennisscoreboard.entity.Player;
 import com.projects.tennisscoreboard.exception.NotFoundException;
 import com.projects.tennisscoreboard.mapper.player.PlayerDtoMapper;
+import com.projects.tennisscoreboard.repository.InMemoryOngoingMatchRepository;
 import com.projects.tennisscoreboard.repository.PlayerRepository;
+import com.projects.tennisscoreboard.utils.MatchLockManager;
 import com.projects.tennisscoreboard.utils.ScoreUtil;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class OngoingMatchesService {
 
+    private final MatchScoreCalculationService matchScoreCalculationService;
     private final PlayerRepository playerRepository;
-    private final Map<String, OngoingMatchDto> ongoingMatches;
+    private final InMemoryOngoingMatchRepository ongoingMatchRepository;
     private final PlayerDtoMapper playerDtoMapper;
     private static final OngoingMatchesService INSTANCE = new OngoingMatchesService();
 
     private OngoingMatchesService() {
-        ongoingMatches = new ConcurrentHashMap<>();
         playerRepository = PlayerRepository.getInstance();
         playerDtoMapper = PlayerDtoMapper.getInstance();
+        matchScoreCalculationService = MatchScoreCalculationService.getInstance();
+        ongoingMatchRepository = InMemoryOngoingMatchRepository.getInstance();
     }
 
     public OngoingMatchDto findById(String matchId) {
-        var ongoingMatchDto = ongoingMatches.get(matchId);
-        if (ongoingMatchDto == null) {
-            log.error("Error when searching ongoing match by id {}", matchId);
-            throw new NotFoundException("Match with ID " + matchId + " not found");
-        }
-
-        return ongoingMatchDto;
+        return ongoingMatchRepository.findById(matchId)
+                .orElseThrow(() -> {
+                    log.error("Error when searching ongoing match by id {}", matchId);
+                    return new NotFoundException("Match with ID " + matchId + " not found");
+                });
     }
 
     public String create(MatchCreateDto matchCreateDto) {
         var ongoingMatchDto = buildOngoingMatchDto(matchCreateDto);
-        var matchId = UUID.randomUUID().toString();
-        ongoingMatches.put(matchId, ongoingMatchDto);
-
-        return matchId;
+        return ongoingMatchRepository.save(ongoingMatchDto);
     }
 
     private OngoingMatchDto buildOngoingMatchDto(MatchCreateDto matchCreateDto) {
@@ -63,12 +58,44 @@ public class OngoingMatchesService {
         return maybePlayer.orElseGet(() -> playerRepository.save(new Player(name)));
     }
 
-    public void updateOngoingMatch(String matchId, OngoingMatchDto ongoingMatchDto) {
-        ongoingMatches.put(matchId, ongoingMatchDto);
+    public OngoingMatchDto updateOngoingMatch(String matchId, Long pointWinnerId) {
+        var lock = MatchLockManager.getLock(matchId).writeLock();
+        lock.lock();
+        try {
+            ensureMatchPresent(matchId);
+
+            var findMatchDto = findById(matchId);
+            return ScoreUtil.isMatchFinished(findMatchDto)
+                    ? findMatchDto
+                    : calculateAndUpdateScore(matchId, pointWinnerId, findMatchDto);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    private void ensureMatchPresent(String matchId) {
+        if (!ongoingMatchRepository.isMatchPresent(matchId)) {
+            log.error("Tried to update match that has already been deleted: {}", matchId);
+            throw new NotFoundException("The match with the ID " + matchId + " has been deleted");
+        }
+    }
+
+    private OngoingMatchDto calculateAndUpdateScore(String matchId, Long pointWinnerId, OngoingMatchDto findMatchDto) {
+        var updatedMatchDto = matchScoreCalculationService.calculateScore(findMatchDto, pointWinnerId);
+        ongoingMatchRepository.update(matchId, updatedMatchDto);
+        return updatedMatchDto;
     }
 
     public void delete(String matchId) {
-        ongoingMatches.remove(matchId);
+        var lock = MatchLockManager.getLock(matchId).writeLock();
+        lock.lock();
+        try {
+            ongoingMatchRepository.delete(matchId);
+        } finally {
+            lock.unlock();
+            MatchLockManager.removeLock(matchId);
+        }
+
     }
 
     public static OngoingMatchesService getInstance() {

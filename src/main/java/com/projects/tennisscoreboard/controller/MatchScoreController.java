@@ -1,10 +1,8 @@
 package com.projects.tennisscoreboard.controller;
 
-import com.projects.tennisscoreboard.dto.match.MatchState;
-import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchDto;
-import com.projects.tennisscoreboard.service.MatchScoreCalculationService;
 import com.projects.tennisscoreboard.service.OngoingMatchesService;
 import com.projects.tennisscoreboard.utils.JspHelper;
+import com.projects.tennisscoreboard.utils.ScoreUtil;
 import com.projects.tennisscoreboard.utils.ValidationUtil;
 import com.projects.tennisscoreboard.validator.impl.LongIDValidator;
 import com.projects.tennisscoreboard.validator.impl.UUIDValidator;
@@ -13,14 +11,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
+@Slf4j
 @WebServlet("/match-score")
 public class MatchScoreController extends HttpServlet {
 
     private final OngoingMatchesService ongoingMatchesService = OngoingMatchesService.getInstance();
-    private final MatchScoreCalculationService matchScoreCalculationService = MatchScoreCalculationService.getInstance();
     private final UUIDValidator uuidValidator = UUIDValidator.getInstance();
     private final LongIDValidator longIDValidator = LongIDValidator.getInstance();
 
@@ -42,21 +41,13 @@ public class MatchScoreController extends HttpServlet {
         var pointWinnerIdParam = req.getParameter("pointWinnerId");
         ValidationUtil.validate(uuidValidator.isValid(matchId));
         ValidationUtil.validate(longIDValidator.isValid(pointWinnerIdParam));
-
-        var findMatch = ongoingMatchesService.findById(matchId);
         var pointWinnerId = Long.valueOf(pointWinnerIdParam);
 
-        var updatedMatch = matchScoreCalculationService.calculateScore(findMatch, pointWinnerId);
-        ongoingMatchesService.updateOngoingMatch(matchId, updatedMatch);
-
-        if (isMatchFinished(updatedMatch)) {
+        var updatedOngoingMatchDto = ongoingMatchesService.updateOngoingMatch(matchId, pointWinnerId);
+        if (ScoreUtil.isMatchFinished(updatedOngoingMatchDto)) {
             resp.sendRedirect(String.format(req.getContextPath() + "/finished-match?uuid=%s", matchId));
         } else {
             resp.sendRedirect(String.format(req.getContextPath() + "/match-score?uuid=%s", matchId));
         }
-    }
-
-    private boolean isMatchFinished(OngoingMatchDto updatedMatch) {
-        return updatedMatch.getMatchState().equals(MatchState.FINISHED);
     }
 }
