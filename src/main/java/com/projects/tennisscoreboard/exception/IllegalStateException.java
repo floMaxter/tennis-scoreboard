@@ -1,13 +1,10 @@
 package com.projects.tennisscoreboard.exception;
 
-import lombok.Getter;
+import jakarta.servlet.http.HttpServletResponse;
 
-@Getter
-public class IllegalStateException extends RuntimeException {
-
-    private final String message;
+public class IllegalStateException extends GenericApplicationException {
 
     public IllegalStateException(String message) {
-        this.message = message;
+        super(message, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
 }

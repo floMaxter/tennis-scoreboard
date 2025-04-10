@@ -1,13 +1,10 @@
 package com.projects.tennisscoreboard.exception;
 
-import lombok.Getter;
+import jakarta.servlet.http.HttpServletResponse;
 
-@Getter
-public class AlreadyExistsException extends RuntimeException {
-
-    private final String message;
+public class AlreadyExistsException extends GenericApplicationException {
 
     public AlreadyExistsException(String message) {
-        this.message = message;
+        super(message, HttpServletResponse.SC_CONFLICT);
     }
 }

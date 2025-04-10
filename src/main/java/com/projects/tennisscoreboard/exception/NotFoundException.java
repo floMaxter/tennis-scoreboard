@@ -1,13 +1,10 @@
 package com.projects.tennisscoreboard.exception;
 
-import lombok.Getter;
+import jakarta.servlet.http.HttpServletResponse;
 
-@Getter
-public class NotFoundException extends RuntimeException {
-
-    private final String message;
+public class NotFoundException extends GenericApplicationException {
 
     public NotFoundException(String message) {
-        this.message = message;
+        super(message, HttpServletResponse.SC_NOT_FOUND);
     }
 }

@@ -1,6 +1,7 @@
 package com.projects.tennisscoreboard.filter;
 
-import com.projects.tennisscoreboard.exception.ExceptionHandler;
+import com.projects.tennisscoreboard.exception.ExceptionRequestDto;
+import com.projects.tennisscoreboard.exception.GenericApplicationException;
 import com.projects.tennisscoreboard.utils.JspHelper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,7 +21,14 @@ public class ExceptionHandlerFilter extends HttpFilter {
         try {
             super.doFilter(req, res, chain);
         } catch (Throwable throwable) {
-            ExceptionHandler.handleException(req, throwable);
+            int statusCode;
+            if (throwable instanceof GenericApplicationException) {
+                statusCode = ((GenericApplicationException) throwable).getStatusCode();
+            } else {
+                statusCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+            }
+
+            req.setAttribute("error", new ExceptionRequestDto(statusCode, throwable.getMessage()));
             req.getRequestDispatcher(JspHelper.getPath("error_page")).forward(req, res);
         }
     }

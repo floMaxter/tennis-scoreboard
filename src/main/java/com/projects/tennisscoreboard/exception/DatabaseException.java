@@ -1,13 +1,10 @@
 package com.projects.tennisscoreboard.exception;
 
-import lombok.Getter;
+import jakarta.servlet.http.HttpServletResponse;
 
-@Getter
-public class DatabaseException extends RuntimeException {
-
-    private final String message;
+public class DatabaseException extends GenericApplicationException {
 
     public DatabaseException(String message) {
-        this.message = message;
+        super(message, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
 }
