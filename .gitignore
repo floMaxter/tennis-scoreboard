@@ -3,11 +3,7 @@
 
 # Maven
 target/
-mvnw
-mvnw.cmd
-.mvn/
 *.log
-*maven-wrapper.jar
 
 # General
 .DS_Store
