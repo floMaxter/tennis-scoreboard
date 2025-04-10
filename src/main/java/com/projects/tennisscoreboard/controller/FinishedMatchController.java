@@ -47,7 +47,7 @@ public class FinishedMatchController extends HttpServlet {
         finishedMatchesPersistenceService.save(findMatch);
         ongoingMatchesService.delete(matchId);
 
-        resp.sendRedirect(String.format(req.getContextPath() + "/home"));
+        resp.sendRedirect(String.format(req.getContextPath() + "/"));
     }
 
     private PlayerDto determineWinner(OngoingMatchDto ongoingMatchDto) {
