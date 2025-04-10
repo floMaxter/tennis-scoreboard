@@ -2,20 +2,16 @@ package com.projects.tennisscoreboard.dto.match.ongoing;
 
 import com.projects.tennisscoreboard.dto.match.MatchScoreDto;
 import com.projects.tennisscoreboard.dto.match.MatchState;
+import com.projects.tennisscoreboard.dto.player.PlayerDto;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
+@Data
 @Builder
 public class OngoingMatchDto {
 
-    private final Long firstPlayerId;
-    private final Long secondPlayerId;
-
-    @Setter
-    private MatchScoreDto matchScoreDto;
-
-    @Setter
-    private MatchState matchState;
+    private final PlayerDto firstPlayer;
+    private final PlayerDto secondPlayer;
+    private final MatchScoreDto matchScoreDto;
+    private final MatchState matchState;
 }

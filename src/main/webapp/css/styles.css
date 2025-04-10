@@ -281,6 +281,14 @@
     background-color: #a6acaf;
 }
 
+.no-matches-message {
+    text-align: center;
+    font-style: italic;
+    padding: 1em;
+    font-size: 18px;
+    color: #7f8c8d;
+}
+
 /*PAGINATION*/
 
 .pagination-container {
@@ -396,24 +404,40 @@
     margin-top: 10px;
 }
 
-.home-link {
-    background-color: #a6acaf;
-    color: #2c3e50;
-    text-decoration: none;
-    padding: 10px 20px;
-    border: 2px solid #626567;
+.winner-player-message {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: gold;
+    background-color: #fbeee0;
+    padding: 10px;
     border-radius: 5px;
-    font-size: 16px;
-    transition: all 0.3s ease;
-    display: inline-block;
+    margin-top: 10px;
 }
 
-.home-link:hover {
-    background-color: #626567;
+/*FINISHED PAGE*/
+
+.save-match-form {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.save-match-button {
+    background-color: #28a745;
     color: white;
+    font-size: 18px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
 }
 
-.home-link-span {
-    color: #34495e;
-    margin-left: 5px;
+.save-match-button:hover {
+    background-color: #218838;
+}
+
+.save-match-button:active {
+    background-color: #1e7e34;
 }

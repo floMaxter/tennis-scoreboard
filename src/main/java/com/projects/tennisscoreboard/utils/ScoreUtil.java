@@ -1,7 +1,9 @@
 package com.projects.tennisscoreboard.utils;
 
 import com.projects.tennisscoreboard.dto.match.MatchScoreDto;
+import com.projects.tennisscoreboard.dto.match.MatchState;
 import com.projects.tennisscoreboard.dto.match.ScoreDto;
+import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchDto;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -23,5 +25,9 @@ public class ScoreUtil {
                 .firstPlayerScore(new ScoreDto())
                 .secondPlayerScore(new ScoreDto())
                 .build();
+    }
+
+    public static boolean isMatchFinished(OngoingMatchDto ongoingMatchDto) {
+        return ongoingMatchDto.getMatchState().equals(MatchState.FINISHED);
     }
 }

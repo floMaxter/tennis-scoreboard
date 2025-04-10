@@ -1,10 +1,10 @@
 package com.projects.tennisscoreboard.dto.match.completed;
 
-import com.projects.tennisscoreboard.entity.Player;
+import com.projects.tennisscoreboard.dto.player.PlayerDto;
 import lombok.Builder;
 
 @Builder
-public record MatchReadDto(Player firstPlayer,
-                           Player secondPlayer,
-                           Player winner) {
+public record MatchReadDto(PlayerDto firstPlayer,
+                           PlayerDto secondPlayer,
+                           PlayerDto winner) {
 }

@@ -1,0 +1,38 @@
+.error-container {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.error-title {
+    font-size: 36px;
+    font-weight: bold;
+    color: #e74c3c;
+}
+
+.error-message {
+    font-size: 18px;
+    color: #2c3e50;
+    margin-top: 20px;
+}
+
+.error-actions {
+    margin-top: 30px;
+}
+
+.error-button {
+    background-color: #a6acaf;
+    color: #2c3e50;
+    font-size: 16px;
+    padding: 10px 20px;
+    border: 2px solid #626567;
+    border-radius: 30px;
+    text-decoration: none;
+    margin: 0 10px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.error-button:hover {
+    background-color: #626567;
+    color: white;
+    transform: scale(1.1);
+}

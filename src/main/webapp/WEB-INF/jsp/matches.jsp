@@ -1,17 +1,17 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<c:set var="matches" value="${requestScope.matches}"/>
-<c:set var="currentPage" value="${requestScope.currentPage}"/>
-<c:set var="totalPages" value="${requestScope.totalPages}"/>
 <c:set var="filterByPlayerName" value="${param.filter_by_player_name}"/>
+<c:set var="currentPage" value="${requestScope.matchPage.currentPage}" />
+<c:set var="totalPages" value="${requestScope.matchPage.totalPages}" />
+<c:set var="matches" value="${requestScope.matchPage.matches}" />
 
 <html>
     <head>
         <title>Completed matches</title>
-        <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="<c:url value="/css/styles.css"/>">
+        <link rel="icon" type="image/png" href="<c:url value='/images/favicon.ico'/>">
     </head>
     <body class="wrapper">
         <%@ include file="header.jsp"%>
@@ -39,6 +39,14 @@
                             <td>${match.winner.name}</td>
                         </tr>
                     </c:forEach>
+
+                    <c:if test="${empty matches}">
+                        <tr>
+                            <td colspan="3" class="no-matches-message">
+                                No matches found
+                            </td>
+                        </tr>
+                    </c:if>
                 </tbody>
             </table>
             <div class="pagination-container">
@@ -65,5 +73,9 @@
         </main>
         <%@ include file="footer.jsp"%>
         <script src="<c:url value="/js/searchFilter.js"/>"></script>
+        <script>
+            window.actualPageFromServer = ${currentPage};
+        </script>
+        <script src="<c:url value="/js/normalizePageParam.js"/>"></script>
     </body>
 </html>

@@ -1,72 +1,28 @@
 package com.projects.tennisscoreboard.service;
 
-import com.projects.tennisscoreboard.utils.ScoreUtil;
-import com.projects.tennisscoreboard.dto.match.ongoing.MatchProgressDto;
-import com.projects.tennisscoreboard.dto.match.MatchScoreDto;
 import com.projects.tennisscoreboard.dto.match.MatchState;
-import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchReadDto;
 import com.projects.tennisscoreboard.dto.match.ScoreDto;
+import com.projects.tennisscoreboard.dto.match.ongoing.MatchProgressDto;
+import com.projects.tennisscoreboard.dto.match.ongoing.OngoingMatchDto;
+import com.projects.tennisscoreboard.exception.IllegalStateException;
+import com.projects.tennisscoreboard.mapper.match.MatchProgressMapper;
+import com.projects.tennisscoreboard.utils.PropertiesUtil;
+import com.projects.tennisscoreboard.utils.ScoreUtil;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class MatchScoreCalculationService {
 
+    private final MatchProgressMapper matchProgressMapper = MatchProgressMapper.getInstance();
     private static final MatchScoreCalculationService INSTANCE = new MatchScoreCalculationService();
 
     private MatchScoreCalculationService() {
     }
 
-    public OngoingMatchReadDto calculateScore(OngoingMatchReadDto ongoingMatchReadDto, Long pointWinnerId) {
-        var matchProgressDto = buildMatchProgressDto(ongoingMatchReadDto, pointWinnerId);
+    public OngoingMatchDto calculateScore(OngoingMatchDto ongoingMatch, Long pointWinnerId) {
+        var matchProgressDto = matchProgressMapper.mapToMatchProgress(ongoingMatch, pointWinnerId);
         increaseScore(matchProgressDto);
-        return buildOngoingMatchReadDto(matchProgressDto, ongoingMatchReadDto);
-    }
-
-    private MatchProgressDto buildMatchProgressDto(OngoingMatchReadDto ongoingMatchDto, Long pointWinnerId) {
-        var matchScoreDto = ongoingMatchDto.getMatchScoreDto();
-        var firstPlayerScore = matchScoreDto.getFirstPlayerScore();
-        var secondPlayerScore = matchScoreDto.getSecondPlayerScore();
-        var matchState = ongoingMatchDto.getMatchState();
-
-        MatchProgressDto matchProgressDto = MatchProgressDto.builder()
-                .pointWinnerId(pointWinnerId)
-                .matchState(matchState)
-                .build();
-
-        if (ongoingMatchDto.getFirstPlayer().getId().equals(pointWinnerId)) {
-            matchProgressDto.setWinnerScore(firstPlayerScore);
-            matchProgressDto.setLoserScore(secondPlayerScore);
-        } else {
-            matchProgressDto.setWinnerScore(secondPlayerScore);
-            matchProgressDto.setLoserScore(firstPlayerScore);
-        }
-        return matchProgressDto;
-    }
-
-    private OngoingMatchReadDto buildOngoingMatchReadDto(MatchProgressDto matchProgressDto,
-                                                         OngoingMatchReadDto baseMatchReadDto) {
-        var firstPlayerId = baseMatchReadDto.getFirstPlayer().getId();
-        var winnerScore = matchProgressDto.getWinnerScore();
-        var loserScore = matchProgressDto.getLoserScore();
-
-        var updatedMatchReadDto = OngoingMatchReadDto.builder()
-                .firstPlayer(baseMatchReadDto.getFirstPlayer())
-                .secondPlayer(baseMatchReadDto.getSecondPlayer())
-                .matchState(matchProgressDto.getMatchState())
-                .build();
-
-        if (matchProgressDto.getPointWinnerId().equals(firstPlayerId)) {
-            updatedMatchReadDto.setMatchScoreDto(buildMatchScoreDto(winnerScore, loserScore));
-        } else {
-            updatedMatchReadDto.setMatchScoreDto(buildMatchScoreDto(loserScore, winnerScore));
-        }
-
-        return updatedMatchReadDto;
-    }
-
-    private MatchScoreDto buildMatchScoreDto(ScoreDto firstPlayerScore, ScoreDto secondPlayerScore) {
-        return MatchScoreDto.builder()
-                .firstPlayerScore(firstPlayerScore)
-                .secondPlayerScore(secondPlayerScore)
-                .build();
+        return matchProgressMapper.mapToOngoingMatch(matchProgressDto, ongoingMatch);
     }
 
     private void increaseScore(MatchProgressDto matchProgressDto) {
@@ -74,7 +30,11 @@ public class MatchScoreCalculationService {
             case REGULAR -> increaseRegularPointScore(matchProgressDto);
             case DEUCE -> increaseAdvantagePointScore(matchProgressDto);
             case TIEBREAK -> increaseTieBreakPointScore(matchProgressDto);
-            default -> throw new RuntimeException("Illegal match state");
+            default -> {
+                log.error("Error during increase score. A completed match should not be included in the scoring method {}",
+                        matchProgressDto);
+                throw new IllegalStateException(PropertiesUtil.get("exception.illegal_state_message"));
+            }
         }
         updateMatchState(matchProgressDto);
     }

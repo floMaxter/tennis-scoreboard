@@ -21,13 +21,13 @@
 
 <html>
     <head>
-        <meta charset="UTF-8">
         <title>Match score</title>
-        <link rel="stylesheet" href="<c:url value="/css/styles.css"/>">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="<c:url value="/css/styles.css"/>">
+        <link rel="icon" type="image/png" href="<c:url value='/images/favicon.ico'/>">
     </head>
     <body class="wrapper">
-        <%@ include file="header.jsp"%>
+        <%@ include file="header.jsp" %>
         <main class="match-score-container">
             <h2 class="match-score-title">Match score</h2>
             <table class="score-table">
@@ -36,9 +36,7 @@
                     <th>Sets</th>
                     <th>Games</th>
                     <th>Points</th>
-                    <c:if test="${matchState != 'FINISHED'}">
-                        <th>Action</th>
-                    </c:if>
+                    <th>Action</th>
                 </tr>
                 <tr>
                     <td>${firstPlayerName}</td>
@@ -50,14 +48,12 @@
                             <c:otherwise>${firstPlayerPointsScore}</c:otherwise>
                         </c:choose>
                     </td>
-                    <c:if test="${matchState != 'FINISHED'}">
-                        <td>
-                            <form action="<c:url value="/match-score?uuid=${param.uuid}"/>" method="post">
-                                <input type="hidden" name="pointWinnerId" value="${firstPlayerId}">
-                                <button type="submit" class="point-button">${firstPlayerName} wins a point</button>
-                            </form>
-                        </td>
-                    </c:if>
+                    <td>
+                        <form action="<c:url value="/match-score?uuid=${param.uuid}"/>" method="post">
+                            <input type="hidden" name="pointWinnerId" value="${firstPlayerId}">
+                            <button type="submit" class="point-button">${firstPlayerName} wins a point</button>
+                        </form>
+                    </td>
                 </tr>
                 <tr>
                     <td>${secondPlayerName}</td>
@@ -69,24 +65,19 @@
                             <c:otherwise>${secondPlayerPointsScore}</c:otherwise>
                         </c:choose>
                     </td>
-                    <c:if test="${matchState != 'FINISHED'}">
-                        <td>
-                            <form action="<c:url value="/match-score?uuid=${param.uuid}"/>" method="post">
-                                <input type="hidden" name="pointWinnerId" value="${secondPlayerId}">
-                                <button type="submit" class="point-button">${secondPlayerName} wins a point</button>
-                            </form>
-                        </td>
-                    </c:if>
+                    <td>
+                        <form action="<c:url value="/match-score?uuid=${param.uuid}"/>" method="post">
+                            <input type="hidden" name="pointWinnerId" value="${secondPlayerId}">
+                            <button type="submit" class="point-button">${secondPlayerName} wins a point</button>
+                        </form>
+                    </td>
                 </tr>
             </table>
             <c:if test="${matchState == 'TIEBREAK'}">
                 <div class="tiebreak-message">Tiebreak in progress!</div>
             </c:if>
             <br/>
-            <c:if test="${matchState == 'FINISHED'}">
-                <a href="<c:url value="/home" />" class="home-link-span">Home</a> <span> page</span>
-            </c:if>
         </main>
-        <%@ include file="footer.jsp"%>
+        <%@ include file="footer.jsp" %>
     </body>
 </html>

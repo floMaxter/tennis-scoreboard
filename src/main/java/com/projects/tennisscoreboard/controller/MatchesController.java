@@ -1,38 +1,51 @@
 package com.projects.tennisscoreboard.controller;
 
-import com.projects.tennisscoreboard.utils.JspHelper;
+import com.projects.tennisscoreboard.exception.ValidationException;
 import com.projects.tennisscoreboard.service.FinishedMatchesPersistenceService;
+import com.projects.tennisscoreboard.utils.JspHelper;
+import com.projects.tennisscoreboard.utils.ValidationUtil;
+import com.projects.tennisscoreboard.validator.ValidationError;
+import com.projects.tennisscoreboard.validator.impl.FilterByPlayerNameValidator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.util.Collections;
 
+@Slf4j
 @WebServlet("/matches")
 public class MatchesController extends HttpServlet {
 
+    private final FilterByPlayerNameValidator filterByPlayerNameValidator = FilterByPlayerNameValidator.getInstance();
     private final FinishedMatchesPersistenceService finishedMatchesPersistenceService = FinishedMatchesPersistenceService.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         var playerName = req.getParameter("filter_by_player_name");
-        var page = req.getParameter("page");
+        var page = parseOrDefault(req.getParameter("page"));
+        ValidationUtil.validate(filterByPlayerNameValidator.isValid(playerName));
 
-        var totalPages = finishedMatchesPersistenceService.getTotalPages(playerName);
-        var currentPage = normalizePageNumber(page, totalPages);
-        var matches = finishedMatchesPersistenceService.findMatches(playerName, currentPage);
+        var matchPageDto = finishedMatchesPersistenceService.getPaginatedMatches(playerName, page);
 
-        req.setAttribute("totalPages", totalPages);
-        req.setAttribute("currentPage", currentPage);
-        req.setAttribute("matches", matches);
+        req.setAttribute("matchPage", matchPageDto);
         req.getRequestDispatcher(JspHelper.getPath("matches"))
                 .forward(req, resp);
     }
 
-    private Long normalizePageNumber(String page, Long totalPage) {
-        var currentPage = page == null ? 1 : Long.parseLong(page);
-        return Math.max(1, Math.min(currentPage, totalPage));
+    private Integer parseOrDefault(String page) {
+        if (page == null) return 1;
+
+        try {
+            return Integer.parseInt(page);
+        } catch (NumberFormatException e) {
+            log.warn("The request to get matches by player name could not be completed due to the " +
+                     "inability to convert the page number={}.", page);
+            throw new ValidationException(Collections
+                    .singletonList(ValidationError.of("Current page number can not parse to Long: " + page)));
+        }
     }
 }

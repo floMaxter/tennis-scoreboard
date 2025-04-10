@@ -1,6 +1,7 @@
-package com.projects.tennisscoreboard.mapper;
+package com.projects.tennisscoreboard.mapper.match;
 
 import com.projects.tennisscoreboard.dto.match.ongoing.MatchCreateDto;
+import com.projects.tennisscoreboard.mapper.Mapper;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Optional;
