@@ -43,10 +43,10 @@ public class OngoingMatchesService {
 
     private OngoingMatchDto buildOngoingMatchDto(MatchCreateDto matchCreateDto) {
         var firstPlayer = playerRepository.findByName(matchCreateDto.firstPlayerName())
-                .orElse(playerRepository.save(new Player(matchCreateDto.firstPlayerName())));
+                .orElseGet(() -> playerRepository.save(new Player(matchCreateDto.firstPlayerName())));
 
         var secondPlayer = playerRepository.findByName(matchCreateDto.secondPlayerName())
-                .orElse(playerRepository.save(new Player(matchCreateDto.secondPlayerName())));
+                .orElseGet(() -> playerRepository.save(new Player(matchCreateDto.secondPlayerName())));
 
         return OngoingMatchDto.builder()
                 .firstPlayer(playerDtoMapper.mapFrom(firstPlayer))
